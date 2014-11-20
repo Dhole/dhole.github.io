@@ -1,0 +1,7 @@
+{{ $baseurl := .Site.BaseUrl }}
+<div class="meta">
+Categories:
+{{ range .Params.categories }}
+<span><a href="{{ $baseurl }}/categories/{{ . | urlize }}">{{ . }}</a> </span>
+{{ end }}
+</div>

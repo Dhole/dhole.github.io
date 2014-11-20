@@ -1,0 +1,28 @@
+baseurl = "http://dhole.x64.me"
+languageCode = "en-us"
+title = "Dhole's blog"
+
+[params]
+    Subtitle = "Hardware hacking, embedded systems and more"
+    author = "Dhole"
+    GitHubUser = "Dhole"
+    disqus_shortname = "dhole"
+
+
+[[menu.main]]
+    name = "about"
+    weight = 20
+    identifier = "about"
+    url = "/about"
+
+[[menu.main]]
+    name = "articles"
+    weight = 10
+    identifier = "articles"
+    url = "/post"
+
+[[menu.main]]
+    name = "categories"
+    weight = 15
+    identifier = "categories"
+    url = "/categories"
