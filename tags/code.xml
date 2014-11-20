@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>Code on Dhole&#39;s blog </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
+    <link>http://dhole.x64.me:1313/tags/code/index.xml</link>
+    <language>en-us</language>
+    
+    
+    <updated>Sun, 09 Nov 2014 03:32:39 CET</updated>
+    
+    <item>
+      <title>Code test</title>
+      <link>http://dhole.x64.me:1313/post/code_test/</link>
+      <pubDate>Sun, 09 Nov 2014 03:32:39 CET</pubDate>
+      
+      <guid>http://dhole.x64.me:1313/post/code_test/</guid>
+      <description>
+
+&lt;p&gt;Here I will try inserting code, both using markdown and the hugo highlighting shortcode&lt;/p&gt;
+
+&lt;h1 id=&#34;toc_0&#34;&gt;Go&lt;/h1&gt;
+
+&lt;p&gt;Using markdown: This is a median randomized algorithm&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func randomizedMedian(s []int) (m int, err error) {
+    n := float64(len(s))
+    n34 := math.Pow(float64(n), 3.0/4.0)
+    r := randSampleWithRep(s, int(math.Ceil(n34)))
+    sort.Ints(r)
+    d := r[int(math.Floor(1.0/2.0 * n34 - math.Sqrt(n))) - 1]
+    u := r[int(math.Ceil(1.0/2.0 * n34 + math.Sqrt(n))) - 1]
+    c := filter(s, func(x int) bool { return d &amp;lt;= x &amp;amp;&amp;amp; x &amp;lt;= u })
+    ld := count(s, func(x int) bool { return x &amp;lt; d })
+    lu := count(s, func(x int) bool { return x &amp;gt; u })
+    //fmt.Println(&amp;quot;d:&amp;quot;, d, &amp;quot;u:&amp;quot;, u, &amp;quot;ld:&amp;quot;, ld, &amp;quot;lu:&amp;quot;, lu)
+    if float64(ld) &amp;gt; n/2 &amp;amp;&amp;amp; float64(lu) &amp;lt; n/2 {
+        return 0, fmt.Errorf(&amp;quot;Fail&amp;quot;)
+    }
+    if float64(len(c)) &amp;lt;= 4.0 * n34 {
+        sort.Ints(c)
+    } else {
+        return 0, fmt.Errorf(&amp;quot;Fail&amp;quot;)
+    }
+    return c[int(math.Floor(n/2)) - ld + 1 - 1], nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This would be a bash line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo rm -rf /
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But now I want it with syntax highlighting&lt;/p&gt;
+
+&lt;p&gt;Using gist: This is quickselect&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Dhole/b5186c2c4f0e27d43c11.js&#34;&gt;&lt;/script&gt;
+
+&lt;h1 id=&#34;toc_1&#34;&gt;C&lt;/h1&gt;
+
+&lt;p&gt;Show some love to plain old school C&lt;/p&gt;
+
+&lt;p&gt;This is the main loop of my gameboy emulator, using SDL_GetTicks() function to syncronize
+the framerate&lt;/p&gt;
+
+&lt;script src=&#34;https://gist.github.com/Dhole/b9e4e1a28d5a2eed2f00.js&#34;&gt;&lt;/script&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

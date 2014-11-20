@@ -3,7 +3,7 @@
   <channel>
       <title> on Dhole&#39;s blog </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://dhole.github.io/index.xml</link>
+    <link>https://dhole.github.io/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>About</title>
-      <link>http://dhole.github.io/about/</link>
+      <link>https://dhole.github.io/about/</link>
       <pubDate>Fri, 07 Nov 2014 02:35:08 CET</pubDate>
       
-      <guid>http://dhole.github.io/about/</guid>
+      <guid>https://dhole.github.io/about/</guid>
       <description>&lt;figure &gt;
     
         &lt;img src=&#34;https://avatars3.githubusercontent.com/u/1530972?v=3&amp;amp;s=256&#34;  /&gt;
