@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+      <title>Recent Content on Dhole&#39;s blog </title>
+      <generator uri="https://gohugo.io">Hugo</generator>
+    <link>http://dhole.x64.me/index.xml</link>
+    <language>en-us</language>
+    
+    
+    <updated>Sat, 08 Nov 2014 17:04:11 CET</updated>
+    
+    <item>
+      <title>Welcome</title>
+      <link>http://dhole.x64.me/post/first/</link>
+      <pubDate>Sat, 08 Nov 2014 17:04:11 CET</pubDate>
+      
+      <guid>http://dhole.x64.me/post/first/</guid>
+      <description>&lt;p&gt;I had been planning on creating a blog to write about the stuff I do on my free time for a while.
+In this blog I plan to write about the projects I develop as well as talking about interesting things
+I lean about technology, hardware, security, embedded systems, programming languages and more.&lt;/p&gt;
+
+&lt;p&gt;My first thought was to use a WordPress hosted at wordpress.com, but I didn&amp;rsquo;t want the adds. I searched
+on the net for alternatives and found out about the static website generators, which allow you to host
+the content in a static web server such as your github personal page. Right now this blog is posted in
+my server, but I may move it to github if there is some traffic.&lt;/p&gt;
+
+&lt;p&gt;The platform choosen is &lt;a href=&#34;http://gohugo.io&#34;&gt;Hugo&lt;/a&gt;: a static website engine written in Go. There were
+other options such as Jekyll and Oktopress, but I decided to try this one because I love Go and because
+it&amp;rsquo;s really fast at generating the content.&lt;/p&gt;
+
+&lt;p&gt;See you arround!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>http://dhole.x64.me/about/</link>
+      <pubDate>Fri, 07 Nov 2014 02:35:08 CET</pubDate>
+      
+      <guid>http://dhole.x64.me/about/</guid>
+      <description>&lt;figure &gt;
+    
+        &lt;img src=&#34;https://avatars3.githubusercontent.com/u/1530972?v=3&amp;amp;s=256&#34;  /&gt;
+    
+    
+&lt;/figure&gt;
+
+&lt;p&gt;I&amp;rsquo;m a Computer Science student from Barcelona with interests in embedded devices,
+hardware hacking, security and cryptography.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been using Linux for nearly 10 years and tried some *BSD along the way. The
+main programming languages I use are C and lately Go. I enjoy learning about new
+programming languages.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;My github: &lt;a href=&#34;https://github.com/Dhole&#34;&gt;https://github.com/Dhole&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;My email: bankukur at gmail dot com&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
