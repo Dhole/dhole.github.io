@@ -130,6 +130,7 @@ ul.li-article-list {
 
 .li-article-title {
     font-weight: bold;
+    padding: 24px 0px;
 }
 
 .li-article-categories {
