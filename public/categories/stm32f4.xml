@@ -3,7 +3,7 @@
   <channel>
       <title>Stm32f4 on Dhole&#39;s blog </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://dhole.wha.la:1313/categories/stm32f4/index.xml</link>
+    <link>https://dhole.github.io/categories/stm32f4/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
-      <link>http://dhole.wha.la:1313/post/gameboy_cartridge_emu_1/</link>
+      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 CET</pubDate>
       
-      <guid>http://dhole.wha.la:1313/post/gameboy_cartridge_emu_1/</guid>
+      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
       <description>
 
 &lt;h1 id=&#34;toc_0&#34;&gt;Introduction&lt;/h1&gt;

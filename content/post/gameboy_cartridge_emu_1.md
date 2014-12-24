@@ -1,7 +1,6 @@
 +++
 Categories = ["stm32f4", "gameboy"]
 date = "2014-12-24T03:33:57+01:00"
-draft = true
 title = "Emulating a GameBoy Cartridge with an STM32F4. Part 1"
 
 +++
