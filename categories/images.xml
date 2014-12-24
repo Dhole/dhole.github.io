@@ -3,7 +3,7 @@
   <channel>
       <title>Images on Dhole&#39;s blog </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://dhole.x64.me:1313/categories/images/index.xml</link>
+    <link>http://dhole.wha.la:1313/categories/images/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Image test</title>
-      <link>http://dhole.x64.me:1313/post/image_test/</link>
+      <link>http://dhole.wha.la:1313/post/image_test/</link>
       <pubDate>Sat, 08 Nov 2014 18:14:49 CET</pubDate>
       
-      <guid>http://dhole.x64.me:1313/post/image_test/</guid>
+      <guid>http://dhole.wha.la:1313/post/image_test/</guid>
       <description>
 
 &lt;p&gt;So what if I add a big image?&lt;/p&gt;
@@ -44,7 +44,9 @@
 
 &lt;figure &gt;
     
+    
         &lt;img src=&#34;http://fms.komkon.org/GameBoy/Tech/Cart2.gif&#34;  /&gt;
+    
     
     
     &lt;figcaption&gt;
