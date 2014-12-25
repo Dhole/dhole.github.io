@@ -17,7 +17,7 @@ the behaviour of the cartridge with the STM32F4.
 As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4
 works at 3.3V. We saw that most of the GPIOs of the STM32F4 are 5V tolerant, but
 they still output 3.3V, so we need to make sure that the GameBoy will detect the
-high levels properly. Luckily for us, the GameBoy works at TTL level 
+high levels properly. Luckily for us, the GameBoy works at TTL level: 
 [source](http://friedtj.free.fr/gb_eng.pdf). This means that a 3.3V signal will
 be read as a logic 1 by the GameBoy.
 
@@ -83,8 +83,8 @@ perform fine grained waits I use the NOP operation, which wastes one CPU cycle.
 After reading the GPIOs connected to the addresses, we check if the operation is
 a read or a write by reading the values of the GPIOs connected to RD and WR.
 
-In case of write, we must wait until the data is available in the bus, then we 
-can read the GPIOs and perform the write.
+In case of write, we must wait further until the data is available in the bus, 
+then we can read the GPIOs and perform the write.
 
 In case of the read, we must first set the GPIOs associated with the data as
 output (we configured them to be input). Then we can output the data corresponding
@@ -95,7 +95,7 @@ sometimes the GameBoy will perfom write operations to internal RAM and having
 these GPIOs as output will corrut the data sent by the GameBoy.
 
 If you take a look at IRQHandler examples for the STM32F4 you will notice some
-changes. The library functions normally used in the handler have been replaced
+differences. The library functions normally used in a handler have been replaced
 by the specific operation. This is because calling a function consumes some
 cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
@@ -112,7 +112,8 @@ been the most difficult part of the implementation because it needs to be done
 with trial and error. Adding a new case to an if statement changes the number of
 cycles of the handler, so the number of NOPs may need to be readjusted. More over,
 the compilation optimizations are quite unpredictable regarding how many op codes
-are used for the code, so a small change can lead to a malfunctioning system.
+are used for the code (and thus, how many cycles are spent on the execution), so 
+a small change can lead to a malfunctioning system.
 
 ## MBC1 implementation
 
@@ -129,10 +130,10 @@ one to the selectable RAM bank, if any:
 {{% gist Dhole/dc998ea525a208987a69 %}}
 
 For the write operation, it can happen that it accesses the RAM region, where
-it performs a proper read, or it can access three other regions. First one is
-used to select the lower bits of the ROM bank. Second one is used to select the
+it performs a proper read, or it can access three other regions. The first one is
+used to select the lower bits of the ROM bank. The second one is used to select the
 RAM bank or the upper bits of the ROM bank, depending on the state of a ROM/RAM
-mode flag. Third one is to enable or disable the ROM/RAM mode flag. There is also
+mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is also
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it's not needed here.
 
@@ -140,8 +141,8 @@ the RAM agains data corruption, but it's not needed here.
 
 ### ROM and RAM
 
-In order to allow the program to access to the contents of a rom, I used the 
-unix `xxd` tool to convert the binary into a C header file containing an array
+In order to allow the program to access to the contents of a ROM, I used the 
+unix `xxd` tool to convert the binary file into a C header file containing an array
 with the file contents:
 
 ```
@@ -157,11 +158,11 @@ unsigned const char rom_gb[] = {
 ```
 
 For games that use RAM, an array must be allocated on the SMT32F4. For this 
-purpose, an array of 32KB will be declared:
+purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:
 ```
 uint8_t ram[0x8000]; // 32K
 ```
-Notice that the saved game will only reman as long as the STM32F4 is not powered
+Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.
 
 # Results
@@ -176,7 +177,7 @@ off.
 
 {{% youtube M7dIPUz1igs %}}
 
-Running The Legend of Zelda, The - Link's Awakening running, showing that the
+Running The Legend of Zelda, - Link's Awakening, showing that the
 cartridge RAM is working.
 
 {{% youtube _hMnb0bsdyU %}}
@@ -196,15 +197,15 @@ On the technical side, this project took me a few days of fine tunning and
 adding capabilites. This was my first time developing on the STM32F4 so I also 
 spent a few days documenting myself. The biggest issue I have found is the 
 timing constraints. Adding cases to if statements, changin the order of some 
-operations, modifying code... all this changes the timing of the instructions
-generated by the compiler, sometimes not very intuitively due to strong 
+operations, modifying code... all this modifies the timing of the instructions
+generated by the compiler, sometimes not very intuitively due to strong compiler 
 optimizations. I spent some hours of trial and error checking that all the
 operations worked fine. Also you may have noticed that all the code runs inside
 the interruption handler. And this handler is triggered at 1MHz! This gives a
-tight margin of operation. If the operations inside the interrupt take too long,
-they will mask the next interruption and a read/write operation (in case there 
-was one) will be missed, probably crashing the GameBoy. Care must be taken to
-not exceed this timing constraint.
+tight margin of operation. If the operations inside the interrupt takes too long,
+they will mask the next interruption and a following read/write operation (in 
+case there was one) will be missed, probably crashing the GameBoy. Care must be
+taken to not exceed this timing constraint.
 
 In the following post I will write about adding a custom boot logo to the 
 cartridge emulator. Stay tunned!

@@ -13,7 +13,7 @@ For example, we can make the GameBoy boot with our own custom logo!
 When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the 
 memory and execution begins. This bios is in charge of initializing the hardware
 as well as scrolling the Nintendo logo and checking that the cartridge i valid.
-The logo shown on screen is actually read from the cartridge, that's the reason
+The logo shown on screen is actually read from the cartridge; that's the reason
 why a black rectangle appears when no cartridge is inserted, or garbage appears
 when the cartridge pins fail. If the Nintendo logo doesn't match the copy stored
 in the bios, the GameBoy locks itself. But there is a trick we can do! The
@@ -29,19 +29,20 @@ In order to achieve this we can modify the read function of our cartridge emulat
 to the following:
 
 The `no_show_logo` flag is false at boot, and allows the first logo read (stored
-from 0x104 to 0x133) to be done on a custom array. Once the last byte has been
-read, the flag is set to true so that the following reads are performed to the
-real rom.
+in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte 
+has been read, the flag is set to true so that the following reads are performed
+to the real ROM.
 
 {{% gist Dhole/a097cee60b990f65d869 %}}
 
 ## Custom logo creation
 
 In order to create custom logos I wrote two python scripts:
+
 - [draw_logo.py](https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py): Draws a logo on a window
 - [make_logo.py](https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py): Converts a png logo image into a binary file to be used as a boot logo
 
-The logo is stored in binary form inside the cartridge with a binary representation:
+The logo is stored in inside the cartridge with a binary representation:
 Set bits represent a black pixel and unset bits represent a white pixel. The logo is
 stored in blocks of 4x4, first filling the top part and later filling the bottom part.
 The way the pixels are stored can be understood better by looking at `draw_logo.py`.
@@ -54,6 +55,8 @@ binary logo to be used by the cart emulator
 I have drawn the following logo to be used at boot:
 
 {{% img src="/media/gameboy_stm32f4/dhole_logo.png" caption="Custom logo featuring my nickname and a cute Dhole" %}}
+
+In the following videos the GameBoy booting with the custom logo can be seen:
 
 {{% youtube aVxJXK9QvPk %}}
 

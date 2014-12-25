@@ -25,7 +25,7 @@ For example, we can make the GameBoy boot with our own custom logo!&lt;/p&gt;
 &lt;p&gt;When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the
 memory and execution begins. This bios is in charge of initializing the hardware
 as well as scrolling the Nintendo logo and checking that the cartridge i valid.
-The logo shown on screen is actually read from the cartridge, that&amp;rsquo;s the reason
+The logo shown on screen is actually read from the cartridge; that&amp;rsquo;s the reason
 why a black rectangle appears when no cartridge is inserted, or garbage appears
 when the cartridge pins fail. If the Nintendo logo doesn&amp;rsquo;t match the copy stored
 in the bios, the GameBoy locks itself. But there is a trick we can do! The
@@ -41,19 +41,22 @@ custom logo and later the original one in order to let the GameBoy boot properly
 to the following:&lt;/p&gt;
 
 &lt;p&gt;The &lt;code&gt;no_show_logo&lt;/code&gt; flag is false at boot, and allows the first logo read (stored
-from 0x104 to 0x133) to be done on a custom array. Once the last byte has been
-read, the flag is set to true so that the following reads are performed to the
-real rom.&lt;/p&gt;
+in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
+has been read, the flag is set to true so that the following reads are performed
+to the real ROM.&lt;/p&gt;
 
 &lt;script src=&#34;https://gist.github.com/Dhole/a097cee60b990f65d869.js&#34;&gt;&lt;/script&gt;
 
 &lt;h2 id=&#34;toc_2&#34;&gt;Custom logo creation&lt;/h2&gt;
 
-&lt;p&gt;In order to create custom logos I wrote two python scripts:
-- &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py&#34;&gt;draw_logo.py&lt;/a&gt;: Draws a logo on a window
-- &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py&#34;&gt;make_logo.py&lt;/a&gt;: Converts a png logo image into a binary file to be used as a boot logo&lt;/p&gt;
+&lt;p&gt;In order to create custom logos I wrote two python scripts:&lt;/p&gt;
 
-&lt;p&gt;The logo is stored in binary form inside the cartridge with a binary representation:
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py&#34;&gt;draw_logo.py&lt;/a&gt;: Draws a logo on a window&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py&#34;&gt;make_logo.py&lt;/a&gt;: Converts a png logo image into a binary file to be used as a boot logo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The logo is stored in inside the cartridge with a binary representation:
 Set bits represent a black pixel and unset bits represent a white pixel. The logo is
 stored in blocks of 4x4, first filling the top part and later filling the bottom part.
 The way the pixels are stored can be understood better by looking at &lt;code&gt;draw_logo.py&lt;/code&gt;.&lt;/p&gt;
@@ -82,6 +85,8 @@ binary logo to be used by the cart emulator&lt;/p&gt;
     &lt;/figcaption&gt;
     
 &lt;/figure&gt;
+
+&lt;p&gt;In the following videos the GameBoy booting with the custom logo can be seen:&lt;/p&gt;
 
 &lt;div class=&#34;embed video-player&#34;&gt;
 &lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/aVxJXK9QvPk&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
@@ -119,7 +124,7 @@ the behaviour of the cartridge with the STM32F4.&lt;/p&gt;
 &lt;p&gt;As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4
 works at 3.3V. We saw that most of the GPIOs of the STM32F4 are 5V tolerant, but
 they still output 3.3V, so we need to make sure that the GameBoy will detect the
-high levels properly. Luckily for us, the GameBoy works at TTL level
+high levels properly. Luckily for us, the GameBoy works at TTL level:
 &lt;a href=&#34;http://friedtj.free.fr/gb_eng.pdf&#34;&gt;source&lt;/a&gt;. This means that a 3.3V signal will
 be read as a logic 1 by the GameBoy.&lt;/p&gt;
 
@@ -203,8 +208,8 @@ perform fine grained waits I use the NOP operation, which wastes one CPU cycle.
 After reading the GPIOs connected to the addresses, we check if the operation is
 a read or a write by reading the values of the GPIOs connected to RD and WR.&lt;/p&gt;
 
-&lt;p&gt;In case of write, we must wait until the data is available in the bus, then we
-can read the GPIOs and perform the write.&lt;/p&gt;
+&lt;p&gt;In case of write, we must wait further until the data is available in the bus,
+then we can read the GPIOs and perform the write.&lt;/p&gt;
 
 &lt;p&gt;In case of the read, we must first set the GPIOs associated with the data as
 output (we configured them to be input). Then we can output the data corresponding
@@ -215,7 +220,7 @@ sometimes the GameBoy will perfom write operations to internal RAM and having
 these GPIOs as output will corrut the data sent by the GameBoy.&lt;/p&gt;
 
 &lt;p&gt;If you take a look at IRQHandler examples for the STM32F4 you will notice some
-changes. The library functions normally used in the handler have been replaced
+differences. The library functions normally used in a handler have been replaced
 by the specific operation. This is because calling a function consumes some
 cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
@@ -232,7 +237,8 @@ been the most difficult part of the implementation because it needs to be done
 with trial and error. Adding a new case to an if statement changes the number of
 cycles of the handler, so the number of NOPs may need to be readjusted. More over,
 the compilation optimizations are quite unpredictable regarding how many op codes
-are used for the code, so a small change can lead to a malfunctioning system.&lt;/p&gt;
+are used for the code (and thus, how many cycles are spent on the execution), so
+a small change can lead to a malfunctioning system.&lt;/p&gt;
 
 &lt;h2 id=&#34;toc_5&#34;&gt;MBC1 implementation&lt;/h2&gt;
 
@@ -249,10 +255,10 @@ one to the selectable RAM bank, if any:&lt;/p&gt;
 &lt;script src=&#34;https://gist.github.com/Dhole/dc998ea525a208987a69.js&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;For the write operation, it can happen that it accesses the RAM region, where
-it performs a proper read, or it can access three other regions. First one is
-used to select the lower bits of the ROM bank. Second one is used to select the
+it performs a proper read, or it can access three other regions. The first one is
+used to select the lower bits of the ROM bank. The second one is used to select the
 RAM bank or the upper bits of the ROM bank, depending on the state of a ROM/RAM
-mode flag. Third one is to enable or disable the ROM/RAM mode flag. There is also
+mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is also
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it&amp;rsquo;s not needed here.&lt;/p&gt;
 
@@ -260,8 +266,8 @@ the RAM agains data corruption, but it&amp;rsquo;s not needed here.&lt;/p&gt;
 
 &lt;h3 id=&#34;toc_6&#34;&gt;ROM and RAM&lt;/h3&gt;
 
-&lt;p&gt;In order to allow the program to access to the contents of a rom, I used the
-unix &lt;code&gt;xxd&lt;/code&gt; tool to convert the binary into a C header file containing an array
+&lt;p&gt;In order to allow the program to access to the contents of a ROM, I used the
+unix &lt;code&gt;xxd&lt;/code&gt; tool to convert the binary file into a C header file containing an array
 with the file contents:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;cp Tetris.gb rom.gb
@@ -277,12 +283,12 @@ rm rom.gb
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;For games that use RAM, an array must be allocated on the SMT32F4. For this
-purpose, an array of 32KB will be declared:&lt;/p&gt;
+purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;uint8_t ram[0x8000]; // 32K
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Notice that the saved game will only reman as long as the STM32F4 is not powered
+&lt;p&gt;Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.&lt;/p&gt;
 
 &lt;h1 id=&#34;toc_7&#34;&gt;Results&lt;/h1&gt;
@@ -332,7 +338,7 @@ off.&lt;/p&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Running The Legend of Zelda, The - Link&amp;rsquo;s Awakening running, showing that the
+&lt;p&gt;Running The Legend of Zelda, - Link&amp;rsquo;s Awakening, showing that the
 cartridge RAM is working.&lt;/p&gt;
 
 &lt;div class=&#34;embed video-player&#34;&gt;
@@ -355,15 +361,15 @@ many amazing demos on the GameBoy.&lt;/p&gt;
 adding capabilites. This was my first time developing on the STM32F4 so I also
 spent a few days documenting myself. The biggest issue I have found is the
 timing constraints. Adding cases to if statements, changin the order of some
-operations, modifying code&amp;hellip; all this changes the timing of the instructions
-generated by the compiler, sometimes not very intuitively due to strong
+operations, modifying code&amp;hellip; all this modifies the timing of the instructions
+generated by the compiler, sometimes not very intuitively due to strong compiler
 optimizations. I spent some hours of trial and error checking that all the
 operations worked fine. Also you may have noticed that all the code runs inside
 the interruption handler. And this handler is triggered at 1MHz! This gives a
-tight margin of operation. If the operations inside the interrupt take too long,
-they will mask the next interruption and a read/write operation (in case there
-was one) will be missed, probably crashing the GameBoy. Care must be taken to
-not exceed this timing constraint.&lt;/p&gt;
+tight margin of operation. If the operations inside the interrupt takes too long,
+they will mask the next interruption and a following read/write operation (in
+case there was one) will be missed, probably crashing the GameBoy. Care must be
+taken to not exceed this timing constraint.&lt;/p&gt;
 
 &lt;p&gt;In the following post I will write about adding a custom boot logo to the
 cartridge emulator. Stay tunned!&lt;/p&gt;
@@ -395,9 +401,9 @@ controlling the logic of the emulated cartridge (memory banking, RAM access,
 etc.), a media storage (flash chip or SD card) and an SDRAM chip.&lt;/p&gt;
 
 &lt;p&gt;The way this flashcarts work is that upon booting the console, they present a
-small program that list the roms available in the media storage. The user selects
+small program that list the ROMs available in the media storage. The user selects
 a game and the FPGA copies it from the media storage to the SDRAM to allow
-fast access. Once the rom has been copied, the FPGA acts as a gateway mapping
+fast access. Once the ROM has been copied, the FPGA acts as a gateway mapping
 the contents of the SDRAM to the original cartridge mappings.&lt;/p&gt;
 
 &lt;p&gt;Since the GameBoy cartridges use small ROM chips for which one can find
@@ -413,7 +419,7 @@ times with different games and play them on the GameBoy.&lt;/p&gt;
 &lt;p&gt;The FPGA system seems to allow much more freedom but it also involves more work:
 the MBC5 (or the supported Memory Block Controllers) must be implemented in
 hardware, an interface to access the media storage must be designed, the circuit
-must be designed too with all the componentes (FPGA/CPLD, FLASH/SD Reader, SDRAM,
+must be designed too with all the components (FPGA/CPLD, FLASH/SD Reader, SDRAM,
 &amp;hellip;).&lt;/p&gt;
 
 &lt;p&gt;An alternative to this one can think of would be to use a microcontroller
@@ -421,7 +427,7 @@ instead, interfacing the cartridge pins through the GPIO. This design can have
 many complications since the timings to perform a read / write operation are
 quite tight. The microcontroller should be fast enough to perform this operations
 at the bus speed. When adding the functionality of the Memory Block controller
-the timings could be hard to achieve. Alex from Inside Gadgets attemted to
+the timings could be hard to achieve. Alex from Inside Gadgets attempted to
 achieve this using an Arduino. The low frequency of the Arduino made this project
 infeasible, although Alex was able to achive the emulation of the Nintendo logo,
 due to the fact that when the gameboy boots, the first read of the Nintendo logo
@@ -436,28 +442,28 @@ from the cartridge is timming predictable and not too fast:&lt;/p&gt;
 &lt;p&gt;For this project I choosed the STM32F4 Discovery. This development board features an ARM Cortex-M4 which can run at 168MHz, with 1 MB Flash, 192 KB RAM and more than
 70 GPIO. The GPIO are accessed through a peripherials bus that can run at 100MHz.
 I also considered other boards such as the Teensy 3.1 but I ended up choosing
-the STM32F4 because it had more Flash and RAM and because it was unexpensive (14€)&lt;/p&gt;
+the STM32F4 because it had more Flash and RAM and because it was unexpensive (14€).&lt;/p&gt;
 
 &lt;p&gt;On the other side, the GameBoy CPU runs at 4MHz. The comercial cartridges have
 up to 512 KB of ROM and 128 KB of RAM, although the MBC5 is capable of handling
-more ROM. Many cartridges have a MBC (Memory Block Controler) (such as the MBC5
-or the MBC1). This controller allows the catridge to handle ROMs that don&amp;rsquo;t fit
+bigger ROMs. Many cartridges have a MBC (Memory Block Controler) such as the MBC5
+or the MBC1. This controller allows the catridge to handle ROMs that don&amp;rsquo;t fit
 into the GameBoy memory area reserved for the cartridge ROM by means of bank
 selection. This selections are performed by writting into specific areas of the
 memory map reserved for the ROM (So that the MBC can handle them).&lt;/p&gt;
 
-&lt;p&gt;It is important to notice that the GameBoy works at 5V whereas the STM32F4 works
-at 3.3V. Connecting 5V signals to the GPIOs of a 3.3 microcontroller can be
+&lt;p&gt;A list of characteristics of the comercial cartridges can be found here:
+&lt;a href=&#34;http://www.devrs.com/gb/files/gbmbcsiz.txt&#34;&gt;GB Cart List&lt;/a&gt;
+It is important to notice that the GameBoy works at 5V whereas the STM32F4 works&lt;/p&gt;
+
+&lt;p&gt;at 3.3V. Connecting 5V signals to the GPIOs of a 3.3 microcontroller can be
 dangerous and damage the GPIO peripherials. Luckily the STM32F4-Discovery has
 5V tolerance for most of the pins. To see which ones you can check the
 documentation.&lt;/p&gt;
 
-&lt;p&gt;A list of characteristics of the comercial cartridges can be found here:
-&lt;a href=&#34;http://www.devrs.com/gb/files/gbmbcsiz.txt&#34;&gt;GB Cart List&lt;/a&gt;&lt;/p&gt;
-
 &lt;p&gt;With these characteristics it seems this project can be doable. If we consider
-that the gameboy will perform at most a read / write per cycle (We will later
-see that this is not the case), we are left with 42 cycles of our board to handle
+that the gameboy will perform at most a read / write per CPU cycle (We will later
+see that this is not the case), we are left with 42 cycles of our dev board to handle
 the operation. Taking into account that the GPIO bus is clocked at 100MHz, there
 will be some delay which will leave us fewer cycles.&lt;/p&gt;
 
@@ -465,7 +471,7 @@ will be some delay which will leave us fewer cycles.&lt;/p&gt;
 
 &lt;p&gt;In order to get an idea of how the bus used by the GameBoy to access the
 cartridge works I decided to perform some captures using a Logic Analyzer. Since
-I don&amp;rsquo;t have any hardware logic analyzer, I will use a an awesome project
+I don&amp;rsquo;t have any hardware logic analyzer, I used a an awesome project
 which consists of an implementation of a logic analyzer for the STM32F4, which
 uses the SUMP protocol to interface with the PC (SUMP is a standard protocol for
 hardware logic analyzers to interface with the client side). The logicdiscovery
@@ -602,7 +608,7 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
 &lt;p&gt;We can see that for a read operation, the GameBoy leaves WR and CS unactivate
 (high) and the RD active (low). This is the default. The GameBoy sets the
-address 150ns after the CLK rise, and that the data is available in the bus
+address 150ns after the CLK rise, and the data is available in the bus
 (coming from the cartridge) 200 ns later. We can&amp;rsquo;t say when the GameBoy reads
 the data, but a guess would be around the CLK fall.&lt;/p&gt;
 

@@ -81,7 +81,7 @@ For example, we can make the GameBoy boot with our own custom logo!</p>
 <p>When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the
 memory and execution begins. This bios is in charge of initializing the hardware
 as well as scrolling the Nintendo logo and checking that the cartridge i valid.
-The logo shown on screen is actually read from the cartridge, that&rsquo;s the reason
+The logo shown on screen is actually read from the cartridge; that&rsquo;s the reason
 why a black rectangle appears when no cartridge is inserted, or garbage appears
 when the cartridge pins fail. If the Nintendo logo doesn&rsquo;t match the copy stored
 in the bios, the GameBoy locks itself. But there is a trick we can do! The
@@ -97,19 +97,22 @@ custom logo and later the original one in order to let the GameBoy boot properly
 to the following:</p>
 
 <p>The <code>no_show_logo</code> flag is false at boot, and allows the first logo read (stored
-from 0x104 to 0x133) to be done on a custom array. Once the last byte has been
-read, the flag is set to true so that the following reads are performed to the
-real rom.</p>
+in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
+has been read, the flag is set to true so that the following reads are performed
+to the real ROM.</p>
 
 <script src="https://gist.github.com/Dhole/a097cee60b990f65d869.js"></script>
 
 <h2 id="toc_2">Custom logo creation</h2>
 
-<p>In order to create custom logos I wrote two python scripts:
-- <a href="https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py">draw_logo.py</a>: Draws a logo on a window
-- <a href="https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py">make_logo.py</a>: Converts a png logo image into a binary file to be used as a boot logo</p>
+<p>In order to create custom logos I wrote two python scripts:</p>
 
-<p>The logo is stored in binary form inside the cartridge with a binary representation:
+<ul>
+<li><a href="https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py">draw_logo.py</a>: Draws a logo on a window</li>
+<li><a href="https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py">make_logo.py</a>: Converts a png logo image into a binary file to be used as a boot logo</li>
+</ul>
+
+<p>The logo is stored in inside the cartridge with a binary representation:
 Set bits represent a black pixel and unset bits represent a white pixel. The logo is
 stored in blocks of 4x4, first filling the top part and later filling the bottom part.
 The way the pixels are stored can be understood better by looking at <code>draw_logo.py</code>.</p>
@@ -138,6 +141,8 @@ binary logo to be used by the cart emulator</p>
     </figcaption>
     
 </figure>
+
+<p>In the following videos the GameBoy booting with the custom logo can be seen:</p>
 
 <div class="embed video-player">
 <iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/aVxJXK9QvPk" allowfullscreen frameborder="0">
