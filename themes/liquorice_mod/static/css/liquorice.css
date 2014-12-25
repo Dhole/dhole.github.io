@@ -56,6 +56,10 @@ figcaption {
     text-align: center;
 }
 
+embed {
+    text-align: center;
+}
+
 code {
     font-family: monospace;
 }
@@ -186,6 +190,29 @@ ul.li-article-list {
     margin-top: 64px;
 }
 
+/** Extra ********************************************************************/
+/*
+.video-player {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+*/
+.video-player {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px; height: 0; overflow: hidden;
+}
+
+.video-player iframe,
+.video-player object,
+.video-player embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 /** Mobile Portrait (320px) **************************************************/
 @media only screen and (max-width: 767px) {
     .li-page-header {

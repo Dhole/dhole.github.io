@@ -176,4 +176,5 @@ sprites):
 In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!
 
-{{% img src="/media/gameboy_stm32f4/dhole_logo.png" caption="Custom logo featuring my nickname and a cute Dhole" %}}
+Continuation: [Emulating a GameBoy Cartridge with an STM32F4. Part 2](/post/gameboy_cartridge_emu_2)
+
