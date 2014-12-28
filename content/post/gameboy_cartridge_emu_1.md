@@ -33,7 +33,8 @@ it, games with ROM Only and games using MBC1 can also be run (There is
 compatibility). With this setup, the user is able to reprogram the FLASH many
 times with different games and play them on the GameBoy.
 
-This procedure is detailed here: [DIY Nintendo GAMEBOY Classic Flash Cartridge](http://www.digital-circuitry.com/DOC/NINTENDO/GAMEBOY/DIY%20Nintendo%20GAMEBOY%20Classic%20Flash%20Cartridge.pdf)
+This procedure is detailed here: 
+[DIY Nintendo GAMEBOY Classic Flash Cartridge](http://www.digital-circuitry.com/DOC/NINTENDO/GAMEBOY/DIY%20Nintendo%20GAMEBOY%20Classic%20Flash%20Cartridge.pdf)
 
 The FPGA system seems to allow much more freedom but it also involves more work:
 the MBC5 (or the supported Memory Block Controllers) must be implemented in
@@ -46,19 +47,20 @@ instead, interfacing the cartridge pins through the GPIO. This design can have
 many complications since the timings to perform a read / write operation are 
 quite tight. The microcontroller should be fast enough to perform this operations
 at the bus speed. When adding the functionality of the Memory Block controller
-the timings could be hard to achieve. Alex from Inside Gadgets attempted to 
+the timings could be hard to achieve. 
+[Alex from Inside Gadgets](https://www.insidegadgets.com/2011/04/23/emulating-the-nintendo-logo-on-the-gameboy/)
+attempted to 
 achieve this using an Arduino. The low frequency of the Arduino made this project
 infeasible, although Alex was able to achive the emulation of the Nintendo logo,
 due to the fact that when the gameboy boots, the first read of the Nintendo logo
 from the cartridge is timming predictable and not too fast:
 
-[Emulating the Nintendo Logo on the Gameboy](https://www.insidegadgets.com/2011/04/23/emulating-the-nintendo-logo-on-the-gameboy/)
-
 My aim was to try to implement a cartridge emulator using a faster microcontroller.
 
 # The hardware
 
-For this project I choosed the STM32F4 Discovery. This development board features an ARM Cortex-M4 which can run at 168MHz, with 1 MB Flash, 192 KB RAM and more than
+For this project I choosed the STM32F4 Discovery. This development board features 
+an ARM Cortex-M4 which can run at 168MHz, with 1 MB Flash, 192 KB RAM and more than
 70 GPIO. The GPIO are accessed through a peripherials bus that can run at 100MHz.
 I also considered other boards such as the Teensy 3.1 but I ended up choosing 
 the STM32F4 because it had more Flash and RAM and because it was unexpensive (14€).
@@ -74,7 +76,6 @@ memory map reserved for the ROM (So that the MBC can handle them).
 A list of characteristics of the comercial cartridges can be found here: 
 [GB Cart List](http://www.devrs.com/gb/files/gbmbcsiz.txt)
 It is important to notice that the GameBoy works at 5V whereas the STM32F4 works
-
 at 3.3V. Connecting 5V signals to the GPIOs of a 3.3 microcontroller can be 
 dangerous and damage the GPIO peripherials. Luckily the STM32F4-Discovery has
 5V tolerance for most of the pins. To see which ones you can check the 
