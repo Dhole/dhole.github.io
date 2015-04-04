@@ -713,16 +713,27 @@ it&amp;rsquo;s really fast at generating the content.&lt;/p&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;I&amp;rsquo;m a Computer Science student from Barcelona with interests in embedded devices,
-hardware hacking, security and cryptography.&lt;/p&gt;
+hardware hacking, security and cryptography among others.&lt;/p&gt;
 
 &lt;p&gt;I&amp;rsquo;ve been using Linux for nearly 10 years and tried some *BSD along the way. The
 main programming languages I use are C and lately Go. I enjoy learning about new
-programming languages.&lt;/p&gt;
+programming languages and stuff in general.&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;My github: &lt;a href=&#34;https://github.com/Dhole&#34;&gt;https://github.com/Dhole&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;My email: bankukur at gmail dot com&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;My email: bankukur at gmail dot com&lt;/del&gt;&lt;/li&gt;
+&lt;li&gt;My email: dhole at openmailbox dot org&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;Get my PGP public key at &lt;a href=&#34;/dhole.asc&#34;&gt;dhole.asc&lt;/a&gt; or &lt;a href=&#34;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&#34;&gt;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;PGP Fingerprint:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;pub   4096R/8514CC63 2015-01-25 [expires: 2020-01-24]
+      Key fingerprint = 9BC4 8EF8 08DB 91DD 158D  559D 4FA4 57A1 8514 CC63
+      uid                  Dhole &amp;lt;dhole@openmailbox.org&amp;gt;
+      sub   4096R/C125274B 2015-01-25 [expires: 2020-01-24]
+&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     

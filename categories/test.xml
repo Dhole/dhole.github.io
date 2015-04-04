@@ -3,7 +3,7 @@
   <channel>
       <title>Test on Dhole&#39;s blog </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://dhole.wha.la:1313/categories/test/index.xml</link>
+    <link>http://127.0.0.1:1313/categories/test/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Test</title>
-      <link>http://dhole.wha.la:1313/post/test/</link>
+      <link>http://127.0.0.1:1313/post/test/</link>
       <pubDate>Tue, 11 Nov 2014 12:43:04 CET</pubDate>
       
-      <guid>http://dhole.wha.la:1313/post/test/</guid>
+      <guid>http://127.0.0.1:1313/post/test/</guid>
       <description>&lt;p&gt;This post is a general test with several features applied.&lt;/p&gt;
 
 &lt;p&gt;1 $leq$ 2 -&amp;gt; No math equations this way. TODO: Find another way???&lt;/p&gt;
@@ -23,10 +23,10 @@
     
     <item>
       <title>Code test</title>
-      <link>http://dhole.wha.la:1313/post/code_test/</link>
+      <link>http://127.0.0.1:1313/post/code_test/</link>
       <pubDate>Sun, 09 Nov 2014 03:32:39 CET</pubDate>
       
-      <guid>http://dhole.wha.la:1313/post/code_test/</guid>
+      <guid>http://127.0.0.1:1313/post/code_test/</guid>
       <description>
 
 &lt;p&gt;Here I will try inserting code, both using markdown and the hugo highlighting shortcode&lt;/p&gt;
@@ -82,10 +82,10 @@ the framerate&lt;/p&gt;
     
     <item>
       <title>Image test</title>
-      <link>http://dhole.wha.la:1313/post/image_test/</link>
+      <link>http://127.0.0.1:1313/post/image_test/</link>
       <pubDate>Sat, 08 Nov 2014 18:14:49 CET</pubDate>
       
-      <guid>http://dhole.wha.la:1313/post/image_test/</guid>
+      <guid>http://127.0.0.1:1313/post/image_test/</guid>
       <description>
 
 &lt;p&gt;So what if I add a big image?&lt;/p&gt;
