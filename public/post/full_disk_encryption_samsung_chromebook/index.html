@@ -246,10 +246,20 @@ cp -R lib root/usr
 <pre><code>cp files/mkinitcpio.conf root/etc
 </code></pre>
 
-<p>Install initramfs from my files (If you already have an Arch installation on
-your Chromebook you can create the initramfs yourself)</p>
+<p>Install initramfs from my files</p>
 
 <pre><code>cp files/uInitrd.img mnt
+</code></pre>
+
+<p>Alternatively, if you already have an Arch installation on your Chromebook you
+can create the initramfs yourself. From your Chromebook run as root.</p>
+
+<pre><code>pacman -S mkinitcpio uboot-mkimage
+cp /root/files/mkinitcpio.conf /etc/mkinitcpio.conf
+mkinitcpio -g ~/uInitrd.img
+mount /dev/mmcblk1p2 /boot
+mkimage -A arm -T ramdisk -C none -n initramfs -d ~/uInitrd.img /boot/uInitrd.uimg
+umount /boot
 </code></pre>
 
 <p>Install custom u-boot script to boot with kernel+initramfs</p>
