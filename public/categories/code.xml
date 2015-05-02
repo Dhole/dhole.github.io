@@ -3,7 +3,7 @@
   <channel>
       <title>Code on Dhole&#39;s blog </title>
       <generator uri="https://gohugo.io">Hugo</generator>
-    <link>http://127.0.0.1:1313/categories/code/index.xml</link>
+    <link>http://localhost:1313/categories/code/index.xml</link>
     <language>en-us</language>
     
     
@@ -11,10 +11,10 @@
     
     <item>
       <title>Code test</title>
-      <link>http://127.0.0.1:1313/post/code_test/</link>
+      <link>http://localhost:1313/post/code_test/</link>
       <pubDate>Sun, 09 Nov 2014 03:32:39 CET</pubDate>
       
-      <guid>http://127.0.0.1:1313/post/code_test/</guid>
+      <guid>http://localhost:1313/post/code_test/</guid>
       <description>
 
 &lt;p&gt;Here I will try inserting code, both using markdown and the hugo highlighting shortcode&lt;/p&gt;
