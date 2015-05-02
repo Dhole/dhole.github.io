@@ -5,11 +5,11 @@ title = "Full disk encryption on Samsung Chromebook with Arch Linux"
 
 +++
 
-# Introduction
-
 In this post I will explain the procedure I followed to have an Arch Linux
 install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption
 using kernel 3.8.
+
+# Kernel compilation and preparing SD card
 
 ## Install dependencies
 

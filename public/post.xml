@@ -17,11 +17,11 @@
       <guid>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</guid>
       <description>
 
-&lt;h1 id=&#34;toc_0&#34;&gt;Introduction&lt;/h1&gt;
-
 &lt;p&gt;In this post I will explain the procedure I followed to have an Arch Linux
 install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption
 using kernel 3.8.&lt;/p&gt;
+
+&lt;h1 id=&#34;toc_0&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;
 
 &lt;h2 id=&#34;toc_1&#34;&gt;Install dependencies&lt;/h2&gt;
 
