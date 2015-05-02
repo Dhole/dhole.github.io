@@ -11,8 +11,8 @@ I'm a Computer Science student from Barcelona with interests in embedded devices
 hardware hacking, security and cryptography among others.
 
 I've been using Linux for nearly 10 years and tried some *BSD along the way. The
-main programming languages I use are C and lately Go. I enjoy learning about new
-programming languages and stuff in general.
+main programming languages I use are C, python and lately Go. I enjoy learning 
+about new programming languages and stuff in general.
 
 - My github: https://github.com/Dhole
 - ~~My email: bankukur at gmail dot com~~
