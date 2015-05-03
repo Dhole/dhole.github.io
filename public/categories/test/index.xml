@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Test on Dhole&#39;s blog</title>
+    <link>http://localhost:1313/categories/test/</link>
+    <description>Recent content in Test on Dhole&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 11 Nov 2014 12:43:04 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/test/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Test</title>
+      <link>http://localhost:1313/post/test/</link>
+      <pubDate>Tue, 11 Nov 2014 12:43:04 +0100</pubDate>
+      
+      <guid>http://localhost:1313/post/test/</guid>
+      <description>&lt;p&gt;This post is a general test with several features applied.&lt;/p&gt;
+
+&lt;p&gt;1 $leq$ 2 -&amp;gt; No math equations this way. TODO: Find another way???&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Code test</title>
+      <link>http://localhost:1313/post/code_test/</link>
+      <pubDate>Sun, 09 Nov 2014 03:32:39 +0100</pubDate>
+      
+      <guid>http://localhost:1313/post/code_test/</guid>
+      <description>
+
+&lt;p&gt;Here I will try inserting code, both using markdown and the hugo highlighting shortcode&lt;/p&gt;
+
+&lt;h1 id=&#34;go:2a59f961f678f7e635a84b0514274301&#34;&gt;Go&lt;/h1&gt;
+
+&lt;p&gt;Using markdown: This is a median randomized algorithm&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;func randomizedMedian(s []int) (m int, err error) {
+    n := float64(len(s))
+    n34 := math.Pow(float64(n), 3.0/4.0)
+    r := randSampleWithRep(s, int(math.Ceil(n34)))
+    sort.Ints(r)
+    d := r[int(math.Floor(1.0/2.0 * n34 - math.Sqrt(n))) - 1]
+    u := r[int(math.Ceil(1.0/2.0 * n34 + math.Sqrt(n))) - 1]
+    c := filter(s, func(x int) bool { return d &amp;lt;= x &amp;amp;&amp;amp; x &amp;lt;= u })
+    ld := count(s, func(x int) bool { return x &amp;lt; d })
+    lu := count(s, func(x int) bool { return x &amp;gt; u })
+    //fmt.Println(&amp;quot;d:&amp;quot;, d, &amp;quot;u:&amp;quot;, u, &amp;quot;ld:&amp;quot;, ld, &amp;quot;lu:&amp;quot;, lu)
+    if float64(ld) &amp;gt; n/2 &amp;amp;&amp;amp; float64(lu) &amp;lt; n/2 {
+        return 0, fmt.Errorf(&amp;quot;Fail&amp;quot;)
+    }
+    if float64(len(c)) &amp;lt;= 4.0 * n34 {
+        sort.Ints(c)
+    } else {
+        return 0, fmt.Errorf(&amp;quot;Fail&amp;quot;)
+    }
+    return c[int(math.Floor(n/2)) - ld + 1 - 1], nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This would be a bash line:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo rm -rf /
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But now I want it with syntax highlighting&lt;/p&gt;
+
+&lt;p&gt;Using gist: This is quickselect&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/b5186c2c4f0e27d43c11.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;h1 id=&#34;c:2a59f961f678f7e635a84b0514274301&#34;&gt;C&lt;/h1&gt;
+
+&lt;p&gt;Show some love to plain old school C&lt;/p&gt;
+
+&lt;p&gt;This is the main loop of my gameboy emulator, using SDL_GetTicks() function to syncronize
+the framerate&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/b9e4e1a28d5a2eed2f00.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Image test</title>
+      <link>http://localhost:1313/post/image_test/</link>
+      <pubDate>Sat, 08 Nov 2014 18:14:49 +0100</pubDate>
+      
+      <guid>http://localhost:1313/post/image_test/</guid>
+      <description>
+
+&lt;p&gt;So what if I add a big image?&lt;/p&gt;
+
+&lt;h3 id=&#34;big-image-here:92703c81a15ee37e609951b738176ccc&#34;&gt;Big image here&lt;/h3&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+        &lt;img src=&#34;http://3.bp.blogspot.com/-yUgY0TEGce8/UZj5PVYJlFI/AAAAAAAAMew/8xVoxntlVv4/s1600/VFcompany&amp;#43;-&amp;#43;4.jpg&#34; alt=&#34;Miyavi is awesome!&#34; /&gt;
+    
+    
+&lt;/figure&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Well, I want it to resize automatically! Done!&lt;/p&gt;
+
+&lt;p&gt;Now I&amp;rsquo;ll try using the markdown syntax:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://images6.alphacoders.com/466/466111.jpg&#34; alt=&#34;Michlle Rodriguez is hawt&#34; title=&#34;Michelle Rodriguez&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;I also want images to appear centered:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://irena040506.files.wordpress.com/2011/03/gi-kwang.png&#34; alt=&#34;&#34; title=&#34;Gi Kwang&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And finally, it would be cool to have some captions:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+    
+        &lt;img src=&#34;http://fms.komkon.org/GameBoy/Tech/Cart2.gif&#34;  /&gt;
+    
+    
+    
+    &lt;figcaption&gt;
+        &lt;h4&gt;Gameboy MCB1&lt;/h4&gt;
+        
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s all for today kids!&lt;/p&gt;
+
+&lt;p&gt;See you another time :)&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -101,7 +101,7 @@ cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
 all this.
 
-{{% gist Dhole/ed6cde3ec6b6574e080f %}}
+{{% gist "Dhole/ed6cde3ec6b6574e080f" %}}
 
 To perform an arbitrary number of NOP operations, I used a macro I found on
 [stackoverflow](https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times). The C preprocessor doesn't
@@ -127,7 +127,7 @@ For the read operation, three regions can be accessed. The first one maps to
 the first 16KB of the ROM. The second one to the selectable ROM bank. The third
 one to the selectable RAM bank, if any:
 
-{{% gist Dhole/dc998ea525a208987a69 %}}
+{{% gist "Dhole/dc998ea525a208987a69" %}}
 
 For the write operation, it can happen that it accesses the RAM region, where
 it performs a proper read, or it can access three other regions. The first one is
@@ -137,7 +137,7 @@ mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it's not needed here.
 
-{{% gist Dhole/7417a4095600fe31b1dd %}}
+{{% gist "Dhole/7417a4095600fe31b1dd" %}}
 
 ### ROM and RAM
 

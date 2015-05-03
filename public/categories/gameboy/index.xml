@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gameboy on Dhole&#39;s blog</title>
+    <link>https://dhole.github.io/categories/gameboy/</link>
+    <description>Recent content in Gameboy on Dhole&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 25 Dec 2014 01:35:42 +0100</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/gameboy/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Booting the GameBoy with a custom logo</title>
+      <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
+      <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
+      
+      <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
+      <description>
+
+&lt;p&gt;With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.
+For example, we can make the GameBoy boot with our own custom logo!&lt;/p&gt;
+
+&lt;h1 id=&#34;bootstrap-rom:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Bootstrap ROM&lt;/h1&gt;
+
+&lt;p&gt;When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the
+memory and execution begins. This bios is in charge of initializing the hardware
+as well as scrolling the Nintendo logo and checking that the cartridge i valid.
+The logo shown on screen is actually read from the cartridge; that&amp;rsquo;s the reason
+why a black rectangle appears when no cartridge is inserted, or garbage appears
+when the cartridge pins fail. If the Nintendo logo doesn&amp;rsquo;t match the copy stored
+in the bios, the GameBoy locks itself. But there is a trick we can do! The
+GameBoy reads the logo from the cartridge two times, the first one to draw it
+on screen and the second one to check if it&amp;rsquo;s valid. We can thus send first a
+custom logo and later the original one in order to let the GameBoy boot properly.&lt;/p&gt;
+
+&lt;p&gt;More on the GameBoy Bootstrap ROM can be read at &lt;a href=&#34;http://gbdev.gg8.se/wiki/articles/Gameboy_Bootstrap_ROM&#34;&gt;GBdevWiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;code:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Code&lt;/h1&gt;
+
+&lt;p&gt;In order to achieve this we can modify the read function of our cartridge emulator
+to the following:&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;no_show_logo&lt;/code&gt; flag is false at boot, and allows the first logo read (stored
+in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
+has been read, the flag is set to true so that the following reads are performed
+to the real ROM.&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/a097cee60b990f65d869.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;custom-logo-creation:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Custom logo creation&lt;/h2&gt;
+
+&lt;p&gt;In order to create custom logos I wrote two python scripts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/draw_logo.py&#34;&gt;draw_logo.py&lt;/a&gt;: Draws a logo on a window&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/make_logo.py&#34;&gt;make_logo.py&lt;/a&gt;: Converts a png logo image into a binary file to be used as a boot logo&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The logo is stored in inside the cartridge with a binary representation:
+Set bits represent a black pixel and unset bits represent a white pixel. The logo is
+stored in blocks of 4x4, first filling the top part and later filling the bottom part.
+The way the pixels are stored can be understood better by looking at &lt;code&gt;draw_logo.py&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;make_logo.py&lt;/code&gt; allows you to convert a 48x8 pixel black and white png image to a
+binary logo to be used by the cart emulator&lt;/p&gt;
+
+&lt;h1 id=&#34;results:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Results&lt;/h1&gt;
+
+&lt;p&gt;I have drawn the following logo to be used at boot:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/dhole_logo.png&#34; alt=&#34;Custom logo featuring my nickname and a cute Dhole&#34; /&gt;
+    
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Custom logo featuring my nickname and a cute Dhole
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;In the following videos the GameBoy booting with the custom logo can be seen:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/aVxJXK9QvPk&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Booting with the custom logo, running Dr Mario.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/OPYkzv217P4&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Booting with the custom logo, running the demo Skinke by Jumalauta.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
+      <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
+      <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
+      
+      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
+      <description>
+
+&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;We have analyzed the memory bus of the GameBoy in order to obtain the timing
+information of the different signals involved in the read and write operations
+happening on the cartridge. We will now proceed to develop a system to emulate
+the behaviour of the cartridge with the STM32F4.&lt;/p&gt;
+
+&lt;h2 id=&#34;about-voltage-levels:341ec718c3c25a798a6724c7a974b92c&#34;&gt;About voltage levels&lt;/h2&gt;
+
+&lt;p&gt;As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4
+works at 3.3V. We saw that most of the GPIOs of the STM32F4 are 5V tolerant, but
+they still output 3.3V, so we need to make sure that the GameBoy will detect the
+high levels properly. Luckily for us, the GameBoy works at TTL level:
+&lt;a href=&#34;http://friedtj.free.fr/gb_eng.pdf&#34;&gt;source&lt;/a&gt;. This means that a 3.3V signal will
+be read as a logic 1 by the GameBoy.&lt;/p&gt;
+
+&lt;h1 id=&#34;setup:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Setup&lt;/h1&gt;
+
+&lt;p&gt;We will use a similar setup here, although now we are going to connect all the
+cartridge pins to the STM32F4 so that we can read/write the signals. We have
+plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
+5V compatible ones. I used the following setup:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;CLK -&amp;gt; PC0&lt;/li&gt;
+&lt;li&gt;RD -&amp;gt; PC1&lt;/li&gt;
+&lt;li&gt;WR -&amp;gt; PC2&lt;/li&gt;
+&lt;li&gt;DATA{0..7} -&amp;gt; PE{8..15}&lt;/li&gt;
+&lt;li&gt;ADDR{0..15} -&amp;gt; PD{0..15}&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_setup.jpg&#34; alt=&#34;My setup with the GameBoy connected to the STM32F4-Discovery&#34; /&gt;
+    
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        My setup with the GameBoy connected to the STM32F4-Discovery
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;h1 id=&#34;coding:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Coding&lt;/h1&gt;
+
+&lt;p&gt;The code of this project can be found in my github page under an open source
+license: &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart&#34;&gt;github.com/Dhole&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;initialization:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Initialization&lt;/h2&gt;
+
+&lt;p&gt;The initialization code can be found in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/main.c&#34;&gt;main.c&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The first thing to do is to configure the GPIOs of the board. All the GPIOs are
+configured as input, push pull mode (will be used when we set the DATA GPIO pins
+to output) with pull down resistor (I believe pull down resistor is a good choice
+to avoid current drain from the GameBoy(5V) to the STM32F4(3.3V)). The bus for
+the GPIOs is configured at 100MHz (maximum frequency available).&lt;/p&gt;
+
+&lt;p&gt;This functions can be found in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/main.c&#34;&gt;main.c&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void config_gpio_data();
+void config_gpio_addr();
+void config_gpio_sig();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Secondly, we will configure the CLK to act as a trigger on rise. To do this we
+enable an interrupt for the GPIO we connected the CLK to that will execute a
+handler for every level rise. In &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/main.c&#34;&gt;main.c&lt;/a&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void config_PC0_int(void);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;read-write-handler:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Read/Write handler&lt;/h2&gt;
+
+&lt;p&gt;The read/write handler can be found in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/stm32f4xx_it.c&#34;&gt;stm32f4xx_it.c&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The interrupt handler will be executed every time the CLK level goes high (rise).
+It&amp;rsquo;s important to notice that there is some delay between the rise of CLK and
+the execution of the handler. This may be because the GPIOs are peripherials that
+communicate with the CPU through a bus clocked at 100MHz and also because the
+interrupt is generated from a peripherial, and thus takes some time to be
+processed by the CPU. This can be observed if you try to write a program that
+toggles the output of a GPIO unpon rise of the CLK, and then monitor both signals
+in an oscilloscope.&lt;/p&gt;
+
+&lt;p&gt;The handler must wait some time until the addresses are ready in the bus. To
+perform fine grained waits I use the NOP operation, which wastes one CPU cycle.
+After reading the GPIOs connected to the addresses, we check if the operation is
+a read or a write by reading the values of the GPIOs connected to RD and WR.&lt;/p&gt;
+
+&lt;p&gt;In case of write, we must wait further until the data is available in the bus,
+then we can read the GPIOs and perform the write.&lt;/p&gt;
+
+&lt;p&gt;In case of the read, we must first set the GPIOs associated with the data as
+output (we configured them to be input). Then we can output the data corresponding
+to the address, and wait some cycles so that the GameBoy can read the contents.
+After this, the GPIOs for data are configured back to input mode (default state).
+Leaving the GPIOs of the data in input state as default is necessary because
+sometimes the GameBoy will perfom write operations to internal RAM and having
+these GPIOs as output will corrut the data sent by the GameBoy.&lt;/p&gt;
+
+&lt;p&gt;If you take a look at IRQHandler examples for the STM32F4 you will notice some
+differences. The library functions normally used in a handler have been replaced
+by the specific operation. This is because calling a function consumes some
+cycles (due to the context change) and also they contain asserts to verify the
+input, which consumes more cycles. We are short in cycles here, so we try to avoid
+all this.&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/ed6cde3ec6b6574e080f.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;p&gt;To perform an arbitrary number of NOP operations, I used a macro I found on
+&lt;a href=&#34;https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times&#34;&gt;stackoverflow&lt;/a&gt;. The C preprocessor doesn&amp;rsquo;t
+allow to repeat an operations a number of times.&lt;/p&gt;
+
+&lt;p&gt;Finding the proper number of NOP operations at each stage of the operation has
+been the most difficult part of the implementation because it needs to be done
+with trial and error. Adding a new case to an if statement changes the number of
+cycles of the handler, so the number of NOPs may need to be readjusted. More over,
+the compilation optimizations are quite unpredictable regarding how many op codes
+are used for the code (and thus, how many cycles are spent on the execution), so
+a small change can lead to a malfunctioning system.&lt;/p&gt;
+
+&lt;h2 id=&#34;mbc1-implementation:341ec718c3c25a798a6724c7a974b92c&#34;&gt;MBC1 implementation&lt;/h2&gt;
+
+&lt;p&gt;The read and write functions implementing the behaviour of the MBC1 can be found
+in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/stm32f4xx_it.c&#34;&gt;stm32f4xx_it.c&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;A detailed explanation of the functionality of the different Memory Block
+Controllers can be found in the &lt;a href=&#34;http://gbdev.gg8.se/wiki/articles/Memory_Bank_Controllers&#34;&gt;GBdevWiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;For the read operation, three regions can be accessed. The first one maps to
+the first 16KB of the ROM. The second one to the selectable ROM bank. The third
+one to the selectable RAM bank, if any:&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/dc998ea525a208987a69.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;p&gt;For the write operation, it can happen that it accesses the RAM region, where
+it performs a proper read, or it can access three other regions. The first one is
+used to select the lower bits of the ROM bank. The second one is used to select the
+RAM bank or the upper bits of the ROM bank, depending on the state of a ROM/RAM
+mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is also
+an initial region to enable or disable the RAM, used by the cartridges to protect
+the RAM agains data corruption, but it&amp;rsquo;s not needed here.&lt;/p&gt;
+
+&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/7417a4095600fe31b1dd.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;rom-and-ram:341ec718c3c25a798a6724c7a974b92c&#34;&gt;ROM and RAM&lt;/h3&gt;
+
+&lt;p&gt;In order to allow the program to access to the contents of a ROM, I used the
+unix &lt;code&gt;xxd&lt;/code&gt; tool to convert the binary file into a C header file containing an array
+with the file contents:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp Tetris.gb rom.gb
+xxd -i rom.gb | sed &#39;s/unsigned/unsigned const/g&#39; &amp;gt; tetris_rom.h
+rm rom.gb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The contents of &lt;em&gt;tetris_rom.h&lt;/em&gt; will look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;unsigned const char rom_gb[] = {
+  0xc3, 0x0c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc3, 0x0c, 0x02, 0xff,
+  ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For games that use RAM, an array must be allocated on the SMT32F4. For this
+purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;uint8_t ram[0x8000]; // 32K
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notice that the saved game will only remain as long as the STM32F4 is not powered
+off.&lt;/p&gt;
+
+&lt;h1 id=&#34;results:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Results&lt;/h1&gt;
+
+&lt;h2 id=&#34;photos:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Photos&lt;/h2&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34; alt=&#34;The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34; alt=&#34;Dr. Mario. ROM Only game&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Dr. Mario. ROM Only game
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;h2 id=&#34;videos:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Videos&lt;/h2&gt;
+
+&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/M7dIPUz1igs&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Running The Legend of Zelda, - Link&amp;rsquo;s Awakening, showing that the
+cartridge RAM is working.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/_hMnb0bsdyU&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Running the demo 20y by Snorpung.&lt;/p&gt;
+
+&lt;h1 id=&#34;conclusions:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Conclusions&lt;/h1&gt;
+
+&lt;p&gt;Being able to emulate a full cartridge with its RAM and memory banking with an
+ARM development board was really awesome. I wasn&amp;rsquo;t sure this was doable, and
+hadn&amp;rsquo;t seen anything similar. I don&amp;rsquo;t own any gameboy flashcarts, so being able
+to run code on the gameboy from something I built was extremely satisfactory. I
+enjoy watching works of demoscene, and with this project I was able to try out
+many amazing demos on the GameBoy.&lt;/p&gt;
+
+&lt;p&gt;On the technical side, this project took me a few days of fine tunning and
+adding capabilites. This was my first time developing on the STM32F4 so I also
+spent a few days documenting myself. The biggest issue I have found is the
+timing constraints. Adding cases to if statements, changin the order of some
+operations, modifying code&amp;hellip; all this modifies the timing of the instructions
+generated by the compiler, sometimes not very intuitively due to strong compiler
+optimizations. I spent some hours of trial and error checking that all the
+operations worked fine. Also you may have noticed that all the code runs inside
+the interruption handler. And this handler is triggered at 1MHz! This gives a
+tight margin of operation. If the operations inside the interrupt takes too long,
+they will mask the next interruption and a following read/write operation (in
+case there was one) will be missed, probably crashing the GameBoy. Care must be
+taken to not exceed this timing constraint.&lt;/p&gt;
+
+&lt;p&gt;In the following post I will write about adding a custom boot logo to the
+cartridge emulator. Stay tunned!&lt;/p&gt;
+
+&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_custom_logo&#34;&gt;Booting the GameBoy with a custom logo&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
+      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
+      <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
+      
+      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
+      <description>
+
+&lt;h1 id=&#34;introduction:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;The following project consists on emulating the functionality of a GameBoy
+cartridge with the development board STM32F4. The system is fully functional
+and is able to emulate real cartridges (as well as homebrew games) of the type
+ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain
+how I managed to achieve this.&lt;/p&gt;
+
+&lt;h1 id=&#34;motivation:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Motivation&lt;/h1&gt;
+
+&lt;p&gt;Current flashcart systems commonly use a design consisting on a FPGA or CPLD
+controlling the logic of the emulated cartridge (memory banking, RAM access,
+etc.), a media storage (flash chip or SD card) and an SDRAM chip.&lt;/p&gt;
+
+&lt;p&gt;The way this flashcarts work is that upon booting the console, they present a
+small program that list the ROMs available in the media storage. The user selects
+a game and the FPGA copies it from the media storage to the SDRAM to allow
+fast access. Once the ROM has been copied, the FPGA acts as a gateway mapping
+the contents of the SDRAM to the original cartridge mappings.&lt;/p&gt;
+
+&lt;p&gt;Since the GameBoy cartridges use small ROM chips for which one can find
+compatible FLASH chips in the market, it is a viable alternative to the FPGA
+to take an original cartridge with a MBC5 and swap the original ROM chip with
+a compatible FLASH memory. A cartridge with MBC5 is often selected because with
+it, games with ROM Only and games using MBC1 can also be run (There is
+compatibility). With this setup, the user is able to reprogram the FLASH many
+times with different games and play them on the GameBoy.&lt;/p&gt;
+
+&lt;p&gt;This procedure is detailed here:
+&lt;a href=&#34;http://www.digital-circuitry.com/DOC/NINTENDO/GAMEBOY/DIY%20Nintendo%20GAMEBOY%20Classic%20Flash%20Cartridge.pdf&#34;&gt;DIY Nintendo GAMEBOY Classic Flash Cartridge&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The FPGA system seems to allow much more freedom but it also involves more work:
+the MBC5 (or the supported Memory Block Controllers) must be implemented in
+hardware, an interface to access the media storage must be designed, the circuit
+must be designed too with all the components (FPGA/CPLD, FLASH/SD Reader, SDRAM,
+&amp;hellip;).&lt;/p&gt;
+
+&lt;p&gt;An alternative to this one can think of would be to use a microcontroller
+instead, interfacing the cartridge pins through the GPIO. This design can have
+many complications since the timings to perform a read / write operation are
+quite tight. The microcontroller should be fast enough to perform this operations
+at the bus speed. When adding the functionality of the Memory Block controller
+the timings could be hard to achieve.
+&lt;a href=&#34;https://www.insidegadgets.com/2011/04/23/emulating-the-nintendo-logo-on-the-gameboy/&#34;&gt;Alex from Inside Gadgets&lt;/a&gt;
+attempted to
+achieve this using an Arduino. The low frequency of the Arduino made this project
+infeasible, although Alex was able to achive the emulation of the Nintendo logo,
+due to the fact that when the gameboy boots, the first read of the Nintendo logo
+from the cartridge is timming predictable and not too fast:&lt;/p&gt;
+
+&lt;p&gt;My aim was to try to implement a cartridge emulator using a faster microcontroller.&lt;/p&gt;
+
+&lt;h1 id=&#34;the-hardware:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;The hardware&lt;/h1&gt;
+
+&lt;p&gt;For this project I choosed the STM32F4 Discovery. This development board features
+an ARM Cortex-M4 which can run at 168MHz, with 1 MB Flash, 192 KB RAM and more than
+70 GPIO. The GPIO are accessed through a peripherials bus that can run at 100MHz.
+I also considered other boards such as the Teensy 3.1 but I ended up choosing
+the STM32F4 because it had more Flash and RAM and because it was unexpensive (14€).&lt;/p&gt;
+
+&lt;p&gt;On the other side, the GameBoy CPU runs at 4MHz. The comercial cartridges have
+up to 512 KB of ROM and 128 KB of RAM, although the MBC5 is capable of handling
+bigger ROMs. Many cartridges have a MBC (Memory Block Controler) such as the MBC5
+or the MBC1. This controller allows the catridge to handle ROMs that don&amp;rsquo;t fit
+into the GameBoy memory area reserved for the cartridge ROM by means of bank
+selection. This selections are performed by writting into specific areas of the
+memory map reserved for the ROM (So that the MBC can handle them).&lt;/p&gt;
+
+&lt;p&gt;A list of characteristics of the comercial cartridges can be found here:
+&lt;a href=&#34;http://www.devrs.com/gb/files/gbmbcsiz.txt&#34;&gt;GB Cart List&lt;/a&gt;
+It is important to notice that the GameBoy works at 5V whereas the STM32F4 works
+at 3.3V. Connecting 5V signals to the GPIOs of a 3.3 microcontroller can be
+dangerous and damage the GPIO peripherials. Luckily the STM32F4-Discovery has
+5V tolerance for most of the pins. To see which ones you can check the
+documentation.&lt;/p&gt;
+
+&lt;p&gt;With these characteristics it seems this project can be doable. If we consider
+that the gameboy will perform at most a read / write per CPU cycle (We will later
+see that this is not the case), we are left with 42 cycles of our dev board to handle
+the operation. Taking into account that the GPIO bus is clocked at 100MHz, there
+will be some delay which will leave us fewer cycles.&lt;/p&gt;
+
+&lt;h1 id=&#34;analyzing-the-bus:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Analyzing the bus&lt;/h1&gt;
+
+&lt;p&gt;In order to get an idea of how the bus used by the GameBoy to access the
+cartridge works I decided to perform some captures using a Logic Analyzer. Since
+I don&amp;rsquo;t have any hardware logic analyzer, I used a an awesome project
+which consists of an implementation of a logic analyzer for the STM32F4, which
+uses the SUMP protocol to interface with the PC (SUMP is a standard protocol for
+hardware logic analyzers to interface with the client side). The logicdiscovery
+allows to sample up to 20MHz on 16 channels, with up to 24k samples:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://code.google.com/p/logicdiscovery/&#34;&gt;logicdiscovery&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The client used is the Logic Sniffer, an open source Java client compatible with
+the SUMP protocol:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.lxtreme.nl/ols/&#34;&gt;Logic Sniffer&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In order to analyze the bus while the GameBoy was performing reads and writes to
+the cartridge, I soldered an FDD ribbon to the main board of the GameBoy,
+intercepting the cartridge pins as follows:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34; alt=&#34;Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;Since only 16 channels are available for the logicdiscovery I decided to monitor
+the CLK, RD, WR, CS, DATA {0-4} and ADDR {0-8}. (That is, the lower 4 bits of
+the data and the lower 8 bits of the address). With this we should be able to
+get information about the timings of the different operations.&lt;/p&gt;
+
+&lt;p&gt;The GameBoy cartridge pinout is well known, so it&amp;rsquo;s easy to figure out what every
+pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+    
+        &lt;img src=&#34;https://www.insidegadgets.com/wp-content/uploads/2011/03/IMG_1994.jpg&#34; alt=&#34;GameBoy cartridge pinout. Image from www.insidegadgets.com&#34; /&gt;
+    
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        GameBoy cartridge pinout. Image from www.insidegadgets.com
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;Upon analyzing the bus with the BATMAN game (ROM Only cartridge), the following is obtained:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34; alt=&#34;Logic capture overview&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Logic capture overview
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;The first thing I noticed is that the CLK is at 1MHz, this is good news for us:
+we have more cycles for each operation. One oddity I found with the capture is
+that we can see that the WR goes low a few times (WR is active on low). The
+BATMAN cartridge doesn&amp;rsquo;t have RAM nor Memory Block Controller, so it doesn&amp;rsquo;t make
+sense to write into it. Since we only have half of the adressess, we can&amp;rsquo;t say
+for certain where the data is being written, but my guess is that we are seeing
+writes being done to the internal GameBoy RAM.&lt;/p&gt;
+
+&lt;p&gt;We can take a closer look to a read and a write and analyze what&amp;rsquo;s happening and
+when. This information will give us an idea on when should we perform the reading
+of the adresses for a write/read operation, and when to output the data on a
+read operation.&lt;/p&gt;
+
+&lt;p&gt;Notice that we have a 20MHz sampling rate, this means that a sample is being
+taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34; alt=&#34;Read timings&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Read timings
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34; alt=&#34;Write timings&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        Write timings
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;We can see that for a read operation, the GameBoy leaves WR and CS unactivate
+(high) and the RD active (low). This is the default. The GameBoy sets the
+address 150ns after the CLK rise, and the data is available in the bus
+(coming from the cartridge) 200 ns later. We can&amp;rsquo;t say when the GameBoy reads
+the data, but a guess would be around the CLK fall.&lt;/p&gt;
+
+&lt;p&gt;For the write operation, the RD is set to unactive at the same time the address
+and the data is set in the bus (150 ns after CLK rise). 100 ns later the CS is
+activated. At the CLK fall, the WR is activated, allowing the cartridge to perform
+the write for 300 ns. On the next cycle, we can see that RD and CS are reset to
+the default state (low and high, active and unactive respectively). Notice that
+the CS (Chip Select) is not strictly needed, although it seems to be used only
+when accessing RAM (this is not clear).&lt;/p&gt;
+
+&lt;p&gt;The writing timing analysis are sound with the analysis found in the unnoficial
+&lt;a href=&#34;http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf&#34;&gt;GameBoy CPU Manual&lt;/a&gt;:&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing_small.png&#34; alt=&#34;RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.&#34; /&gt;
+    &lt;/a&gt;
+    
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;Now that we know that the information seen in the bus is not only the communication
+between the GameBoy and the cartridge but all the read/write operations of the
+GameBoy to its memory map, we can understand the following capture, which shows
+a DMA operation (The GameBoy has a DMA functionality to allow to fast copy contents
+from RAM or ROM to the OAM (Object Atribute Memory), used by the screen to draw
+sprites):&lt;/p&gt;
+
+&lt;p&gt;
+&lt;figure &gt;
+    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
+    
+        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34; alt=&#34;DMA in action&#34; /&gt;
+    
+    &lt;/a&gt;
+    
+    &lt;figcaption&gt;
+        &lt;p&gt;
+        DMA in action
+        
+            
+        
+        &lt;/p&gt; 
+    &lt;/figcaption&gt;
+    
+&lt;/figure&gt;
+
+&lt;/p&gt;
+
+&lt;p&gt;In the following post I will write about the implementation of the cartridge
+emulator. Stay tunned!&lt;/p&gt;
+
+&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_2&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 2&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -33,7 +33,7 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.
 
-{{% gist Dhole/a097cee60b990f65d869 %}}
+{{% gist "Dhole/a097cee60b990f65d869" %}}
 
 ## Custom logo creation
 

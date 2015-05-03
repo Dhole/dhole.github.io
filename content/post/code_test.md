@@ -46,7 +46,7 @@ But now I want it with syntax highlighting
 
 Using gist: This is quickselect
 
-{{% gist Dhole/b5186c2c4f0e27d43c11 %}}
+{{% gist "Dhole/b5186c2c4f0e27d43c11" %}}
 
 # C
 
@@ -55,4 +55,4 @@ Show some love to plain old school C
 This is the main loop of my gameboy emulator, using SDL_GetTicks() function to syncronize
 the framerate
 
-{{% gist Dhole/b9e4e1a28d5a2eed2f00 %}}
+{{% gist "Dhole/b9e4e1a28d5a2eed2f00" %}}
