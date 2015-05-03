@@ -7,8 +7,8 @@
 
         <title>Booting the GameBoy with a custom logo &middot; Dhole&#39;s blog</title>
         <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
-        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
-        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -19,16 +19,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="https://dhole.github.io/post/"> articles </a></li>
+                            <li><a href="/post/"> articles </a></li>
                         
-                            <li><a href="https://dhole.github.io/categories/"> categories </a></li>
+                            <li><a href="/categories/"> categories </a></li>
                         
-                            <li><a href="https://dhole.github.io/about/"> about </a></li>
+                            <li><a href="/about/"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +38,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="https://dhole.github.io/post/"> articles </a></li>
+                        <li><a href="/post/"> articles </a></li>
                     
-                        <li><a href="https://dhole.github.io/categories/"> categories </a></li>
+                        <li><a href="/categories/"> categories </a></li>
                     
-                        <li><a href="https://dhole.github.io/about/"> about </a></li>
+                        <li><a href="/about/"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,9 +63,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io//categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io//categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -76,7 +76,7 @@ Categories:
 <p>With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.
 For example, we can make the GameBoy boot with our own custom logo!</p>
 
-<h1 id="toc_0">Bootstrap ROM</h1>
+<h1 id="bootstrap-rom:ad55e3cbd1a3f7742559bc4fea68cdaf">Bootstrap ROM</h1>
 
 <p>When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the
 memory and execution begins. This bios is in charge of initializing the hardware
@@ -91,7 +91,7 @@ custom logo and later the original one in order to let the GameBoy boot properly
 
 <p>More on the GameBoy Bootstrap ROM can be read at <a href="http://gbdev.gg8.se/wiki/articles/Gameboy_Bootstrap_ROM">GBdevWiki</a></p>
 
-<h1 id="toc_1">Code</h1>
+<h1 id="code:ad55e3cbd1a3f7742559bc4fea68cdaf">Code</h1>
 
 <p>In order to achieve this we can modify the read function of our cartridge emulator
 to the following:</p>
@@ -101,9 +101,10 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.</p>
 
-<script src="https://gist.github.com/Dhole/a097cee60b990f65d869.js"></script>
+<p><script src="https://gist.github.com/Dhole/a097cee60b990f65d869.js"></script>
+</p>
 
-<h2 id="toc_2">Custom logo creation</h2>
+<h2 id="custom-logo-creation:ad55e3cbd1a3f7742559bc4fea68cdaf">Custom logo creation</h2>
 
 <p>In order to create custom logos I wrote two python scripts:</p>
 
@@ -120,10 +121,11 @@ The way the pixels are stored can be understood better by looking at <code>draw_
 <p><code>make_logo.py</code> allows you to convert a 48x8 pixel black and white png image to a
 binary logo to be used by the cart emulator</p>
 
-<h1 id="toc_3">Results</h1>
+<h1 id="results:ad55e3cbd1a3f7742559bc4fea68cdaf">Results</h1>
 
 <p>I have drawn the following logo to be used at boot:</p>
 
+<p>
 <figure >
     
     
@@ -142,19 +144,23 @@ binary logo to be used by the cart emulator</p>
     
 </figure>
 
+</p>
+
 <p>In the following videos the GameBoy booting with the custom logo can be seen:</p>
 
-<div class="embed video-player">
+<p><div class="embed video-player">
 <iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/aVxJXK9QvPk" allowfullscreen frameborder="0">
 </iframe>
 </div>
+</p>
 
 <p>Booting with the custom logo, running Dr Mario.</p>
 
-<div class="embed video-player">
+<p><div class="embed video-player">
 <iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/OPYkzv217P4" allowfullscreen frameborder="0">
 </iframe>
 </div>
+</p>
 
 <p>Booting with the custom logo, running the demo Skinke by Jumalauta.</p>
 
