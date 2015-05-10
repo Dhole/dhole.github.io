@@ -93,7 +93,7 @@ Categories:
 
 <p>One of the main advantages of the free software is that source code is available for peer review. This makes it easier for users to trust their software, as they can check the source to verify that the program is not doing anything bad. Even if the user doesn&rsquo;t do that, they can trust the wider community with that task. But many distributions serve packages in binary form, so how do we know that the binary comes from the publicly available source code? The current solution is that the developers who build the packages sign them cryptographically; but this lands all the trust to the developer and the machines used for building.</p>
 
-<p>I became interested in this topic with a very nice talk given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).</p>
+<p>I became interested in this topic with a very nice talk given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF [3]. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).</p>
 
 <h2 id="benefits:17e5a0be75ac396c0c6958a6a4adaa17">Benefits</h2>
 
@@ -111,9 +111,9 @@ Categories:
 
 <h1 id="reproducible-builds-in-debian:17e5a0be75ac396c0c6958a6a4adaa17">Reproducible Builds in Debian</h1>
 
-<p>The project kicked-off at Debian at mid 2013 [3], leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, &hellip;). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending patches every week [4].</p>
+<p>The project kicked-off at Debian at mid 2013 [4], leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, &hellip;). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending patches every week [5].</p>
 
-<p>A machine running Jenkins has been set up with the task of continuously build packages in different settings to check if they are built reproducibly or not [5].</p>
+<p>A machine running Jenkins has been set up with the task of continuously build packages in different settings to check if they are built reproducibly or not [6].</p>
 
 <p>In order to analyze why packages fail to build reproducibly, a tool called <strong>debbindiff</strong> has been developed, which is able to output in text or html form a smart diff of two builds.</p>
 
@@ -129,11 +129,13 @@ Categories:
 
 <p>[2] <a href="https://github.com/Dhole">https://github.com/Dhole</a></p>
 
-<p>[3] <a href="https://wiki.debian.org/ReproducibleBuilds">https://wiki.debian.org/ReproducibleBuilds</a></p>
+<p>[3] <a href="https://www.youtube.com/watch?v=5pAen7beYNc">https://www.youtube.com/watch?v=5pAen7beYNc</a></p>
 
-<p>[4] <a href="https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org">https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org</a></p>
+<p>[4] <a href="https://wiki.debian.org/ReproducibleBuilds">https://wiki.debian.org/ReproducibleBuilds</a></p>
 
-<p>[5] <a href="https://reproducible.debian.net/reproducible.html">https://reproducible.debian.net/reproducible.html</a></p>
+<p>[5] <a href="https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org">https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org</a></p>
+
+<p>[6] <a href="https://reproducible.debian.net/reproducible.html">https://reproducible.debian.net/reproducible.html</a></p>
 
                     </section>
                 </article>

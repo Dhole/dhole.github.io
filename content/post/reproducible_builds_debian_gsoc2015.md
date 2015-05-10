@@ -22,7 +22,7 @@ The idea behind this project is that currently many packages aren't built in a r
 ## Motivation
 One of the main advantages of the free software is that source code is available for peer review. This makes it easier for users to trust their software, as they can check the source to verify that the program is not doing anything bad. Even if the user doesn't do that, they can trust the wider community with that task. But many distributions serve packages in binary form, so how do we know that the binary comes from the publicly available source code? The current solution is that the developers who build the packages sign them cryptographically; but this lands all the trust to the developer and the machines used for building.
 
-I became interested in this topic with a very nice talk given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).
+I became interested in this topic with a very nice talk given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF [3]. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).
 
 ## Benefits
 There are two main groups who benefit with reproducible builds:
@@ -36,9 +36,9 @@ The developer no longer has the responsibility of using his identity to sign the
 This later point is specially useful with secure and privacy aware software. The reason is that there are many powerful organizations around the world with interest on having backdoors in widely used software, be it to spy on users or to target specific groups of people. Considering the amount of money these organizations have for such purposes, it's not hard to imagine that they could try to blackmail developers into adding such backdoors on the built packages. Or they could try to compromise the building machine. With reproducible builds the developer is safer, as such attack is no longer useful.
 
 # Reproducible Builds in Debian
-The project kicked-off at Debian at mid 2013 [3], leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, ...). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending patches every week [4]. 
+The project kicked-off at Debian at mid 2013 [4], leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, ...). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending patches every week [5]. 
 
-A machine running Jenkins has been set up with the task of continuously build packages in different settings to check if they are built reproducibly or not [5].
+A machine running Jenkins has been set up with the task of continuously build packages in different settings to check if they are built reproducibly or not [6].
 
 In order to analyze why packages fail to build reproducibly, a tool called **debbindiff** has been developed, which is able to output in text or html form a smart diff of two builds. 
 
@@ -54,8 +54,10 @@ Finally, I just want to add that I'm looking forward to contribute to Debian, me
 
 [2] https://github.com/Dhole
 
-[3] https://wiki.debian.org/ReproducibleBuilds
+[3] https://www.youtube.com/watch?v=5pAen7beYNc
 
-[4] https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org
+[4] https://wiki.debian.org/ReproducibleBuilds
 
-[5] https://reproducible.debian.net/reproducible.html
+[5] https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org
+
+[6] https://reproducible.debian.net/reproducible.html
