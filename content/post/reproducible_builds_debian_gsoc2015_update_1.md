@@ -1,12 +1,11 @@
 +++
 Categories = ["debian", "reproducible builds"]
 date = "2015-08-06T20:12:15+02:00"
-draft = true
 title = "Reproducible builds on Debian for GSoC 2015, 1st update"
 
 +++
 
-This is the second blog post I'm writing about my experiences contributing to Debian for Google Summer of Code 2015, following my [first post](/post/reproducible_builds_debian_gsoc2015/)
+This is the second blog post I'm writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my [first post](/post/reproducible_builds_debian_gsoc2015/))
 
 # Status update
 
@@ -21,15 +20,15 @@ I'm happy with my first month, as I have worked as originally planned. Actually,
 
 Once the university was over, I started dedicating myself fully to the project. This allowed me to start working on toolchain fixes, following my original plan on working with timestamp related issues.
 
-In particular I have been working a lot in implementing a [proposal for deterministic timestamps](https://wiki.debian.org/ReproducibleBuilds/TimestampsProposal) that appeared in the reproducible builds project. The idea is to define an environment variable called SOURCE_DATE_EPOCH that contains a known timestamp in Unix epoch format. With this variable exported, tools that would embed the localtime in their generated or processed files, can use this externally supplied date. This would happen only if SOURCE_DATE_EPOCH is exported, so the behaviour of the tool wouldn't change if the variable is not set. 
+In particular I have been working a lot in implementing a [proposal for deterministic timestamps](https://wiki.debian.org/ReproducibleBuilds/TimestampsProposal) that appeared in the reproducible builds project. The idea is to define an environment variable called `SOURCE_DATE_EPOCH` that contains a known timestamp in Unix epoch format. With this variable exported, tools that would embed the localtime in their generated or processed files, can use this externally supplied date. This would happen only if `SOURCE_DATE_EPOCH` is exported, so the behaviour of the tool wouldn't change if the variable is not set. 
 
-The first package I patched to implement this behaviour was gcc. The reason behind this is that there are about 420 unreproducible packages due to using the `__DATE__`, `__TIME__` and `__TIMESTAMP__` C macros. My patch changes the behavior of the macros `__DATE__` and `__TIME__` if **SOURCE_DATE_EPOCH** is exported. I submitted this patch to the gcc-patches list. Even though there was some interesting discussions in the list, the patch has not been accepted yet. Seeing how the reproducible builds idea is gaining momentum and becoming widespread, I'm positive that at some point the gcc people will be more receptive for such patch.
+The first package I patched to implement this behaviour was [gcc](https://gcc.gnu.org/ml/gcc-patches/2015-06/msg02210.html). The reason behind this is that there are about 420 unreproducible packages due to using the `__DATE__`, `__TIME__` and `__TIMESTAMP__` C macros. My patch changes the behavior of the macros `__DATE__` and `__TIME__` if `SOURCE_DATE_EPOCH` is exported. I submitted this patch to the gcc-patches list. Even though there was some interesting discussions in the list, the patch has not been accepted yet. Seeing how the reproducible builds idea is gaining momentum and becoming widespread, I'm positive that at some point the gcc people will be more receptive for such patch.
 
-The second work with **SOURCE_DATE_EPOCH** was in debhelper; I patched this building tool to export the variable with the latest debian/changelog entry timestamp. With this patch, all the tools that run under dh will be able to use it to embed deterministic timestamps. Unfortunately some parts of the build process of some packages don't happen under debhelper, so the variable needs to be exported in a different way.
+The second work with `SOURCE_DATE_EPOCH` was in [debhelper](https://bugs.debian.org/791823); I patched this building tool to export the variable with the latest debian/changelog entry timestamp. With this patch, all the tools that run under dh will be able to use it to embed deterministic timestamps. Unfortunately some parts of the build process of some packages don't happen under debhelper, so the variable needs to be exported in a different way.
 
-Having submitted the debhelper patch allowed many packages to become reproducible after the tools that embedded timestamps were patched to honour **SOURCE_DATE_EPOCH**. As of today, the toolchain packages I have patched to do that are: gcc, libxslt, gettext, ghostscript and qt4-x11 (qhelpgenerator).
+Having submitted the debhelper patch allowed many packages to become reproducible after the tools that embedded timestamps were patched to honour `SOURCE_DATE_EPOCH`. As of today, the toolchain packages I have patched to do that are: [gcc](https://gcc.gnu.org/ml/gcc-patches/2015-06/msg02210.html), [libxslt](https://bugs.debian.org/791815), [gettext](https://bugs.debian.org/792687), [ghostscript](https://bugs.debian.org/794004) and [qt4-x11 (qhelpgenerator)](https://bugs.debian.org/794681).
 
-I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the Reproducible Builds Wiki.
+I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the [Reproducible Builds Wiki](https://wiki.debian.org/ReproducibleBuilds).
 
 # Impressions about reproducible builds
 
@@ -37,7 +36,7 @@ The work I did during the first month felt a bit tedious sometimes: it didn't re
 
 There is a very active community in the reproducible builds project! It's great to see so many people contributing to this project spending so many hours and putting so much effort. I've felt very welcome from the beginning and I have gotten kind replies and helpful answers to all the questions and doubts I've had, both from my mentor and from the other people in the project.
 
-I want to add that I'm still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD and OpenWRT, and lately amrhf with the help of a few new arm nodes. 
+I want to add that I'm still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD, NetBSD, [OpenWRT](https://reproducible.debian.net/openwrt/openwrt.html), [coreboot](https://reproducible.debian.net/coreboot/coreboot.html) and lately Debian armhf with the help of a few new arm nodes. 
 
 # Impressions about working on a free software project
 
