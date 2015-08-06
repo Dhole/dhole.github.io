@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Test on Dhole&#39;s blog</title>
-    <link>http://localhost:1313/categories/test/</link>
+    <link>http://127.0.0.1:1313/categories/test/</link>
     <description>Recent content in Test on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 11 Nov 2014 12:43:04 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/test/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://127.0.0.1:1313/categories/test/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Test</title>
-      <link>http://localhost:1313/post/test/</link>
+      <link>http://127.0.0.1:1313/post/test/</link>
       <pubDate>Tue, 11 Nov 2014 12:43:04 +0100</pubDate>
       
-      <guid>http://localhost:1313/post/test/</guid>
+      <guid>http://127.0.0.1:1313/post/test/</guid>
       <description>&lt;p&gt;This post is a general test with several features applied.&lt;/p&gt;
 
 &lt;p&gt;1 $leq$ 2 -&amp;gt; No math equations this way. TODO: Find another way???&lt;/p&gt;
@@ -23,10 +23,10 @@
     
     <item>
       <title>Code test</title>
-      <link>http://localhost:1313/post/code_test/</link>
+      <link>http://127.0.0.1:1313/post/code_test/</link>
       <pubDate>Sun, 09 Nov 2014 03:32:39 +0100</pubDate>
       
-      <guid>http://localhost:1313/post/code_test/</guid>
+      <guid>http://127.0.0.1:1313/post/code_test/</guid>
       <description>
 
 &lt;p&gt;Here I will try inserting code, both using markdown and the hugo highlighting shortcode&lt;/p&gt;
@@ -84,10 +84,10 @@ the framerate&lt;/p&gt;
     
     <item>
       <title>Image test</title>
-      <link>http://localhost:1313/post/image_test/</link>
+      <link>http://127.0.0.1:1313/post/image_test/</link>
       <pubDate>Sat, 08 Nov 2014 18:14:49 +0100</pubDate>
       
-      <guid>http://localhost:1313/post/image_test/</guid>
+      <guid>http://127.0.0.1:1313/post/image_test/</guid>
       <description>
 
 &lt;p&gt;So what if I add a big image?&lt;/p&gt;

@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Images on Dhole&#39;s blog</title>
-    <link>http://localhost:1313/categories/images/</link>
+    <link>http://127.0.0.1:1313/categories/images/</link>
     <description>Recent content in Images on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 08 Nov 2014 18:14:49 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/categories/images/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://127.0.0.1:1313/categories/images/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Image test</title>
-      <link>http://localhost:1313/post/image_test/</link>
+      <link>http://127.0.0.1:1313/post/image_test/</link>
       <pubDate>Sat, 08 Nov 2014 18:14:49 +0100</pubDate>
       
-      <guid>http://localhost:1313/post/image_test/</guid>
+      <guid>http://127.0.0.1:1313/post/image_test/</guid>
       <description>
 
 &lt;p&gt;So what if I add a big image?&lt;/p&gt;
