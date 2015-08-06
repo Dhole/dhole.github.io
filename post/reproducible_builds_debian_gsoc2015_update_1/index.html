@@ -7,8 +7,8 @@
 
         <title>Reproducible builds on Debian for GSoC 2015, 1st update &middot; Dhole&#39;s blog</title>
         <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
-        <link rel="stylesheet" href="http://127.0.0.1:1313//libraries/normalize.3.0.1.css" />
-        <link rel="stylesheet" href="http://127.0.0.1:1313//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -19,7 +19,7 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="http://127.0.0.1:1313/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
@@ -63,9 +63,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="http://127.0.0.1:1313//categories/debian">debian</a> </span>
+<span><a href="https://dhole.github.io//categories/debian">debian</a> </span>
 
-<span><a href="http://127.0.0.1:1313//categories/reproducible-builds">reproducible builds</a> </span>
+<span><a href="https://dhole.github.io//categories/reproducible-builds">reproducible builds</a> </span>
 
 </div>
 
@@ -73,7 +73,7 @@ Categories:
                     <section>
                         
 
-<p>This is the second blog post I&rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015, following my <a href="/post/reproducible_builds_debian_gsoc2015/">first post</a></p>
+<p>This is the second blog post I&rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my <a href="/post/reproducible_builds_debian_gsoc2015/">first post</a>)</p>
 
 <h1 id="status-update:9dd7692613c73a03fe141b93ffcffb14">Status update</h1>
 
@@ -88,15 +88,15 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
 
 <p>Once the university was over, I started dedicating myself fully to the project. This allowed me to start working on toolchain fixes, following my original plan on working with timestamp related issues.</p>
 
-<p>In particular I have been working a lot in implementing a <a href="https://wiki.debian.org/ReproducibleBuilds/TimestampsProposal">proposal for deterministic timestamps</a> that appeared in the reproducible builds project. The idea is to define an environment variable called SOURCE_DATE_EPOCH that contains a known timestamp in Unix epoch format. With this variable exported, tools that would embed the localtime in their generated or processed files, can use this externally supplied date. This would happen only if SOURCE_DATE_EPOCH is exported, so the behaviour of the tool wouldn&rsquo;t change if the variable is not set.</p>
+<p>In particular I have been working a lot in implementing a <a href="https://wiki.debian.org/ReproducibleBuilds/TimestampsProposal">proposal for deterministic timestamps</a> that appeared in the reproducible builds project. The idea is to define an environment variable called <code>SOURCE_DATE_EPOCH</code> that contains a known timestamp in Unix epoch format. With this variable exported, tools that would embed the localtime in their generated or processed files, can use this externally supplied date. This would happen only if <code>SOURCE_DATE_EPOCH</code> is exported, so the behaviour of the tool wouldn&rsquo;t change if the variable is not set.</p>
 
-<p>The first package I patched to implement this behaviour was gcc. The reason behind this is that there are about 420 unreproducible packages due to using the <code>__DATE__</code>, <code>__TIME__</code> and <code>__TIMESTAMP__</code> C macros. My patch changes the behavior of the macros <code>__DATE__</code> and <code>__TIME__</code> if <strong>SOURCE_DATE_EPOCH</strong> is exported. I submitted this patch to the gcc-patches list. Even though there was some interesting discussions in the list, the patch has not been accepted yet. Seeing how the reproducible builds idea is gaining momentum and becoming widespread, I&rsquo;m positive that at some point the gcc people will be more receptive for such patch.</p>
+<p>The first package I patched to implement this behaviour was <a href="https://gcc.gnu.org/ml/gcc-patches/2015-06/msg02210.html">gcc</a>. The reason behind this is that there are about 420 unreproducible packages due to using the <code>__DATE__</code>, <code>__TIME__</code> and <code>__TIMESTAMP__</code> C macros. My patch changes the behavior of the macros <code>__DATE__</code> and <code>__TIME__</code> if <code>SOURCE_DATE_EPOCH</code> is exported. I submitted this patch to the gcc-patches list. Even though there was some interesting discussions in the list, the patch has not been accepted yet. Seeing how the reproducible builds idea is gaining momentum and becoming widespread, I&rsquo;m positive that at some point the gcc people will be more receptive for such patch.</p>
 
-<p>The second work with <strong>SOURCE_DATE_EPOCH</strong> was in debhelper; I patched this building tool to export the variable with the latest debian/changelog entry timestamp. With this patch, all the tools that run under dh will be able to use it to embed deterministic timestamps. Unfortunately some parts of the build process of some packages don&rsquo;t happen under debhelper, so the variable needs to be exported in a different way.</p>
+<p>The second work with <code>SOURCE_DATE_EPOCH</code> was in <a href="https://bugs.debian.org/791823">debhelper</a>; I patched this building tool to export the variable with the latest debian/changelog entry timestamp. With this patch, all the tools that run under dh will be able to use it to embed deterministic timestamps. Unfortunately some parts of the build process of some packages don&rsquo;t happen under debhelper, so the variable needs to be exported in a different way.</p>
 
-<p>Having submitted the debhelper patch allowed many packages to become reproducible after the tools that embedded timestamps were patched to honour <strong>SOURCE_DATE_EPOCH</strong>. As of today, the toolchain packages I have patched to do that are: gcc, libxslt, gettext, ghostscript and qt4-x11 (qhelpgenerator).</p>
+<p>Having submitted the debhelper patch allowed many packages to become reproducible after the tools that embedded timestamps were patched to honour <code>SOURCE_DATE_EPOCH</code>. As of today, the toolchain packages I have patched to do that are: <a href="https://gcc.gnu.org/ml/gcc-patches/2015-06/msg02210.html">gcc</a>, <a href="https://bugs.debian.org/791815">libxslt</a>, <a href="https://bugs.debian.org/792687">gettext</a>, <a href="https://bugs.debian.org/794004">ghostscript</a> and <a href="https://bugs.debian.org/794681">qt4-x11 (qhelpgenerator)</a>.</p>
 
-<p>I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the Reproducible Builds Wiki.</p>
+<p>I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the <a href="https://wiki.debian.org/ReproducibleBuilds">Reproducible Builds Wiki</a>.</p>
 
 <h1 id="impressions-about-reproducible-builds:9dd7692613c73a03fe141b93ffcffb14">Impressions about reproducible builds</h1>
 
@@ -104,7 +104,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
 
 <p>There is a very active community in the reproducible builds project! It&rsquo;s great to see so many people contributing to this project spending so many hours and putting so much effort. I&rsquo;ve felt very welcome from the beginning and I have gotten kind replies and helpful answers to all the questions and doubts I&rsquo;ve had, both from my mentor and from the other people in the project.</p>
 
-<p>I want to add that I&rsquo;m still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD and OpenWRT, and lately amrhf with the help of a few new arm nodes.</p>
+<p>I want to add that I&rsquo;m still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD, NetBSD, <a href="https://reproducible.debian.net/openwrt/openwrt.html">OpenWRT</a>, <a href="https://reproducible.debian.net/coreboot/coreboot.html">coreboot</a> and lately Debian armhf with the help of a few new arm nodes.</p>
 
 <h1 id="impressions-about-working-on-a-free-software-project:9dd7692613c73a03fe141b93ffcffb14">Impressions about working on a free software project</h1>
 
@@ -169,7 +169,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="http://127.0.0.1:1313/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
+                        <a href="https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
                     
                 </div>
             </div>
@@ -200,9 +200,6 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
     
     </script>
     
-    <script>document.write('<script src="http://'
-        + (location.host || 'localhost').split(':')[0]
-		+ ':1313/livereload.js?mindelay=10"></'
-        + 'script>')</script></body>
+    </body>
 </html>
 
