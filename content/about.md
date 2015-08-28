@@ -24,7 +24,7 @@ PGP Fingerprint:
 ```
 pub   4096R/0x4FA457A18514CC63 2015-01-25 [expires: 2017-07-21]
       Key fingerprint = 9BC4 8EF8 08DB 91DD 158D  559D 4FA4 57A1 8514 CC63
-      uid                 [ultimate] Dhole <dhole@openmailbox.org>
-      uid                 [ultimate] Eduard Sanou <eduardsanou@openmailbox.org>
+      uid                            Dhole <dhole@openmailbox.org>
+      uid                            Eduard Sanou <eduardsanou@openmailbox.org>
       sub   4096R/0xCB8DED02C125274B 2015-01-25 [expires: 2017-07-21]
 ```
