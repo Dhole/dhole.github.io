@@ -1318,8 +1318,8 @@ about new programming languages and stuff in general.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;pub   4096R/0x4FA457A18514CC63 2015-01-25 [expires: 2017-07-21]
       Key fingerprint = 9BC4 8EF8 08DB 91DD 158D  559D 4FA4 57A1 8514 CC63
-      uid                 [ultimate] Dhole &amp;lt;dhole@openmailbox.org&amp;gt;
-      uid                 [ultimate] Eduard Sanou &amp;lt;eduardsanou@openmailbox.org&amp;gt;
+      uid                            Dhole &amp;lt;dhole@openmailbox.org&amp;gt;
+      uid                            Eduard Sanou &amp;lt;eduardsanou@openmailbox.org&amp;gt;
       sub   4096R/0xCB8DED02C125274B 2015-01-25 [expires: 2017-07-21]
 &lt;/code&gt;&lt;/pre&gt;
 </description>
