@@ -21,9 +21,9 @@
 install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption
 using kernel 3.8.&lt;/p&gt;
 
-&lt;h1 id=&#34;kernel-compilation-and-preparing-sd-card:faa8511e92a2ce55340472c17643405e&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;
+&lt;h1 id=&#34;kernel-compilation-and-preparing-sd-card&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;
 
-&lt;h2 id=&#34;install-dependencies:faa8511e92a2ce55340472c17643405e&#34;&gt;Install dependencies&lt;/h2&gt;
+&lt;h2 id=&#34;install-dependencies&#34;&gt;Install dependencies&lt;/h2&gt;
 
 &lt;p&gt;Install the necessary depdendencies (In my case I was running ubuntu). Mainly
 you need the tools for crosscompiling the kernel, configure u-boot and partition
@@ -33,7 +33,7 @@ the SD card with a GPT partition table.&lt;/p&gt;
     binutils-arm-linux-gnueabihf cgpt device-tree-compiler
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;set-up-some-directories-and-download-arch-and-kernel-sources:faa8511e92a2ce55340472c17643405e&#34;&gt;Set up some directories and download arch and kernel sources&lt;/h2&gt;
+&lt;h2 id=&#34;set-up-some-directories-and-download-arch-and-kernel-sources&#34;&gt;Set up some directories and download arch and kernel sources&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;TMP_PATH=$(pwd)/chromeos
 mkdir -p $TMP_PATH
@@ -59,7 +59,7 @@ git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
     -b $KERNEL_BRANCH --depth 1 chromeos
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;build-the-kernel:faa8511e92a2ce55340472c17643405e&#34;&gt;Build the kernel&lt;/h2&gt;
+&lt;h2 id=&#34;build-the-kernel&#34;&gt;Build the kernel&lt;/h2&gt;
 
 &lt;p&gt;Set up the config for the chromebook&lt;/p&gt;
 
@@ -97,7 +97,7 @@ mkimage -f arch/arm/boot/kernel.its $TMP_PATH/vmlinux.uimg
 cd $TMP_PATH
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;prepare-sd-card:faa8511e92a2ce55340472c17643405e&#34;&gt;Prepare SD card&lt;/h2&gt;
+&lt;h2 id=&#34;prepare-sd-card&#34;&gt;Prepare SD card&lt;/h2&gt;
 
 &lt;p&gt;Set your SD card device&lt;/p&gt;
 
@@ -137,7 +137,7 @@ sudo mkfs.ext4 &amp;quot;${DISK}3&amp;quot;
 sudo mkfs.vfat -F 16 &amp;quot;${DISK}12&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;install-nv-uboot-fb:faa8511e92a2ce55340472c17643405e&#34;&gt;Install nv_uboot_fb&lt;/h2&gt;
+&lt;h2 id=&#34;install-nv-uboot-fb&#34;&gt;Install nv_uboot_fb&lt;/h2&gt;
 
 &lt;p&gt;Download and install the nv_uboot bootloader with framebuffer support in the SD&lt;/p&gt;
 
@@ -146,7 +146,7 @@ sudo mkfs.vfat -F 16 &amp;quot;${DISK}12&amp;quot;
 sudo dd if=nv_uboot.kpart of=&amp;quot;${DISK}1&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;prepare-the-rootfs-for-encryption:faa8511e92a2ce55340472c17643405e&#34;&gt;Prepare the rootfs for encryption&lt;/h2&gt;
+&lt;h2 id=&#34;prepare-the-rootfs-for-encryption&#34;&gt;Prepare the rootfs for encryption&lt;/h2&gt;
 
 &lt;p&gt;Create key file. Store this file safely!&lt;/p&gt;
 
@@ -166,9 +166,9 @@ sudo mkfs.ext4 /dev/mapper/alarm_rootfs
 sudo cryptsetup close alarm_rootfs
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;install-arch-linux-kernel-and-custom-files:faa8511e92a2ce55340472c17643405e&#34;&gt;Install Arch Linux, kernel and custom files&lt;/h2&gt;
+&lt;h2 id=&#34;install-arch-linux-kernel-and-custom-files&#34;&gt;Install Arch Linux, kernel and custom files&lt;/h2&gt;
 
-&lt;h3 id=&#34;mount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e&#34;&gt;Mount LUKS and boot partition&lt;/h3&gt;
+&lt;h3 id=&#34;mount-luks-and-boot-partition&#34;&gt;Mount LUKS and boot partition&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;sudo cryptsetup luksOpen &amp;quot;${DISK}3&amp;quot; alarm_rootfs -y --key-file rootfs.key
 sudo mount /dev/mapper/alarm_rootfs root
@@ -227,7 +227,7 @@ mkdir -p root/root/files/
 cp -R files/arch/* root/root/files/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;umount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e&#34;&gt;Umount LUKS and boot partition&lt;/h3&gt;
+&lt;h3 id=&#34;umount-luks-and-boot-partition&#34;&gt;Umount LUKS and boot partition&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;sudo umount mnt
 sudo umount root
@@ -235,7 +235,7 @@ sudo cryptsetup close alarm_rootfs
 sync
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;arch-configuration:faa8511e92a2ce55340472c17643405e&#34;&gt;Arch configuration&lt;/h1&gt;
+&lt;h1 id=&#34;arch-configuration&#34;&gt;Arch configuration&lt;/h1&gt;
 
 &lt;p&gt;Boot your Chromebook and press Ctrl-U to boot from external drive. After you
 see U-Boot start, press any kay to interrupt the boot process and type the
@@ -275,7 +275,7 @@ visudo # uncomment the wheel group
 usermod -a -G wheel $USERNAME
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;post-install:faa8511e92a2ce55340472c17643405e&#34;&gt;Post install&lt;/h1&gt;
+&lt;h1 id=&#34;post-install&#34;&gt;Post install&lt;/h1&gt;
 
 &lt;p&gt;At this point you should have a bootable full disk encryption Arch Install.
 In the following lines I will detail the post installation steps I follow to
@@ -392,7 +392,7 @@ cp ALARM/.* ~
 sh vim_setup.sh
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;todo:faa8511e92a2ce55340472c17643405e&#34;&gt;TODO&lt;/h1&gt;
+&lt;h1 id=&#34;todo&#34;&gt;TODO&lt;/h1&gt;
 
 &lt;p&gt;There are only two things which I find missing from my installation.&lt;/p&gt;
 
@@ -407,7 +407,7 @@ SD card slot in the chromebook is placed very close to the end of the board, so
 half of the SD card sticks out; it doesn&amp;rsquo;t look nice and I fear for the SD card
 getting stuck somewhere when moving my chromebook around.&lt;/p&gt;
 
-&lt;h1 id=&#34;resources:faa8511e92a2ce55340472c17643405e&#34;&gt;Resources&lt;/h1&gt;
+&lt;h1 id=&#34;resources&#34;&gt;Resources&lt;/h1&gt;
 
 &lt;p&gt;The installation process of Arch Linux on the Samsung Chromebook is taken from
 [1], [2] and [3]. The procedure to compile and install of kernel 3.8 is taken from

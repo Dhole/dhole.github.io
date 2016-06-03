@@ -6,8 +6,143 @@
     <description>Recent content in Posts on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Aug 2015 20:12:15 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 04 Jun 2016 00:13:28 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>No more unencrypted emails to gpg contacts</title>
+      <link>https://dhole.github.io/post/check_mail_gpg/</link>
+      <pubDate>Sat, 04 Jun 2016 00:13:28 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/post/check_mail_gpg/</guid>
+      <description>&lt;p&gt;I have been using mutt for about half a year already and I&amp;rsquo;m very happy with it.
+The previous email client I used was Thunderbird (with the Enigmail extension to
+handle GPG).  There were two main reasons that made me switch.&lt;/p&gt;
+
+&lt;p&gt;The first one was that I often would like to check my email while I&amp;rsquo;m offline,
+and it seems that Thunderbird is not very good at this.  Sometimes not all my
+email would have been downloaded (just the headers), and I also found it
+frustrating that after marking more than 50 emails as read while offline, they
+would be marked as unread again once I went back online.  With mutt I&amp;rsquo;m using
+mbsync (which apparently is faster than offlineimap) to sync my email to a local
+folder with a cron job.  I couldn&amp;rsquo;t be happier.&lt;/p&gt;
+
+&lt;p&gt;The other issue was that I like having many filters, and it was tedious to
+customize filters in Thunderbird:  there&amp;rsquo;s no way to copy a filter and modify
+it, and there&amp;rsquo;s a limit in the combinations of ANDs and ORs for fields.  I&amp;rsquo;m
+using procmail now, which allows me save the filter configuration in plaintext
+and define patterns with more flexibility.&lt;/p&gt;
+
+&lt;p&gt;The setup for mutt took several weeks, but I never felt that I couldn&amp;rsquo;t
+accomplish what I wanted (unlike in Thunderbird).  I&amp;rsquo;m using mutt with several
+python and bash scripts that I wrote.&lt;/p&gt;
+
+&lt;p&gt;But the reason for this post is an issue that I believe happens in every email
+client (or should I say, MUA, to be more precise).  I&amp;rsquo;ve seen it happening to
+people using both Thunderbird and mutt, and I bet it has happened in other
+cases: sending an email to someone for which you have their GPG key unencrypted
+unwillingly.  I&amp;rsquo;ve seen this happening in email replies with several
+participants: after a few encrypted messages are exchanged, someone replies in
+the clear, quoting all the previous messages.  I tried to avoid this by
+configuring mutt to encrypt and sign by default, forcing me to set sign only
+manually before sending every email that I can&amp;rsquo;t send encrypted (I&amp;rsquo;d like to
+send all my emails encrypted, but not everybody has a GPG key :( ).&lt;/p&gt;
+
+&lt;p&gt;So what happened?  I got so used to sending many unencrypted emails that I would
+press &amp;ldquo;P S&amp;rdquo; (PGP setting, Sign only) before sending emails as a reflex act.  And
+I sent an email unencrypted to a friend for which I have his GPG key :(&lt;/p&gt;
+
+&lt;p&gt;So I though: It&amp;rsquo;s a very rare case to want to send an unencrypted email to
+someone for which you have their GPG key.  I think extensions like Enigmail
+should give you a warning when this happens, to alert you about it.  In my case,
+I solved it with a python script that inspects the email, and, if it&amp;rsquo;s
+unencrypted and the recipient/s is/are in your GPG keyring it warns you about it
+and returns an error.  The script stores a temporary file with the Message-ID so
+that if you run it again with the same email it will properly send the email
+without returning an error.&lt;/p&gt;
+
+&lt;p&gt;Now, I only needed to configure mutt to use this script as the sendmail command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;per_account:set sendmail  = &amp;quot;$HOME/bin/check-mail-gpg /usr/bin/msmtp -a $my_email&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And here goes the python script &lt;code&gt;check-mail-gpg&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#! /usr/bin/python3
+
+import os
+import sys
+import subprocess
+import email.parser
+from email.header import decode_header
+from email.utils import parseaddr
+
+STATUS_FILE = &#39;/tmp/check-mail-gpg.tmp&#39;
+
+def dec(header):
+    head = decode_header(header)
+    if len(head) == 1 and head[0][1] == None:
+        return head[0][0]
+    else:
+        return &#39;&#39;.join([h.decode(enc) if enc else h.decode(&#39;ascii&#39;) \
+                for (h,enc) in head])
+
+def send_mail(mail):
+    print(&#39;Calling external email client to send the email...&#39;)
+    #return -1 # testing mode
+    p = subprocess.Popen(sys.argv[1:], stdin=subprocess.PIPE)
+    p.stdin.write(mail.encode(&#39;utf-8&#39;))
+    p.stdin.close()
+    return p.wait()
+
+def main():
+    mail = sys.stdin.read()
+    heads = email.parser.Parser().parsestr(mail, headersonly=True)
+    content = heads[&#39;Content-Type&#39;].split(&#39;;&#39;)[0].strip()
+    print(&#39;Content is:&#39;, content)
+
+    if content == &#39;multipart/encrypted&#39;:
+        print(&#39;Ok: encrypted mail, we can return now...&#39;)
+        sys.exit(send_mail(mail))
+
+    addrs = [parseaddr(addr) for addr in heads[&#39;To&#39;].split(&#39;,&#39;)]
+    print(&#39;Found emails:&#39;, addrs)
+
+    gpg_cnt = 0
+    for name, addr in addrs:
+        print(&#39;Looking for&#39;, addr, &#39;in the keyring...&#39;)
+        res = subprocess.call([&#39;gpg&#39;, &#39;--list-keys&#39;, addr],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if res == 0:
+            gpg_cnt += 1
+
+    if gpg_cnt == 0:
+        print(&#39;Ok: no email found in the gpg keyring, we can return now...&#39;)
+        sys.exit(send_mail(mail))
+
+    if not os.path.exists(STATUS_FILE):
+        open(STATUS_FILE, &#39;w&#39;).close()
+
+    msg_id = heads[&#39;Message-ID&#39;]
+    msg_id_prev = &#39;&#39;
+    with open(STATUS_FILE, &#39;r&#39;) as f:
+        msg_id_prev = f.read()
+
+    if msg_id.strip() == msg_id_prev.strip():
+        sys.exit(send_mail(mail))
+    else:
+        with open(STATUS_FILE, &#39;w&#39;) as f:
+            f.write(msg_id)
+        print(&#39;Alert: trying to send an unencrypted email to&#39;, addrs,
+                &#39;, for which some gpg keys were found in the keyring!&#39;)
+        print(&#39;Try again if you are sure to send this message unencrypted.&#39;)
+        sys.exit(1)
+
+if __name__ == &#39;__main__&#39;:
+    main()
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015, 1st update</title>
@@ -19,16 +154,16 @@
 
 &lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
 
-&lt;h1 id=&#34;status-update:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Status update&lt;/h1&gt;
+&lt;h1 id=&#34;status-update&#34;&gt;Status update&lt;/h1&gt;
 
-&lt;h2 id=&#34;first-month:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;First month&lt;/h2&gt;
+&lt;h2 id=&#34;first-month&#34;&gt;First month&lt;/h2&gt;
 
 &lt;p&gt;It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata. This can lead to unreproducible results when there is timezone variation between builds (easily fixed setting the timezone to UTC before the compression happens). In some cases the compressed files are generated during the build, and thus add build times in the metadata of compressed files (in this case the creation date of the files needs to be normalized somehow).&lt;/p&gt;
 
 &lt;p&gt;As explained in my &lt;a href=&#34;https://wiki.debian.org/SummerOfCode2015/StudentApplications/EduardSanou&#34;&gt;application&lt;/a&gt;, I finished exams on the end of June, that&amp;rsquo;s why I chose to work on small fixes first, so that I could make the most out of my time between studying and finishing university projects and reports.
 I&amp;rsquo;m happy with my first month, as I have worked as originally planned. Actually, my estimation of the number of bugs I could submit every week was surpassed in reality!&lt;/p&gt;
 
-&lt;h2 id=&#34;second-month:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Second month&lt;/h2&gt;
+&lt;h2 id=&#34;second-month&#34;&gt;Second month&lt;/h2&gt;
 
 &lt;p&gt;Once the university was over, I started dedicating myself fully to the project. This allowed me to start working on toolchain fixes, following my original plan on working with timestamp related issues.&lt;/p&gt;
 
@@ -42,7 +177,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the &lt;a href=&#34;https://wiki.debian.org/ReproducibleBuilds&#34;&gt;Reproducible Builds Wiki&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h1 id=&#34;impressions-about-reproducible-builds:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Impressions about reproducible builds&lt;/h1&gt;
+&lt;h1 id=&#34;impressions-about-reproducible-builds&#34;&gt;Impressions about reproducible builds&lt;/h1&gt;
 
 &lt;p&gt;The work I did during the first month felt a bit tedious sometimes: it didn&amp;rsquo;t require much creativity or thinking as most of the fixes where quite mechanical, following a recipe. After I became free from university duties, I started looking into less trivial issues, which require more deep investigation and feel more rewarding once they are fixed. I also worked on toolchain fixes, which need more work and need more care. Fixing toolchain packages feels particularly rewarding because they can cause many packages to become reproducible at once.&lt;/p&gt;
 
@@ -50,7 +185,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I want to add that I&amp;rsquo;m still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD, NetBSD, &lt;a href=&#34;https://reproducible.debian.net/openwrt/openwrt.html&#34;&gt;OpenWRT&lt;/a&gt;, &lt;a href=&#34;https://reproducible.debian.net/coreboot/coreboot.html&#34;&gt;coreboot&lt;/a&gt; and lately Debian armhf with the help of a few new arm nodes.&lt;/p&gt;
 
-&lt;h1 id=&#34;impressions-about-working-on-a-free-software-project:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Impressions about working on a free software project&lt;/h1&gt;
+&lt;h1 id=&#34;impressions-about-working-on-a-free-software-project&#34;&gt;Impressions about working on a free software project&lt;/h1&gt;
 
 &lt;p&gt;This was my first time working on a community driven free software project and I&amp;rsquo;ve learned so many things.&lt;/p&gt;
 
@@ -62,7 +197,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I&amp;rsquo;ve been told by my mentor that for difficult cases there exist a &lt;a href=&#34;https://www.debian.org/devel/tech-ctte&#34;&gt;Debian committee&lt;/a&gt; that helps mediate on disagreements, but that is only used as a last option, probably when the discussion gets heated up.&lt;/p&gt;
 
-&lt;h2 id=&#34;personal-experience:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Personal experience&lt;/h2&gt;
+&lt;h2 id=&#34;personal-experience&#34;&gt;Personal experience&lt;/h2&gt;
 
 &lt;p&gt;Overall I&amp;rsquo;m very happy to finally having set my foot in the free software community, where I&amp;rsquo;m able to contribute to the kind of software I have been using for years. The sense of community in Debian is really big, and everyone is invited to participate.&lt;/p&gt;
 
@@ -82,7 +217,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&lt;/p&gt;
 
-&lt;h1 id=&#34;a-bit-about-myself:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;A bit about myself&lt;/h1&gt;
+&lt;h1 id=&#34;a-bit-about-myself&#34;&gt;A bit about myself&lt;/h1&gt;
 
 &lt;p&gt;I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go. My main interests in the field are programming languages, security, cryptography, distributed and decentralized systems and embedded systems.&lt;/p&gt;
 
@@ -92,31 +227,31 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;After so many years of using free software and benefiting from it, I thought it was about time to contribute back! That&amp;rsquo;s why I gave GSoC a try and applied to work on the Reproducible Builds project for Debian :) And I got accepted!&lt;/p&gt;
 
-&lt;h1 id=&#34;reproducible-builds:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Reproducible Builds&lt;/h1&gt;
+&lt;h1 id=&#34;reproducible-builds&#34;&gt;Reproducible Builds&lt;/h1&gt;
 
 &lt;p&gt;The idea behind this project is that currently many packages aren&amp;rsquo;t built in a reproducible manner; that is, they contain timestamps, building machine name, unique IDs, and results from other processes that happen differently between machines, like file ordering in compressed files. The project aims to patch all the Debian packages / the building scripts in order to generate the same binary (bit by bit) independently of the machine, timezone, etc where it is built. This way, a cryptographic hash of the built package can be distributed and many people can rebuild the package to verify that the binary in the repositories indeed corresponds to the right source code by means of comparing the hash.&lt;/p&gt;
 
-&lt;h2 id=&#34;motivation:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Motivation&lt;/h2&gt;
+&lt;h2 id=&#34;motivation&#34;&gt;Motivation&lt;/h2&gt;
 
 &lt;p&gt;One of the main advantages of the free software is that source code is available for peer review. This makes it easier for users to trust their software, as they can check the source to verify that the program is not doing anything bad. Even if the user doesn&amp;rsquo;t do that, they can trust the wider community with that task. But many distributions serve packages in binary form, so how do we know that the binary comes from the publicly available source code? The current solution is that the developers who build the packages sign them cryptographically; but this lands all the trust to the developer and the machines used for building.&lt;/p&gt;
 
 &lt;p&gt;I became interested in this topic with a &lt;a href=&#34;https://www.youtube.com/watch?v=5pAen7beYNc&#34;&gt;very nice talk&lt;/a&gt; given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).&lt;/p&gt;
 
-&lt;h2 id=&#34;benefits:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Benefits&lt;/h2&gt;
+&lt;h2 id=&#34;benefits&#34;&gt;Benefits&lt;/h2&gt;
 
 &lt;p&gt;There are two main groups who benefit with reproducible builds:&lt;/p&gt;
 
-&lt;h3 id=&#34;for-users:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;For users&lt;/h3&gt;
+&lt;h3 id=&#34;for-users&#34;&gt;For users&lt;/h3&gt;
 
 &lt;p&gt;The user can be more secure when installing packages in binary form since they don&amp;rsquo;t need to trust a specific developer or building machine. Even if they don&amp;rsquo;t rebuild the package by themselves to verify it, there would be others doing so, who will easily alert the community when the binary doesn&amp;rsquo;t match the source code.&lt;/p&gt;
 
-&lt;h3 id=&#34;for-developers:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;For developers&lt;/h3&gt;
+&lt;h3 id=&#34;for-developers&#34;&gt;For developers&lt;/h3&gt;
 
 &lt;p&gt;The developer no longer has the responsibility of using his identity to sign the package for wide distribution, nor is that much responsible of the damage to users if their machine is compromised to alter the building process, since the community will easily detect it and alert them.&lt;/p&gt;
 
 &lt;p&gt;This later point is specially useful with secure and privacy aware software. The reason is that there are many powerful organizations around the world with interest on having backdoors in widely used software, be it to spy on users or to target specific groups of people. Considering the amount of money these organizations have for such purposes, it&amp;rsquo;s not hard to imagine that they could try to blackmail developers into adding such backdoors on the built packages. Or they could try to compromise the building machine. With reproducible builds the developer is safer, as such attack is no longer useful.&lt;/p&gt;
 
-&lt;h1 id=&#34;reproducible-builds-in-debian:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Reproducible Builds in Debian&lt;/h1&gt;
+&lt;h1 id=&#34;reproducible-builds-in-debian&#34;&gt;Reproducible Builds in Debian&lt;/h1&gt;
 
 &lt;p&gt;The &lt;a href=&#34;https://wiki.debian.org/ReproducibleBuilds&#34;&gt;project&lt;/a&gt; kicked-off at Debian at mid 2013 , leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, &amp;hellip;). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending &lt;a href=&#34;https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org&#34;&gt;patches&lt;/a&gt; every week.&lt;/p&gt;
 
@@ -144,9 +279,9 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption
 using kernel 3.8.&lt;/p&gt;
 
-&lt;h1 id=&#34;kernel-compilation-and-preparing-sd-card:faa8511e92a2ce55340472c17643405e&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;
+&lt;h1 id=&#34;kernel-compilation-and-preparing-sd-card&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;
 
-&lt;h2 id=&#34;install-dependencies:faa8511e92a2ce55340472c17643405e&#34;&gt;Install dependencies&lt;/h2&gt;
+&lt;h2 id=&#34;install-dependencies&#34;&gt;Install dependencies&lt;/h2&gt;
 
 &lt;p&gt;Install the necessary depdendencies (In my case I was running ubuntu). Mainly
 you need the tools for crosscompiling the kernel, configure u-boot and partition
@@ -156,7 +291,7 @@ the SD card with a GPT partition table.&lt;/p&gt;
     binutils-arm-linux-gnueabihf cgpt device-tree-compiler
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;set-up-some-directories-and-download-arch-and-kernel-sources:faa8511e92a2ce55340472c17643405e&#34;&gt;Set up some directories and download arch and kernel sources&lt;/h2&gt;
+&lt;h2 id=&#34;set-up-some-directories-and-download-arch-and-kernel-sources&#34;&gt;Set up some directories and download arch and kernel sources&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code&gt;TMP_PATH=$(pwd)/chromeos
 mkdir -p $TMP_PATH
@@ -182,7 +317,7 @@ git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
     -b $KERNEL_BRANCH --depth 1 chromeos
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;build-the-kernel:faa8511e92a2ce55340472c17643405e&#34;&gt;Build the kernel&lt;/h2&gt;
+&lt;h2 id=&#34;build-the-kernel&#34;&gt;Build the kernel&lt;/h2&gt;
 
 &lt;p&gt;Set up the config for the chromebook&lt;/p&gt;
 
@@ -220,7 +355,7 @@ mkimage -f arch/arm/boot/kernel.its $TMP_PATH/vmlinux.uimg
 cd $TMP_PATH
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;prepare-sd-card:faa8511e92a2ce55340472c17643405e&#34;&gt;Prepare SD card&lt;/h2&gt;
+&lt;h2 id=&#34;prepare-sd-card&#34;&gt;Prepare SD card&lt;/h2&gt;
 
 &lt;p&gt;Set your SD card device&lt;/p&gt;
 
@@ -260,7 +395,7 @@ sudo mkfs.ext4 &amp;quot;${DISK}3&amp;quot;
 sudo mkfs.vfat -F 16 &amp;quot;${DISK}12&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;install-nv-uboot-fb:faa8511e92a2ce55340472c17643405e&#34;&gt;Install nv_uboot_fb&lt;/h2&gt;
+&lt;h2 id=&#34;install-nv-uboot-fb&#34;&gt;Install nv_uboot_fb&lt;/h2&gt;
 
 &lt;p&gt;Download and install the nv_uboot bootloader with framebuffer support in the SD&lt;/p&gt;
 
@@ -269,7 +404,7 @@ sudo mkfs.vfat -F 16 &amp;quot;${DISK}12&amp;quot;
 sudo dd if=nv_uboot.kpart of=&amp;quot;${DISK}1&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;prepare-the-rootfs-for-encryption:faa8511e92a2ce55340472c17643405e&#34;&gt;Prepare the rootfs for encryption&lt;/h2&gt;
+&lt;h2 id=&#34;prepare-the-rootfs-for-encryption&#34;&gt;Prepare the rootfs for encryption&lt;/h2&gt;
 
 &lt;p&gt;Create key file. Store this file safely!&lt;/p&gt;
 
@@ -289,9 +424,9 @@ sudo mkfs.ext4 /dev/mapper/alarm_rootfs
 sudo cryptsetup close alarm_rootfs
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;install-arch-linux-kernel-and-custom-files:faa8511e92a2ce55340472c17643405e&#34;&gt;Install Arch Linux, kernel and custom files&lt;/h2&gt;
+&lt;h2 id=&#34;install-arch-linux-kernel-and-custom-files&#34;&gt;Install Arch Linux, kernel and custom files&lt;/h2&gt;
 
-&lt;h3 id=&#34;mount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e&#34;&gt;Mount LUKS and boot partition&lt;/h3&gt;
+&lt;h3 id=&#34;mount-luks-and-boot-partition&#34;&gt;Mount LUKS and boot partition&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;sudo cryptsetup luksOpen &amp;quot;${DISK}3&amp;quot; alarm_rootfs -y --key-file rootfs.key
 sudo mount /dev/mapper/alarm_rootfs root
@@ -350,7 +485,7 @@ mkdir -p root/root/files/
 cp -R files/arch/* root/root/files/
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h3 id=&#34;umount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e&#34;&gt;Umount LUKS and boot partition&lt;/h3&gt;
+&lt;h3 id=&#34;umount-luks-and-boot-partition&#34;&gt;Umount LUKS and boot partition&lt;/h3&gt;
 
 &lt;pre&gt;&lt;code&gt;sudo umount mnt
 sudo umount root
@@ -358,7 +493,7 @@ sudo cryptsetup close alarm_rootfs
 sync
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;arch-configuration:faa8511e92a2ce55340472c17643405e&#34;&gt;Arch configuration&lt;/h1&gt;
+&lt;h1 id=&#34;arch-configuration&#34;&gt;Arch configuration&lt;/h1&gt;
 
 &lt;p&gt;Boot your Chromebook and press Ctrl-U to boot from external drive. After you
 see U-Boot start, press any kay to interrupt the boot process and type the
@@ -398,7 +533,7 @@ visudo # uncomment the wheel group
 usermod -a -G wheel $USERNAME
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;post-install:faa8511e92a2ce55340472c17643405e&#34;&gt;Post install&lt;/h1&gt;
+&lt;h1 id=&#34;post-install&#34;&gt;Post install&lt;/h1&gt;
 
 &lt;p&gt;At this point you should have a bootable full disk encryption Arch Install.
 In the following lines I will detail the post installation steps I follow to
@@ -515,7 +650,7 @@ cp ALARM/.* ~
 sh vim_setup.sh
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;todo:faa8511e92a2ce55340472c17643405e&#34;&gt;TODO&lt;/h1&gt;
+&lt;h1 id=&#34;todo&#34;&gt;TODO&lt;/h1&gt;
 
 &lt;p&gt;There are only two things which I find missing from my installation.&lt;/p&gt;
 
@@ -530,7 +665,7 @@ SD card slot in the chromebook is placed very close to the end of the board, so
 half of the SD card sticks out; it doesn&amp;rsquo;t look nice and I fear for the SD card
 getting stuck somewhere when moving my chromebook around.&lt;/p&gt;
 
-&lt;h1 id=&#34;resources:faa8511e92a2ce55340472c17643405e&#34;&gt;Resources&lt;/h1&gt;
+&lt;h1 id=&#34;resources&#34;&gt;Resources&lt;/h1&gt;
 
 &lt;p&gt;The installation process of Arch Linux on the Samsung Chromebook is taken from
 [1], [2] and [3]. The procedure to compile and install of kernel 3.8 is taken from
@@ -563,7 +698,7 @@ can be found at [5].&lt;/p&gt;
 &lt;p&gt;With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.
 For example, we can make the GameBoy boot with our own custom logo!&lt;/p&gt;
 
-&lt;h1 id=&#34;bootstrap-rom:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Bootstrap ROM&lt;/h1&gt;
+&lt;h1 id=&#34;bootstrap-rom&#34;&gt;Bootstrap ROM&lt;/h1&gt;
 
 &lt;p&gt;When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the
 memory and execution begins. This bios is in charge of initializing the hardware
@@ -578,7 +713,7 @@ custom logo and later the original one in order to let the GameBoy boot properly
 
 &lt;p&gt;More on the GameBoy Bootstrap ROM can be read at &lt;a href=&#34;http://gbdev.gg8.se/wiki/articles/Gameboy_Bootstrap_ROM&#34;&gt;GBdevWiki&lt;/a&gt;&lt;/p&gt;
 
-&lt;h1 id=&#34;code:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Code&lt;/h1&gt;
+&lt;h1 id=&#34;code&#34;&gt;Code&lt;/h1&gt;
 
 &lt;p&gt;In order to achieve this we can modify the read function of our cartridge emulator
 to the following:&lt;/p&gt;
@@ -588,10 +723,10 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.&lt;/p&gt;
 
-&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/a097cee60b990f65d869.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/Dhole/a097cee60b990f65d869.js&#34;&gt;&lt;/script&gt;
 
-&lt;h2 id=&#34;custom-logo-creation:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Custom logo creation&lt;/h2&gt;
+
+&lt;h2 id=&#34;custom-logo-creation&#34;&gt;Custom logo creation&lt;/h2&gt;
 
 &lt;p&gt;In order to create custom logos I wrote two python scripts:&lt;/p&gt;
 
@@ -608,11 +743,11 @@ The way the pixels are stored can be understood better by looking at &lt;code&gt
 &lt;p&gt;&lt;code&gt;make_logo.py&lt;/code&gt; allows you to convert a 48x8 pixel black and white png image to a
 binary logo to be used by the cart emulator&lt;/p&gt;
 
-&lt;h1 id=&#34;results:ad55e3cbd1a3f7742559bc4fea68cdaf&#34;&gt;Results&lt;/h1&gt;
+&lt;h1 id=&#34;results&#34;&gt;Results&lt;/h1&gt;
 
 &lt;p&gt;I have drawn the following logo to be used at boot:&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     
     
@@ -631,23 +766,23 @@ binary logo to be used by the cart emulator&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;In the following videos the GameBoy booting with the custom logo can be seen:&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;div class=&#34;embed video-player&#34;&gt;
 &lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/aVxJXK9QvPk&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Booting with the custom logo, running Dr Mario.&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;div class=&#34;embed video-player&#34;&gt;
 &lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/OPYkzv217P4&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Booting with the custom logo, running the demo Skinke by Jumalauta.&lt;/p&gt;
 </description>
@@ -668,7 +803,7 @@ information of the different signals involved in the read and write operations
 happening on the cartridge. We will now proceed to develop a system to emulate
 the behaviour of the cartridge with the STM32F4.&lt;/p&gt;
 
-&lt;h2 id=&#34;about-voltage-levels:341ec718c3c25a798a6724c7a974b92c&#34;&gt;About voltage levels&lt;/h2&gt;
+&lt;h2 id=&#34;about-voltage-levels&#34;&gt;About voltage levels&lt;/h2&gt;
 
 &lt;p&gt;As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4
 works at 3.3V. We saw that most of the GPIOs of the STM32F4 are 5V tolerant, but
@@ -677,7 +812,7 @@ high levels properly. Luckily for us, the GameBoy works at TTL level:
 &lt;a href=&#34;http://friedtj.free.fr/gb_eng.pdf&#34;&gt;source&lt;/a&gt;. This means that a 3.3V signal will
 be read as a logic 1 by the GameBoy.&lt;/p&gt;
 
-&lt;h1 id=&#34;setup:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Setup&lt;/h1&gt;
+&lt;h1 id=&#34;setup&#34;&gt;Setup&lt;/h1&gt;
 
 &lt;p&gt;We will use a similar setup here, although now we are going to connect all the
 cartridge pins to the STM32F4 so that we can read/write the signals. We have
@@ -692,7 +827,7 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 &lt;li&gt;ADDR{0..15} -&amp;gt; PD{0..15}&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     
     
@@ -711,14 +846,14 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
 
-&lt;h1 id=&#34;coding:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Coding&lt;/h1&gt;
+
+&lt;h1 id=&#34;coding&#34;&gt;Coding&lt;/h1&gt;
 
 &lt;p&gt;The code of this project can be found in my github page under an open source
 license: &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart&#34;&gt;github.com/Dhole&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&#34;initialization:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Initialization&lt;/h2&gt;
+&lt;h2 id=&#34;initialization&#34;&gt;Initialization&lt;/h2&gt;
 
 &lt;p&gt;The initialization code can be found in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/main.c&#34;&gt;main.c&lt;/a&gt;&lt;/p&gt;
 
@@ -742,7 +877,7 @@ handler for every level rise. In &lt;a href=&#34;https://github.com/Dhole/stm32f
 &lt;pre&gt;&lt;code&gt;void config_PC0_int(void);
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h2 id=&#34;read-write-handler:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Read/Write handler&lt;/h2&gt;
+&lt;h2 id=&#34;read-write-handler&#34;&gt;Read/Write handler&lt;/h2&gt;
 
 &lt;p&gt;The read/write handler can be found in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/stm32f4xx_it.c&#34;&gt;stm32f4xx_it.c&lt;/a&gt;&lt;/p&gt;
 
@@ -778,8 +913,8 @@ cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
 all this.&lt;/p&gt;
 
-&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/ed6cde3ec6b6574e080f.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/Dhole/ed6cde3ec6b6574e080f.js&#34;&gt;&lt;/script&gt;
+
 
 &lt;p&gt;To perform an arbitrary number of NOP operations, I used a macro I found on
 &lt;a href=&#34;https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times&#34;&gt;stackoverflow&lt;/a&gt;. The C preprocessor doesn&amp;rsquo;t
@@ -793,7 +928,7 @@ the compilation optimizations are quite unpredictable regarding how many op code
 are used for the code (and thus, how many cycles are spent on the execution), so
 a small change can lead to a malfunctioning system.&lt;/p&gt;
 
-&lt;h2 id=&#34;mbc1-implementation:341ec718c3c25a798a6724c7a974b92c&#34;&gt;MBC1 implementation&lt;/h2&gt;
+&lt;h2 id=&#34;mbc1-implementation&#34;&gt;MBC1 implementation&lt;/h2&gt;
 
 &lt;p&gt;The read and write functions implementing the behaviour of the MBC1 can be found
 in &lt;a href=&#34;https://github.com/Dhole/stm32f_GBCart/blob/master/stm32f4xx_it.c&#34;&gt;stm32f4xx_it.c&lt;/a&gt;&lt;/p&gt;
@@ -805,8 +940,8 @@ Controllers can be found in the &lt;a href=&#34;http://gbdev.gg8.se/wiki/article
 the first 16KB of the ROM. The second one to the selectable ROM bank. The third
 one to the selectable RAM bank, if any:&lt;/p&gt;
 
-&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/dc998ea525a208987a69.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/Dhole/dc998ea525a208987a69.js&#34;&gt;&lt;/script&gt;
+
 
 &lt;p&gt;For the write operation, it can happen that it accesses the RAM region, where
 it performs a proper read, or it can access three other regions. The first one is
@@ -816,10 +951,10 @@ mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it&amp;rsquo;s not needed here.&lt;/p&gt;
 
-&lt;p&gt;&lt;script src=&#34;https://gist.github.com/Dhole/7417a4095600fe31b1dd.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
+&lt;script src=&#34;https://gist.github.com/Dhole/7417a4095600fe31b1dd.js&#34;&gt;&lt;/script&gt;
 
-&lt;h3 id=&#34;rom-and-ram:341ec718c3c25a798a6724c7a974b92c&#34;&gt;ROM and RAM&lt;/h3&gt;
+
+&lt;h3 id=&#34;rom-and-ram&#34;&gt;ROM and RAM&lt;/h3&gt;
 
 &lt;p&gt;In order to allow the program to access to the contents of a ROM, I used the
 unix &lt;code&gt;xxd&lt;/code&gt; tool to convert the binary file into a C header file containing an array
@@ -846,11 +981,11 @@ purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:&lt;/p&gt
 &lt;p&gt;Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.&lt;/p&gt;
 
-&lt;h1 id=&#34;results:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Results&lt;/h1&gt;
+&lt;h1 id=&#34;results&#34;&gt;Results&lt;/h1&gt;
 
-&lt;h2 id=&#34;photos:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Photos&lt;/h2&gt;
+&lt;h2 id=&#34;photos&#34;&gt;Photos&lt;/h2&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
     
@@ -869,9 +1004,9 @@ off.&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
 
-&lt;p&gt;
+
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
     
@@ -890,28 +1025,28 @@ off.&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
 
-&lt;h2 id=&#34;videos:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Videos&lt;/h2&gt;
 
-&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;h2 id=&#34;videos&#34;&gt;Videos&lt;/h2&gt;
+
+&lt;div class=&#34;embed video-player&#34;&gt;
 &lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/M7dIPUz1igs&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Running The Legend of Zelda, - Link&amp;rsquo;s Awakening, showing that the
 cartridge RAM is working.&lt;/p&gt;
 
-&lt;p&gt;&lt;div class=&#34;embed video-player&#34;&gt;
+&lt;div class=&#34;embed video-player&#34;&gt;
 &lt;iframe class=&#34;youtube-player&#34; type=&#34;text/html&#34; width=&#34;640&#34; height=&#34;385&#34; src=&#34;https://www.youtube.com/embed/_hMnb0bsdyU&#34; allowfullscreen frameborder=&#34;0&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
-&lt;/p&gt;
+
 
 &lt;p&gt;Running the demo 20y by Snorpung.&lt;/p&gt;
 
-&lt;h1 id=&#34;conclusions:341ec718c3c25a798a6724c7a974b92c&#34;&gt;Conclusions&lt;/h1&gt;
+&lt;h1 id=&#34;conclusions&#34;&gt;Conclusions&lt;/h1&gt;
 
 &lt;p&gt;Being able to emulate a full cartridge with its RAM and memory banking with an
 ARM development board was really awesome. I wasn&amp;rsquo;t sure this was doable, and
@@ -949,7 +1084,7 @@ cartridge emulator. Stay tunned!&lt;/p&gt;
       <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
       <description>
 
-&lt;h1 id=&#34;introduction:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Introduction&lt;/h1&gt;
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;The following project consists on emulating the functionality of a GameBoy
 cartridge with the development board STM32F4. The system is fully functional
@@ -957,7 +1092,7 @@ and is able to emulate real cartridges (as well as homebrew games) of the type
 ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain
 how I managed to achieve this.&lt;/p&gt;
 
-&lt;h1 id=&#34;motivation:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Motivation&lt;/h1&gt;
+&lt;h1 id=&#34;motivation&#34;&gt;Motivation&lt;/h1&gt;
 
 &lt;p&gt;Current flashcart systems commonly use a design consisting on a FPGA or CPLD
 controlling the logic of the emulated cartridge (memory banking, RAM access,
@@ -1001,7 +1136,7 @@ from the cartridge is timming predictable and not too fast:&lt;/p&gt;
 
 &lt;p&gt;My aim was to try to implement a cartridge emulator using a faster microcontroller.&lt;/p&gt;
 
-&lt;h1 id=&#34;the-hardware:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;The hardware&lt;/h1&gt;
+&lt;h1 id=&#34;the-hardware&#34;&gt;The hardware&lt;/h1&gt;
 
 &lt;p&gt;For this project I choosed the STM32F4 Discovery. This development board features
 an ARM Cortex-M4 which can run at 168MHz, with 1 MB Flash, 192 KB RAM and more than
@@ -1031,7 +1166,7 @@ see that this is not the case), we are left with 42 cycles of our dev board to h
 the operation. Taking into account that the GPIO bus is clocked at 100MHz, there
 will be some delay which will leave us fewer cycles.&lt;/p&gt;
 
-&lt;h1 id=&#34;analyzing-the-bus:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Analyzing the bus&lt;/h1&gt;
+&lt;h1 id=&#34;analyzing-the-bus&#34;&gt;Analyzing the bus&lt;/h1&gt;
 
 &lt;p&gt;In order to get an idea of how the bus used by the GameBoy to access the
 cartridge works I decided to perform some captures using a Logic Analyzer. Since
@@ -1052,7 +1187,7 @@ the SUMP protocol:&lt;/p&gt;
 the cartridge, I soldered an FDD ribbon to the main board of the GameBoy,
 intercepting the cartridge pins as follows:&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
     
@@ -1071,7 +1206,7 @@ intercepting the cartridge pins as follows:&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;Since only 16 channels are available for the logicdiscovery I decided to monitor
 the CLK, RD, WR, CS, DATA {0-4} and ADDR {0-8}. (That is, the lower 4 bits of
@@ -1081,7 +1216,7 @@ get information about the timings of the different operations.&lt;/p&gt;
 &lt;p&gt;The GameBoy cartridge pinout is well known, so it&amp;rsquo;s easy to figure out what every
 pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     
     
@@ -1100,13 +1235,13 @@ pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
 
-&lt;h2 id=&#34;results:31aa9a0d0fadf1247fc28ab1f3666188&#34;&gt;Results&lt;/h2&gt;
+
+&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
 
 &lt;p&gt;Upon analyzing the bus with the BATMAN game (ROM Only cartridge), the following is obtained:&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
     
@@ -1125,7 +1260,7 @@ pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;The first thing I noticed is that the CLK is at 1MHz, this is good news for us:
 we have more cycles for each operation. One oddity I found with the capture is
@@ -1143,7 +1278,7 @@ read operation.&lt;/p&gt;
 &lt;p&gt;Notice that we have a 20MHz sampling rate, this means that a sample is being
 taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
     
@@ -1162,9 +1297,9 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
 
-&lt;p&gt;
+
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
     
@@ -1183,7 +1318,7 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;We can see that for a read operation, the GameBoy leaves WR and CS unactivate
 (high) and the RD active (low). This is the default. The GameBoy sets the
@@ -1202,7 +1337,7 @@ when accessing RAM (this is not clear).&lt;/p&gt;
 &lt;p&gt;The writing timing analysis are sound with the analysis found in the unnoficial
 &lt;a href=&#34;http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf&#34;&gt;GameBoy CPU Manual&lt;/a&gt;:&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
@@ -1221,7 +1356,7 @@ when accessing RAM (this is not clear).&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;Now that we know that the information seen in the bus is not only the communication
 between the GameBoy and the cartridge but all the read/write operations of the
@@ -1230,7 +1365,7 @@ a DMA operation (The GameBoy has a DMA functionality to allow to fast copy conte
 from RAM or ROM to the OAM (Object Atribute Memory), used by the screen to draw
 sprites):&lt;/p&gt;
 
-&lt;p&gt;
+
 &lt;figure &gt;
     &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
     
@@ -1249,7 +1384,7 @@ sprites):&lt;/p&gt;
     
 &lt;/figure&gt;
 
-&lt;/p&gt;
+
 
 &lt;p&gt;In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!&lt;/p&gt;
