@@ -19,16 +19,16 @@
 
 &lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
 
-&lt;h1 id=&#34;status-update:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Status update&lt;/h1&gt;
+&lt;h1 id=&#34;status-update&#34;&gt;Status update&lt;/h1&gt;
 
-&lt;h2 id=&#34;first-month:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;First month&lt;/h2&gt;
+&lt;h2 id=&#34;first-month&#34;&gt;First month&lt;/h2&gt;
 
 &lt;p&gt;It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata. This can lead to unreproducible results when there is timezone variation between builds (easily fixed setting the timezone to UTC before the compression happens). In some cases the compressed files are generated during the build, and thus add build times in the metadata of compressed files (in this case the creation date of the files needs to be normalized somehow).&lt;/p&gt;
 
 &lt;p&gt;As explained in my &lt;a href=&#34;https://wiki.debian.org/SummerOfCode2015/StudentApplications/EduardSanou&#34;&gt;application&lt;/a&gt;, I finished exams on the end of June, that&amp;rsquo;s why I chose to work on small fixes first, so that I could make the most out of my time between studying and finishing university projects and reports.
 I&amp;rsquo;m happy with my first month, as I have worked as originally planned. Actually, my estimation of the number of bugs I could submit every week was surpassed in reality!&lt;/p&gt;
 
-&lt;h2 id=&#34;second-month:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Second month&lt;/h2&gt;
+&lt;h2 id=&#34;second-month&#34;&gt;Second month&lt;/h2&gt;
 
 &lt;p&gt;Once the university was over, I started dedicating myself fully to the project. This allowed me to start working on toolchain fixes, following my original plan on working with timestamp related issues.&lt;/p&gt;
 
@@ -42,7 +42,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the &lt;a href=&#34;https://wiki.debian.org/ReproducibleBuilds&#34;&gt;Reproducible Builds Wiki&lt;/a&gt;.&lt;/p&gt;
 
-&lt;h1 id=&#34;impressions-about-reproducible-builds:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Impressions about reproducible builds&lt;/h1&gt;
+&lt;h1 id=&#34;impressions-about-reproducible-builds&#34;&gt;Impressions about reproducible builds&lt;/h1&gt;
 
 &lt;p&gt;The work I did during the first month felt a bit tedious sometimes: it didn&amp;rsquo;t require much creativity or thinking as most of the fixes where quite mechanical, following a recipe. After I became free from university duties, I started looking into less trivial issues, which require more deep investigation and feel more rewarding once they are fixed. I also worked on toolchain fixes, which need more work and need more care. Fixing toolchain packages feels particularly rewarding because they can cause many packages to become reproducible at once.&lt;/p&gt;
 
@@ -50,7 +50,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I want to add that I&amp;rsquo;m still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD, NetBSD, &lt;a href=&#34;https://reproducible.debian.net/openwrt/openwrt.html&#34;&gt;OpenWRT&lt;/a&gt;, &lt;a href=&#34;https://reproducible.debian.net/coreboot/coreboot.html&#34;&gt;coreboot&lt;/a&gt; and lately Debian armhf with the help of a few new arm nodes.&lt;/p&gt;
 
-&lt;h1 id=&#34;impressions-about-working-on-a-free-software-project:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Impressions about working on a free software project&lt;/h1&gt;
+&lt;h1 id=&#34;impressions-about-working-on-a-free-software-project&#34;&gt;Impressions about working on a free software project&lt;/h1&gt;
 
 &lt;p&gt;This was my first time working on a community driven free software project and I&amp;rsquo;ve learned so many things.&lt;/p&gt;
 
@@ -62,7 +62,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;I&amp;rsquo;ve been told by my mentor that for difficult cases there exist a &lt;a href=&#34;https://www.debian.org/devel/tech-ctte&#34;&gt;Debian committee&lt;/a&gt; that helps mediate on disagreements, but that is only used as a last option, probably when the discussion gets heated up.&lt;/p&gt;
 
-&lt;h2 id=&#34;personal-experience:9dd7692613c73a03fe141b93ffcffb14&#34;&gt;Personal experience&lt;/h2&gt;
+&lt;h2 id=&#34;personal-experience&#34;&gt;Personal experience&lt;/h2&gt;
 
 &lt;p&gt;Overall I&amp;rsquo;m very happy to finally having set my foot in the free software community, where I&amp;rsquo;m able to contribute to the kind of software I have been using for years. The sense of community in Debian is really big, and everyone is invited to participate.&lt;/p&gt;
 
@@ -82,7 +82,7 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&lt;/p&gt;
 
-&lt;h1 id=&#34;a-bit-about-myself:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;A bit about myself&lt;/h1&gt;
+&lt;h1 id=&#34;a-bit-about-myself&#34;&gt;A bit about myself&lt;/h1&gt;
 
 &lt;p&gt;I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go. My main interests in the field are programming languages, security, cryptography, distributed and decentralized systems and embedded systems.&lt;/p&gt;
 
@@ -92,31 +92,31 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
 
 &lt;p&gt;After so many years of using free software and benefiting from it, I thought it was about time to contribute back! That&amp;rsquo;s why I gave GSoC a try and applied to work on the Reproducible Builds project for Debian :) And I got accepted!&lt;/p&gt;
 
-&lt;h1 id=&#34;reproducible-builds:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Reproducible Builds&lt;/h1&gt;
+&lt;h1 id=&#34;reproducible-builds&#34;&gt;Reproducible Builds&lt;/h1&gt;
 
 &lt;p&gt;The idea behind this project is that currently many packages aren&amp;rsquo;t built in a reproducible manner; that is, they contain timestamps, building machine name, unique IDs, and results from other processes that happen differently between machines, like file ordering in compressed files. The project aims to patch all the Debian packages / the building scripts in order to generate the same binary (bit by bit) independently of the machine, timezone, etc where it is built. This way, a cryptographic hash of the built package can be distributed and many people can rebuild the package to verify that the binary in the repositories indeed corresponds to the right source code by means of comparing the hash.&lt;/p&gt;
 
-&lt;h2 id=&#34;motivation:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Motivation&lt;/h2&gt;
+&lt;h2 id=&#34;motivation&#34;&gt;Motivation&lt;/h2&gt;
 
 &lt;p&gt;One of the main advantages of the free software is that source code is available for peer review. This makes it easier for users to trust their software, as they can check the source to verify that the program is not doing anything bad. Even if the user doesn&amp;rsquo;t do that, they can trust the wider community with that task. But many distributions serve packages in binary form, so how do we know that the binary comes from the publicly available source code? The current solution is that the developers who build the packages sign them cryptographically; but this lands all the trust to the developer and the machines used for building.&lt;/p&gt;
 
 &lt;p&gt;I became interested in this topic with a &lt;a href=&#34;https://www.youtube.com/watch?v=5pAen7beYNc&#34;&gt;very nice talk&lt;/a&gt; given at 31c3 by Mike Perry from Tor and Seth Schoen from the EFF. They focused on reproducible builds applied to the tor browser bundle, showing a small demo of how a building machine could be compromised to add hidden functionalities when compiling code (so that the developer could be signing a compromised package without their knowledge).&lt;/p&gt;
 
-&lt;h2 id=&#34;benefits:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Benefits&lt;/h2&gt;
+&lt;h2 id=&#34;benefits&#34;&gt;Benefits&lt;/h2&gt;
 
 &lt;p&gt;There are two main groups who benefit with reproducible builds:&lt;/p&gt;
 
-&lt;h3 id=&#34;for-users:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;For users&lt;/h3&gt;
+&lt;h3 id=&#34;for-users&#34;&gt;For users&lt;/h3&gt;
 
 &lt;p&gt;The user can be more secure when installing packages in binary form since they don&amp;rsquo;t need to trust a specific developer or building machine. Even if they don&amp;rsquo;t rebuild the package by themselves to verify it, there would be others doing so, who will easily alert the community when the binary doesn&amp;rsquo;t match the source code.&lt;/p&gt;
 
-&lt;h3 id=&#34;for-developers:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;For developers&lt;/h3&gt;
+&lt;h3 id=&#34;for-developers&#34;&gt;For developers&lt;/h3&gt;
 
 &lt;p&gt;The developer no longer has the responsibility of using his identity to sign the package for wide distribution, nor is that much responsible of the damage to users if their machine is compromised to alter the building process, since the community will easily detect it and alert them.&lt;/p&gt;
 
 &lt;p&gt;This later point is specially useful with secure and privacy aware software. The reason is that there are many powerful organizations around the world with interest on having backdoors in widely used software, be it to spy on users or to target specific groups of people. Considering the amount of money these organizations have for such purposes, it&amp;rsquo;s not hard to imagine that they could try to blackmail developers into adding such backdoors on the built packages. Or they could try to compromise the building machine. With reproducible builds the developer is safer, as such attack is no longer useful.&lt;/p&gt;
 
-&lt;h1 id=&#34;reproducible-builds-in-debian:17e5a0be75ac396c0c6958a6a4adaa17&#34;&gt;Reproducible Builds in Debian&lt;/h1&gt;
+&lt;h1 id=&#34;reproducible-builds-in-debian&#34;&gt;Reproducible Builds in Debian&lt;/h1&gt;
 
 &lt;p&gt;The &lt;a href=&#34;https://wiki.debian.org/ReproducibleBuilds&#34;&gt;project&lt;/a&gt; kicked-off at Debian at mid 2013 , leaded by Lunar and soon followed by many other developers (h01ger, deki, mapreri, &amp;hellip;). Right now about 80% of the packages in the unstable branch of Debian can be built reproducibly. The project is very active, with many developers sending &lt;a href=&#34;https://bugs.debian.org/cgi-bin/pkgreport.cgi?usertag=reproducible-builds@lists.alioth.debian.org&#34;&gt;patches&lt;/a&gt; every week.&lt;/p&gt;
 

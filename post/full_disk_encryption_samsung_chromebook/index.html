@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
         <title>Full disk encryption on Samsung Chromebook with Arch Linux &middot; Dhole&#39;s blog</title>
-        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
-        <link rel="stylesheet" href="https://dhole.github.io//libraries/normalize.3.0.1.css" />
-        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -19,16 +19,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/post/"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/categories/"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/about/"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +38,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/post/"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/categories/"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/about/"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,7 +63,7 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io//categories/arch-linux">arch linux</a> </span>
+<span><a href="https://dhole.github.io/categories/arch-linux">arch linux</a> </span>
 
 </div>
 
@@ -75,9 +75,9 @@ Categories:
 install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption
 using kernel 3.8.</p>
 
-<h1 id="kernel-compilation-and-preparing-sd-card:faa8511e92a2ce55340472c17643405e">Kernel compilation and preparing SD card</h1>
+<h1 id="kernel-compilation-and-preparing-sd-card">Kernel compilation and preparing SD card</h1>
 
-<h2 id="install-dependencies:faa8511e92a2ce55340472c17643405e">Install dependencies</h2>
+<h2 id="install-dependencies">Install dependencies</h2>
 
 <p>Install the necessary depdendencies (In my case I was running ubuntu). Mainly
 you need the tools for crosscompiling the kernel, configure u-boot and partition
@@ -87,7 +87,7 @@ the SD card with a GPT partition table.</p>
     binutils-arm-linux-gnueabihf cgpt device-tree-compiler
 </code></pre>
 
-<h2 id="set-up-some-directories-and-download-arch-and-kernel-sources:faa8511e92a2ce55340472c17643405e">Set up some directories and download arch and kernel sources</h2>
+<h2 id="set-up-some-directories-and-download-arch-and-kernel-sources">Set up some directories and download arch and kernel sources</h2>
 
 <pre><code>TMP_PATH=$(pwd)/chromeos
 mkdir -p $TMP_PATH
@@ -113,7 +113,7 @@ git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
     -b $KERNEL_BRANCH --depth 1 chromeos
 </code></pre>
 
-<h2 id="build-the-kernel:faa8511e92a2ce55340472c17643405e">Build the kernel</h2>
+<h2 id="build-the-kernel">Build the kernel</h2>
 
 <p>Set up the config for the chromebook</p>
 
@@ -151,7 +151,7 @@ mkimage -f arch/arm/boot/kernel.its $TMP_PATH/vmlinux.uimg
 cd $TMP_PATH
 </code></pre>
 
-<h2 id="prepare-sd-card:faa8511e92a2ce55340472c17643405e">Prepare SD card</h2>
+<h2 id="prepare-sd-card">Prepare SD card</h2>
 
 <p>Set your SD card device</p>
 
@@ -191,7 +191,7 @@ sudo mkfs.ext4 &quot;${DISK}3&quot;
 sudo mkfs.vfat -F 16 &quot;${DISK}12&quot;
 </code></pre>
 
-<h2 id="install-nv-uboot-fb:faa8511e92a2ce55340472c17643405e">Install nv_uboot_fb</h2>
+<h2 id="install-nv-uboot-fb">Install nv_uboot_fb</h2>
 
 <p>Download and install the nv_uboot bootloader with framebuffer support in the SD</p>
 
@@ -200,7 +200,7 @@ sudo mkfs.vfat -F 16 &quot;${DISK}12&quot;
 sudo dd if=nv_uboot.kpart of=&quot;${DISK}1&quot;
 </code></pre>
 
-<h2 id="prepare-the-rootfs-for-encryption:faa8511e92a2ce55340472c17643405e">Prepare the rootfs for encryption</h2>
+<h2 id="prepare-the-rootfs-for-encryption">Prepare the rootfs for encryption</h2>
 
 <p>Create key file. Store this file safely!</p>
 
@@ -220,9 +220,9 @@ sudo mkfs.ext4 /dev/mapper/alarm_rootfs
 sudo cryptsetup close alarm_rootfs
 </code></pre>
 
-<h2 id="install-arch-linux-kernel-and-custom-files:faa8511e92a2ce55340472c17643405e">Install Arch Linux, kernel and custom files</h2>
+<h2 id="install-arch-linux-kernel-and-custom-files">Install Arch Linux, kernel and custom files</h2>
 
-<h3 id="mount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e">Mount LUKS and boot partition</h3>
+<h3 id="mount-luks-and-boot-partition">Mount LUKS and boot partition</h3>
 
 <pre><code>sudo cryptsetup luksOpen &quot;${DISK}3&quot; alarm_rootfs -y --key-file rootfs.key
 sudo mount /dev/mapper/alarm_rootfs root
@@ -281,7 +281,7 @@ mkdir -p root/root/files/
 cp -R files/arch/* root/root/files/
 </code></pre>
 
-<h3 id="umount-luks-and-boot-partition:faa8511e92a2ce55340472c17643405e">Umount LUKS and boot partition</h3>
+<h3 id="umount-luks-and-boot-partition">Umount LUKS and boot partition</h3>
 
 <pre><code>sudo umount mnt
 sudo umount root
@@ -289,7 +289,7 @@ sudo cryptsetup close alarm_rootfs
 sync
 </code></pre>
 
-<h1 id="arch-configuration:faa8511e92a2ce55340472c17643405e">Arch configuration</h1>
+<h1 id="arch-configuration">Arch configuration</h1>
 
 <p>Boot your Chromebook and press Ctrl-U to boot from external drive. After you
 see U-Boot start, press any kay to interrupt the boot process and type the
@@ -329,7 +329,7 @@ visudo # uncomment the wheel group
 usermod -a -G wheel $USERNAME
 </code></pre>
 
-<h1 id="post-install:faa8511e92a2ce55340472c17643405e">Post install</h1>
+<h1 id="post-install">Post install</h1>
 
 <p>At this point you should have a bootable full disk encryption Arch Install.
 In the following lines I will detail the post installation steps I follow to
@@ -446,7 +446,7 @@ cp ALARM/.* ~
 sh vim_setup.sh
 </code></pre>
 
-<h1 id="todo:faa8511e92a2ce55340472c17643405e">TODO</h1>
+<h1 id="todo">TODO</h1>
 
 <p>There are only two things which I find missing from my installation.</p>
 
@@ -461,7 +461,7 @@ SD card slot in the chromebook is placed very close to the end of the board, so
 half of the SD card sticks out; it doesn&rsquo;t look nice and I fear for the SD card
 getting stuck somewhere when moving my chromebook around.</p>
 
-<h1 id="resources:faa8511e92a2ce55340472c17643405e">Resources</h1>
+<h1 id="resources">Resources</h1>
 
 <p>The installation process of Arch Linux on the Samsung Chromebook is taken from
 [1], [2] and [3]. The procedure to compile and install of kernel 3.8 is taken from
@@ -537,7 +537,7 @@ can be found at [5].</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2015. All rights reserved. 
+                    &copy; 2016. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>No more unencrypted emails to gpg contacts &middot; Dhole&#39;s blog</title>
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">No more unencrypted emails to gpg contacts</h1>  
+			
+			<time class="li-article-date">Saturday, June 4, 2016</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/debian">debian</a> </span>
+
+</div>
+
+                    </header>
+                    <section>
+                        <p>I have been using mutt for about half a year already and I&rsquo;m very happy with it.
+The previous email client I used was Thunderbird (with the Enigmail extension to
+handle GPG).  There were two main reasons that made me switch.</p>
+
+<p>The first one was that I often would like to check my email while I&rsquo;m offline,
+and it seems that Thunderbird is not very good at this.  Sometimes not all my
+email would have been downloaded (just the headers), and I also found it
+frustrating that after marking more than 50 emails as read while offline, they
+would be marked as unread again once I went back online.  With mutt I&rsquo;m using
+mbsync (which apparently is faster than offlineimap) to sync my email to a local
+folder with a cron job.  I couldn&rsquo;t be happier.</p>
+
+<p>The other issue was that I like having many filters, and it was tedious to
+customize filters in Thunderbird:  there&rsquo;s no way to copy a filter and modify
+it, and there&rsquo;s a limit in the combinations of ANDs and ORs for fields.  I&rsquo;m
+using procmail now, which allows me save the filter configuration in plaintext
+and define patterns with more flexibility.</p>
+
+<p>The setup for mutt took several weeks, but I never felt that I couldn&rsquo;t
+accomplish what I wanted (unlike in Thunderbird).  I&rsquo;m using mutt with several
+python and bash scripts that I wrote.</p>
+
+<p>But the reason for this post is an issue that I believe happens in every email
+client (or should I say, MUA, to be more precise).  I&rsquo;ve seen it happening to
+people using both Thunderbird and mutt, and I bet it has happened in other
+cases: sending an email to someone for which you have their GPG key unencrypted
+unwillingly.  I&rsquo;ve seen this happening in email replies with several
+participants: after a few encrypted messages are exchanged, someone replies in
+the clear, quoting all the previous messages.  I tried to avoid this by
+configuring mutt to encrypt and sign by default, forcing me to set sign only
+manually before sending every email that I can&rsquo;t send encrypted (I&rsquo;d like to
+send all my emails encrypted, but not everybody has a GPG key :( ).</p>
+
+<p>So what happened?  I got so used to sending many unencrypted emails that I would
+press &ldquo;P S&rdquo; (PGP setting, Sign only) before sending emails as a reflex act.  And
+I sent an email unencrypted to a friend for which I have his GPG key :(</p>
+
+<p>So I though: It&rsquo;s a very rare case to want to send an unencrypted email to
+someone for which you have their GPG key.  I think extensions like Enigmail
+should give you a warning when this happens, to alert you about it.  In my case,
+I solved it with a python script that inspects the email, and, if it&rsquo;s
+unencrypted and the recipient/s is/are in your GPG keyring it warns you about it
+and returns an error.  The script stores a temporary file with the Message-ID so
+that if you run it again with the same email it will properly send the email
+without returning an error.</p>
+
+<p>Now, I only needed to configure mutt to use this script as the sendmail command:</p>
+
+<pre><code>per_account:set sendmail  = &quot;$HOME/bin/check-mail-gpg /usr/bin/msmtp -a $my_email&quot;
+</code></pre>
+
+<p>And here goes the python script <code>check-mail-gpg</code>:</p>
+
+<pre><code>#! /usr/bin/python3
+
+import os
+import sys
+import subprocess
+import email.parser
+from email.header import decode_header
+from email.utils import parseaddr
+
+STATUS_FILE = '/tmp/check-mail-gpg.tmp'
+
+def dec(header):
+    head = decode_header(header)
+    if len(head) == 1 and head[0][1] == None:
+        return head[0][0]
+    else:
+        return ''.join([h.decode(enc) if enc else h.decode('ascii') \
+                for (h,enc) in head])
+
+def send_mail(mail):
+    print('Calling external email client to send the email...')
+    #return -1 # testing mode
+    p = subprocess.Popen(sys.argv[1:], stdin=subprocess.PIPE)
+    p.stdin.write(mail.encode('utf-8'))
+    p.stdin.close()
+    return p.wait()
+
+def main():
+    mail = sys.stdin.read()
+    heads = email.parser.Parser().parsestr(mail, headersonly=True)
+    content = heads['Content-Type'].split(';')[0].strip()
+    print('Content is:', content)
+
+    if content == 'multipart/encrypted':
+        print('Ok: encrypted mail, we can return now...')
+        sys.exit(send_mail(mail))
+
+    addrs = [parseaddr(addr) for addr in heads['To'].split(',')]
+    print('Found emails:', addrs)
+
+    gpg_cnt = 0
+    for name, addr in addrs:
+        print('Looking for', addr, 'in the keyring...')
+        res = subprocess.call(['gpg', '--list-keys', addr],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if res == 0:
+            gpg_cnt += 1
+
+    if gpg_cnt == 0:
+        print('Ok: no email found in the gpg keyring, we can return now...')
+        sys.exit(send_mail(mail))
+
+    if not os.path.exists(STATUS_FILE):
+        open(STATUS_FILE, 'w').close()
+
+    msg_id = heads['Message-ID']
+    msg_id_prev = ''
+    with open(STATUS_FILE, 'r') as f:
+        msg_id_prev = f.read()
+
+    if msg_id.strip() == msg_id_prev.strip():
+        sys.exit(send_mail(mail))
+    else:
+        with open(STATUS_FILE, 'w') as f:
+            f.write(msg_id)
+        print('Alert: trying to send an unencrypted email to', addrs,
+                ', for which some gpg keys were found in the keyring!')
+        print('Try again if you are sure to send this message unencrypted.')
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
+</code></pre>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/"> Reproducible builds on Debian for GSoC 2015, 1st update</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2016. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

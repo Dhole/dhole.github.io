@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
         <title>Reproducible builds on Debian for GSoC 2015, 1st update &middot; Dhole&#39;s blog</title>
-        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' type='text/css'>
-        <link rel="stylesheet" href="https://dhole.github.io//libraries/normalize.3.0.1.css" />
-        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -19,16 +19,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/post/"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/categories/"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/about/"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +38,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/post/"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/categories/"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/about/"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,9 +63,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io//categories/debian">debian</a> </span>
+<span><a href="https://dhole.github.io/categories/debian">debian</a> </span>
 
-<span><a href="https://dhole.github.io//categories/reproducible-builds">reproducible builds</a> </span>
+<span><a href="https://dhole.github.io/categories/reproducible-builds">reproducible builds</a> </span>
 
 </div>
 
@@ -75,16 +75,16 @@ Categories:
 
 <p>This is the second blog post I&rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my <a href="/post/reproducible_builds_debian_gsoc2015/">first post</a>)</p>
 
-<h1 id="status-update:9dd7692613c73a03fe141b93ffcffb14">Status update</h1>
+<h1 id="status-update">Status update</h1>
 
-<h2 id="first-month:9dd7692613c73a03fe141b93ffcffb14">First month</h2>
+<h2 id="first-month">First month</h2>
 
 <p>It&rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata. This can lead to unreproducible results when there is timezone variation between builds (easily fixed setting the timezone to UTC before the compression happens). In some cases the compressed files are generated during the build, and thus add build times in the metadata of compressed files (in this case the creation date of the files needs to be normalized somehow).</p>
 
 <p>As explained in my <a href="https://wiki.debian.org/SummerOfCode2015/StudentApplications/EduardSanou">application</a>, I finished exams on the end of June, that&rsquo;s why I chose to work on small fixes first, so that I could make the most out of my time between studying and finishing university projects and reports.
 I&rsquo;m happy with my first month, as I have worked as originally planned. Actually, my estimation of the number of bugs I could submit every week was surpassed in reality!</p>
 
-<h2 id="second-month:9dd7692613c73a03fe141b93ffcffb14">Second month</h2>
+<h2 id="second-month">Second month</h2>
 
 <p>Once the university was over, I started dedicating myself fully to the project. This allowed me to start working on toolchain fixes, following my original plan on working with timestamp related issues.</p>
 
@@ -98,7 +98,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
 
 <p>I have also continued working on fixing individual packages affected by timestamps, random orderings (such as the ones from listing hash keys) and locale depending orderings; I have tagged packages in our infrastructure to note what kind of issue makes them unreproducible; I have updated some parts of the <a href="https://wiki.debian.org/ReproducibleBuilds">Reproducible Builds Wiki</a>.</p>
 
-<h1 id="impressions-about-reproducible-builds:9dd7692613c73a03fe141b93ffcffb14">Impressions about reproducible builds</h1>
+<h1 id="impressions-about-reproducible-builds">Impressions about reproducible builds</h1>
 
 <p>The work I did during the first month felt a bit tedious sometimes: it didn&rsquo;t require much creativity or thinking as most of the fixes where quite mechanical, following a recipe. After I became free from university duties, I started looking into less trivial issues, which require more deep investigation and feel more rewarding once they are fixed. I also worked on toolchain fixes, which need more work and need more care. Fixing toolchain packages feels particularly rewarding because they can cause many packages to become reproducible at once.</p>
 
@@ -106,7 +106,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
 
 <p>I want to add that I&rsquo;m still amazed by the awesome infrastructure set up for the reproducible builds project. The team is using a Jenkins machine to continuously build packages to check for reproducibility, with irc notifications for changes, and also with a really useful web interface to list all the packages organized by issues that allows exploring them individually with all the available information. Also not only the infrastructure is used to build Debian amd64 packages, but also FreeBSD, NetBSD, <a href="https://reproducible.debian.net/openwrt/openwrt.html">OpenWRT</a>, <a href="https://reproducible.debian.net/coreboot/coreboot.html">coreboot</a> and lately Debian armhf with the help of a few new arm nodes.</p>
 
-<h1 id="impressions-about-working-on-a-free-software-project:9dd7692613c73a03fe141b93ffcffb14">Impressions about working on a free software project</h1>
+<h1 id="impressions-about-working-on-a-free-software-project">Impressions about working on a free software project</h1>
 
 <p>This was my first time working on a community driven free software project and I&rsquo;ve learned so many things.</p>
 
@@ -118,7 +118,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
 
 <p>I&rsquo;ve been told by my mentor that for difficult cases there exist a <a href="https://www.debian.org/devel/tech-ctte">Debian committee</a> that helps mediate on disagreements, but that is only used as a last option, probably when the discussion gets heated up.</p>
 
-<h2 id="personal-experience:9dd7692613c73a03fe141b93ffcffb14">Personal experience</h2>
+<h2 id="personal-experience">Personal experience</h2>
 
 <p>Overall I&rsquo;m very happy to finally having set my foot in the free software community, where I&rsquo;m able to contribute to the kind of software I have been using for years. The sense of community in Debian is really big, and everyone is invited to participate.</p>
 
@@ -161,7 +161,8 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        &nbsp;
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/check_mail_gpg/"> No more unencrypted emails to gpg contacts</a>
                     
                 </div>
             </div>
@@ -181,7 +182,7 @@ I&rsquo;m happy with my first month, as I have worked as originally planned. Act
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2015. All rights reserved. 
+                    &copy; 2016. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
