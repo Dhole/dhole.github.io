@@ -42,7 +42,7 @@ So what happened?  I got so used to sending many unencrypted emails that I would
 press "P S" (PGP setting, Sign only) before sending emails as a reflex act.  And
 I sent an email unencrypted to a friend for which I have his GPG key :(
 
-So I though: It's a very rare case to want to send an unencrypted email to
+So I thought: It's a very rare case to want to send an unencrypted email to
 someone for which you have their GPG key.  I think extensions like Enigmail
 should give you a warning when this happens, to alert you about it.  In my case,
 I solved it with a python script that inspects the email, and, if it's

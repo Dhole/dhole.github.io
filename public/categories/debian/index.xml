@@ -52,7 +52,7 @@ send all my emails encrypted, but not everybody has a GPG key :( ).&lt;/p&gt;
 press &amp;ldquo;P S&amp;rdquo; (PGP setting, Sign only) before sending emails as a reflex act.  And
 I sent an email unencrypted to a friend for which I have his GPG key :(&lt;/p&gt;
 
-&lt;p&gt;So I though: It&amp;rsquo;s a very rare case to want to send an unencrypted email to
+&lt;p&gt;So I thought: It&amp;rsquo;s a very rare case to want to send an unencrypted email to
 someone for which you have their GPG key.  I think extensions like Enigmail
 should give you a warning when this happens, to alert you about it.  In my case,
 I solved it with a python script that inspects the email, and, if it&amp;rsquo;s
