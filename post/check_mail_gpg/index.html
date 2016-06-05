@@ -69,7 +69,9 @@ Categories:
 
                     </header>
                     <section>
-                        <p>I have been using mutt for about half a year already and I&rsquo;m very happy with it.
+                        
+
+<p>I have been using mutt for about half a year already and I&rsquo;m very happy with it.
 The previous email client I used was Thunderbird (with the Enigmail extension to
 handle GPG).  There were two main reasons that made me switch.</p>
 
@@ -195,6 +197,36 @@ def main():
 if __name__ == '__main__':
     main()
 </code></pre>
+
+<h1 id="update">Update</h1>
+
+<p>I&rsquo;ve been told about the option <code>crypt_opportunistic_encrypt</code> in mutt, which
+provides a feature very similar to what I was looking for.  This option will
+automatically enable encryption when the recipient has a GPG key in your
+keyring.</p>
+
+<p>From mutt&rsquo;s man page:</p>
+
+<blockquote>
+<p>3.41. crypt_opportunistic_encrypt</p>
+
+<p>Type: boolean Default: no</p>
+
+<p>Setting this variable will cause Mutt to automatically enable and disable
+encryption, based on whether all message recipient keys can be located by
+mutt.</p>
+
+<p>When this option is enabled, mutt will determine the encryption setting each
+time the TO, CC, and BCC lists are edited. If $edit_headers is set, mutt will
+also do so each time the message is edited.</p>
+
+<p>While this is set, encryption settings can&rsquo;t be manually changed. The pgp or
+smime menus provide an option to disable the option for a particular message.</p>
+
+<p>If $crypt_autoencrypt or $crypt_replyencrypt enable encryption for a message,
+this option will be disabled for the message. It can be manually re-enabled in
+the pgp or smime menus. (Crypto only)</p>
+</blockquote>
 
                     </section>
                 </article>
