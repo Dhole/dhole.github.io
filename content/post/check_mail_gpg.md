@@ -133,3 +133,31 @@ def main():
 if __name__ == '__main__':
     main()
 ```
+
+# Update
+
+I've been told about the option `crypt_opportunistic_encrypt` in mutt, which
+provides a feature very similar to what I was looking for.  This option will
+automatically enable encryption when the recipient has a GPG key in your
+keyring.
+
+From mutt's man page:
+
+> 3.41. crypt_opportunistic_encrypt
+> 
+> Type: boolean Default: no
+> 
+> Setting this variable will cause Mutt to automatically enable and disable
+> encryption, based on whether all message recipient keys can be located by
+> mutt.
+> 
+> When this option is enabled, mutt will determine the encryption setting each
+> time the TO, CC, and BCC lists are edited. If $edit_headers is set, mutt will
+> also do so each time the message is edited.
+> 
+> While this is set, encryption settings can't be manually changed. The pgp or
+> smime menus provide an option to disable the option for a particular message.
+> 
+> If $crypt_autoencrypt or $crypt_replyencrypt enable encryption for a message,
+> this option will be disabled for the message. It can be manually re-enabled in
+> the pgp or smime menus. (Crypto only) 

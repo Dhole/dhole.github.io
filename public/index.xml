@@ -15,7 +15,9 @@
       <pubDate>Sat, 04 Jun 2016 00:13:28 +0200</pubDate>
       
       <guid>https://dhole.github.io/post/check_mail_gpg/</guid>
-      <description>&lt;p&gt;I have been using mutt for about half a year already and I&amp;rsquo;m very happy with it.
+      <description>
+
+&lt;p&gt;I have been using mutt for about half a year already and I&amp;rsquo;m very happy with it.
 The previous email client I used was Thunderbird (with the Enigmail extension to
 handle GPG).  There were two main reasons that made me switch.&lt;/p&gt;
 
@@ -141,6 +143,36 @@ def main():
 if __name__ == &#39;__main__&#39;:
     main()
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;update&#34;&gt;Update&lt;/h1&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been told about the option &lt;code&gt;crypt_opportunistic_encrypt&lt;/code&gt; in mutt, which
+provides a feature very similar to what I was looking for.  This option will
+automatically enable encryption when the recipient has a GPG key in your
+keyring.&lt;/p&gt;
+
+&lt;p&gt;From mutt&amp;rsquo;s man page:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;3.41. crypt_opportunistic_encrypt&lt;/p&gt;
+
+&lt;p&gt;Type: boolean Default: no&lt;/p&gt;
+
+&lt;p&gt;Setting this variable will cause Mutt to automatically enable and disable
+encryption, based on whether all message recipient keys can be located by
+mutt.&lt;/p&gt;
+
+&lt;p&gt;When this option is enabled, mutt will determine the encryption setting each
+time the TO, CC, and BCC lists are edited. If $edit_headers is set, mutt will
+also do so each time the message is edited.&lt;/p&gt;
+
+&lt;p&gt;While this is set, encryption settings can&amp;rsquo;t be manually changed. The pgp or
+smime menus provide an option to disable the option for a particular message.&lt;/p&gt;
+
+&lt;p&gt;If $crypt_autoencrypt or $crypt_replyencrypt enable encryption for a message,
+this option will be disabled for the message. It can be manually re-enabled in
+the pgp or smime menus. (Crypto only)&lt;/p&gt;
+&lt;/blockquote&gt;
 </description>
     </item>
     
