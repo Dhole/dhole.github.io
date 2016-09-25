@@ -1,0 +1,72 @@
+==================================================================
+https://keybase.io/dhole
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://dhole.github.io
+  * I am dhole (https://keybase.io/dhole) on keybase.
+  * I have a public key with fingerprint 9BC4 8EF8 08DB 91DD 158D  559D 4FA4 57A1 8514 CC63
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "01015343ddddce9d3be57d773fc643710c0bce94f17319cee5835924dee12e03b21d0a",
+            "fingerprint": "9bc48ef808db91dd158d559d4fa457a18514cc63",
+            "host": "keybase.io",
+            "key_id": "4fa457a18514cc63",
+            "kid": "01015343ddddce9d3be57d773fc643710c0bce94f17319cee5835924dee12e03b21d0a",
+            "uid": "d892b6e40639c3c13e032c87ed085d19",
+            "username": "dhole"
+        },
+        "service": {
+            "hostname": "dhole.github.io",
+            "protocol": "https:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1474764220,
+    "expire_in": 157680000,
+    "prev": "1fdfc2aadc7f5cb60ca397ff0b16d3ed687449e3119f8494e999f6822c749bee",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtUmtQVGUYXuQmG4yLFMrFCwe5aIjnflkaSScUfzSJMEEtup1zvu/AQdqz7s0Y
+BFZNC2UUmkloFBFbcxxcZASSUhwpGxjLJC2MkgHN5JJd2GgmdKHOoZrpRz97/3zz
+ve/zPN/zfPPWRgTq9AEvePKb9z35mRjw6bigyx9d8kk5IiigDDGWI9vh3AFLAbQ7
+zNtlgBgRFEMxiiAJoJYIOUAIkGIAwxCSSJMEg6EiKqh9UsIYAuNECCmWoDicBBBi
+OEQJAccAyiNpiCRbiqDNapMtDlWWE0SShRKLskDgMAAwigUUxQFS4kmK4TGWwkhR
+pAmVWKzYNYZqTuDtMF1W1J56Mc/Z+w/8/+zbOScHWA4XaEiiNMGJhIgRKgQXWQYC
+lKUAxmlAO7RZ+Fehhi5WSiFSkYaoLZcsQu1XtRj/HqcXyY5ip/BXHqtNcSiiUqoO
+ix0Oq92okR1lVg29Ewrmv3XMgmwB6j+qDBe02WXFghgxFSk6ZE0YIxmSoUkcR9MQ
++JpVtkGzrCEohmZRtbR3oEuVxCQgiThfwAORkShRoFGRJzhGklABowEBAc0yJMlB
+AsM4iSU5EnIcJ9EsjosMyQkQIlq0HRYFMRKqT75I1bTLRRbe4bSpufXV8+KDdAF6
+XUjwPG3DdPowwz9rd8+4YMYQ66zxNIz88HW49/RFrzG2MXl63Td3K/05z5hX5+8J
+RHxKzthHz94KuJ3kuQRN8zsG4tyjGcODUVTdc01Dv3rW3drygLJuclcYrvrsF1r3
+T5+4EZbQNBy9Zvpkx6mn1yzY+MUd04jJ3fPU5vC9zbvZCU+JbiPZE3H6w8DC3IwL
+xy5lBtV4ztMvJ7zjW2TtjbVsiozuwh0pq4Yrft8x4PZ+u6fW23Jmrf9BNv9Sa3Vl
+zsJtEa6Snt3tg7/k7/9+5lH3QMWZ97ra05iHB1pWXM+sy705/n6cuTHox4LU+pg3
+DwV317vf7r48AJuXRQ+bvH/0jpe/y82/+Zaub7xwMv5FqaEuaXTm4KnUj7fM1D8c
+OT5rWri1KeHqiOtQ8pXH8e1LVp5r/LzTcJ7ZlX1ueU/orsoN7qb711uWvWHQj5l2
+lh6+nzAbHntw7dGQ7jZTWfXKkBttAatXeQe9xwMTYg73FiZ6o6d8rimpP6cq2ZD8
+hN//ZeTy9MQOj35sduZaXMTiFGeOTjGsCC5KScq8Uts6+crzvhK3P2OqKm7obJTY
++MGF3KHQ3K13jUtdnWmPF6dP2G9n3duQlZj41c9H+0Kvvb4oEs+r2lsQ4xNTw6SJ
+A515uc2Xs7KPNW6jOqLMDa1Hvmvb3HeEPFuad2f9bFd/YvnSeueJmrLo3+iGR81K
+5sn1+0rclZP9F3/y/wk=
+=mKDW
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/dhole
+
+==================================================================
