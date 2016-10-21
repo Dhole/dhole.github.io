@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Alpine on Dhole&#39;s blog</title>
+    <link>https://dhole.github.io/categories/alpine/</link>
+    <description>Recent content in Alpine on Dhole&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Oct 2016 15:03:12 -0700</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/alpine/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Raspberry Pi 2 I/O benchmarks</title>
+      <link>https://dhole.github.io/post/raspberry_pi_benchmarks/</link>
+      <pubDate>Thu, 20 Oct 2016 15:03:12 -0700</pubDate>
+      
+      <guid>https://dhole.github.io/post/raspberry_pi_benchmarks/</guid>
+      <description>
+
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;I&amp;rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services.
+I&amp;rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to
+achieve my goals, which will be mainly setting up a git server and a backup
+server.&lt;/p&gt;
+
+&lt;h1 id=&#34;choice-of-distribution&#34;&gt;Choice of distribution&lt;/h1&gt;
+
+&lt;p&gt;I discovered &lt;a href=&#34;https://alpinelinux.org/&#34;&gt;Alpine Linux&lt;/a&gt; while searching
+lightweight distributions for the Raspberry Pi.  This is a lovely small Linux
+distribution: one of the first things I noticed is how fast it runs on the rpi
+due to using a ram filesystem by default; this is specially noticeable in the
+rpi because usualy the operating system resides in the micro-SD card, which
+usually offers really slow read and write operations.  Another really nice
+feature is that it&amp;rsquo;s security-oriented, and as such the kernel is patched with
+&lt;a href=&#34;https://www.grsecurity.net/&#34;&gt;grsecurity/PaX&lt;/a&gt; and the userland binaries (I
+understand that means all packages- too) are compiled with hardening features:
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Position-independent_code&#34;&gt;Position Independent Executables
+(PIE)&lt;/a&gt; and &lt;a href=&#34;http://wiki.osdev.org/Stack_Smashing_Protector&#34;&gt;stack
+smashing protection&lt;/a&gt;.  This
+distribution uses &lt;a href=&#34;https://www.musl-libc.org/&#34;&gt;musl libc&lt;/a&gt; instead of glib and
+&lt;a href=&#34;https://busybox.net/&#34;&gt;busybox&lt;/a&gt; to provide all the basic utilities, decisions
+that help making it small and lightweight.  I should also mention that OpenRC is
+used for the init system (instead of following the current trend of switching to
+systemd).&lt;/p&gt;
+
+&lt;h1 id=&#34;personal-requirements&#34;&gt;Personal requirements&lt;/h1&gt;
+
+&lt;p&gt;Now that I have choosen a distribution, I have a requierement for my setup: all
+the personal data I store in the rpi (git repositories, backups, websites) must
+be encrypted in the disk.&lt;/p&gt;
+
+&lt;h1 id=&#34;benchmarks&#34;&gt;Benchmarks&lt;/h1&gt;
+
+&lt;p&gt;I&amp;rsquo;m mainly interested in how fast files can be written on the encrypted
+partition.  This files will probably be comming from the network.&lt;/p&gt;
+
+&lt;h2 id=&#34;setup&#34;&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;To achieve better I/O and to avoid damaging the micro-SD (or a USB stick) I&amp;rsquo;m
+gonna use an external USB hard disk (western digital My Passport) for storage.&lt;/p&gt;
+
+&lt;p&gt;The rpi will be connected to a 1 Gbps switch (which shouldn&amp;rsquo;t matter considering
+that the Ethernet interface of all the rpis are &lt;sup&gt;10&lt;/sup&gt;&amp;frasl;&lt;sub&gt;100&lt;/sub&gt; Mbps).&lt;/p&gt;
+
+&lt;h2 id=&#34;cryptsetup&#34;&gt;cryptsetup&lt;/h2&gt;
+
+&lt;p&gt;This test will give us the encryption/decryption speeds running from memory, so
+they represent an upper bound on the write speed that we can achieve in disk.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;lizard:~/git/public/test.git$ cryptsetup benchmark
+# Tests are approximate using memory only (no storage IO).
+PBKDF2-sha1        42555 iterations per second for 256-bit key
+PBKDF2-sha256      73635 iterations per second for 256-bit key
+PBKDF2-sha512      33781 iterations per second for 256-bit key
+PBKDF2-ripemd160   36408 iterations per second for 256-bit key
+PBKDF2-whirlpool   11497 iterations per second for 256-bit key
+#  Algorithm | Key |  Encryption |  Decryption
+     aes-cbc   128b    12.6 MiB/s    14.8 MiB/s
+ serpent-cbc   128b           N/A           N/A
+ twofish-cbc   128b           N/A           N/A
+     aes-cbc   256b    10.9 MiB/s    11.2 MiB/s
+ serpent-cbc   256b           N/A           N/A
+ twofish-cbc   256b           N/A           N/A
+     aes-xts   256b    14.6 MiB/s    14.4 MiB/s
+ serpent-xts   256b           N/A           N/A
+ twofish-xts   256b           N/A           N/A
+     aes-xts   512b    11.2 MiB/s    11.0 MiB/s
+ serpent-xts   512b           N/A           N/A
+ twofish-xts   512b           N/A           N/A
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;My encrypted partition is using AES-XTS (this mode is the current
+recommendation) with 256 bit keys, so we achieve &lt;strong&gt;14.6 MiB/s&lt;/strong&gt; and &lt;strong&gt;14.4
+MiB/s&lt;/strong&gt; for encryption (write) and decryption (read).&lt;/p&gt;
+
+&lt;h2 id=&#34;fat32-write-speed-dd&#34;&gt;FAT32 write speed (dd)&lt;/h2&gt;
+
+&lt;p&gt;For a baseline comparison, I test the write speed of an unencrypted FAT32 file
+system.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;lizard:/mnt/slowpoke# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+4096+0 records in
+4095+1 records out
+real    11m 28.47s
+user    0m 0.08s
+sys     0m 45.25s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The measurement of write speed is &lt;strong&gt;5.95 MB/s&lt;/strong&gt;.  That&amp;rsquo;s much lower than what I
+was expecting.  I achieve write speeds of 40 MB/s from my laptop on the same
+external disk.&lt;/p&gt;
+
+&lt;h2 id=&#34;luks-ext4-write-speed-dd&#34;&gt;LUKS + ext4 write speed (dd)&lt;/h2&gt;
+
+&lt;p&gt;This test should theoretically give upper bound results for my setup.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;lizard:/mnt/wd_ext# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+4096+0 records in
+4096+0 records out
+real    21m 23.27s
+user    0m 0.07s
+sys     0m 36.35s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That&amp;rsquo;s just &lt;strong&gt;3.19 MB/s&lt;/strong&gt;, which is extremely slow.&lt;/p&gt;
+
+&lt;h2 id=&#34;luks-ext4-rsync&#34;&gt;LUKS + ext4 (rsync)&lt;/h2&gt;
+
+&lt;p&gt;This test measures exactly one of my use cases, as I plan to use rsync for my
+backups.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; % rsync -v --progress movie.mp4 green-local:/mnt/disk/
+movie.mp4
+  1,991,346,871 100%    9.17MB/s    0:03:27 (xfr#1, to-chk=0/1)
+
+sent 1,991,833,155 bytes  received 35 bytes  9,553,156.79 bytes/sec
+total size is 1,991,346,871  speedup is 1.00
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Surprisingly this one gives much better results than the &lt;code&gt;dd&lt;/code&gt; tests: &lt;strong&gt;9.11
+MB/s&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h1 id=&#34;conclusions&#34;&gt;Conclusions&lt;/h1&gt;
+
+&lt;p&gt;First of all, I don&amp;rsquo;t understand why the &lt;code&gt;dd&lt;/code&gt; tests performed so badly.  The
+&lt;code&gt;fsync&lt;/code&gt; option should make sure that data is written to disk and not cached:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;        conv=fsync      Physically write data out before finishing
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Maybe there&amp;rsquo;s a bug in busybox&amp;rsquo;s dd?  Or am I missing something?  I was
+expecting to find the same speeds as LUKS encryption speeds here.&lt;/p&gt;
+
+&lt;p&gt;The rsync test gives us the best performance we could expect, considering that
+the limit comes from the 100 Mbit Ethernet, we won&amp;rsquo;t be able to transfer data at
+higher speeds than ~10 MB/s.  In this case, the usage of disk encryption isn&amp;rsquo;t
+making things slower.&lt;/p&gt;
+
+&lt;p&gt;So overall I&amp;rsquo;m expecting to get transfer speeds (including writing to the
+encrypted partition) of about &lt;strong&gt;9-10 MB/s&lt;/strong&gt;.  I&amp;rsquo;m happy with this and I believe
+it should suit my needs, as I plan do backups every day in my local network.&lt;/p&gt;
+
+&lt;p&gt;In the next post I will explain how to set up a git server with a web interface.
+Stay tunned!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
