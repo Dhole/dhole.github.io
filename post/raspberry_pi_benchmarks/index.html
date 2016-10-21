@@ -84,9 +84,9 @@ server.</p>
 
 <p>I discovered <a href="https://alpinelinux.org/">Alpine Linux</a> while searching
 lightweight distributions for the Raspberry Pi.  This is a lovely small Linux
-distribution: one of the first things I noticed is how fast it runs on the rpi
+distribution: one of the first things I noticed is how fast it runs on the RPi
 due to using a ram filesystem by default; this is specially noticeable in the
-rpi because usualy the operating system resides in the micro-SD card, which
+RPi because usualy the operating system resides in the micro-SD card, which
 usually offers really slow read and write operations.  Another really nice
 feature is that it&rsquo;s security-oriented, and as such the kernel is patched with
 <a href="https://www.grsecurity.net/">grsecurity/PaX</a> and the userland binaries (I
@@ -103,7 +103,7 @@ systemd).</p>
 <h1 id="personal-requirements">Personal requirements</h1>
 
 <p>Now that I have choosen a distribution, I have a requierement for my setup: all
-the personal data I store in the rpi (git repositories, backups, websites) must
+the personal data I store in the RPi (git repositories, backups, websites) must
 be encrypted in the disk.</p>
 
 <h1 id="benchmarks">Benchmarks</h1>
@@ -116,8 +116,8 @@ partition.  This files will probably be comming from the network.</p>
 <p>To achieve better I/O and to avoid damaging the micro-SD (or a USB stick) I&rsquo;m
 gonna use an external USB hard disk (western digital My Passport) for storage.</p>
 
-<p>The rpi will be connected to a 1 Gbps switch (which shouldn&rsquo;t matter considering
-that the Ethernet interface of all the rpis are <sup>10</sup>&frasl;<sub>100</sub> Mbps).</p>
+<p>The RPi will be connected to a 1 Gbps switch (which shouldn&rsquo;t matter considering
+that the Ethernet interface of all the RPis are <sup>10</sup>&frasl;<sub>100</sub> Mbps).</p>
 
 <h2 id="cryptsetup">cryptsetup</h2>
 
