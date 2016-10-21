@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Raspberry Pi 2 I/O benchmarks &middot; Dhole&#39;s blog</title>
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Raspberry Pi 2 I/O benchmarks</h1>  
+			
+			<time class="li-article-date">Thursday, October 20, 2016</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
+
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
+
+</div>
+
+                    </header>
+                    <section>
+                        
+
+<h1 id="introduction">Introduction</h1>
+
+<p>I&rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services.
+I&rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to
+achieve my goals, which will be mainly setting up a git server and a backup
+server.</p>
+
+<h1 id="choice-of-distribution">Choice of distribution</h1>
+
+<p>I discovered <a href="https://alpinelinux.org/">Alpine Linux</a> while searching
+lightweight distributions for the Raspberry Pi.  This is a lovely small Linux
+distribution: one of the first things I noticed is how fast it runs on the rpi
+due to using a ram filesystem by default; this is specially noticeable in the
+rpi because usualy the operating system resides in the micro-SD card, which
+usually offers really slow read and write operations.  Another really nice
+feature is that it&rsquo;s security-oriented, and as such the kernel is patched with
+<a href="https://www.grsecurity.net/">grsecurity/PaX</a> and the userland binaries (I
+understand that means all packages- too) are compiled with hardening features:
+<a href="https://en.wikipedia.org/wiki/Position-independent_code">Position Independent Executables
+(PIE)</a> and <a href="http://wiki.osdev.org/Stack_Smashing_Protector">stack
+smashing protection</a>.  This
+distribution uses <a href="https://www.musl-libc.org/">musl libc</a> instead of glib and
+<a href="https://busybox.net/">busybox</a> to provide all the basic utilities, decisions
+that help making it small and lightweight.  I should also mention that OpenRC is
+used for the init system (instead of following the current trend of switching to
+systemd).</p>
+
+<h1 id="personal-requirements">Personal requirements</h1>
+
+<p>Now that I have choosen a distribution, I have a requierement for my setup: all
+the personal data I store in the rpi (git repositories, backups, websites) must
+be encrypted in the disk.</p>
+
+<h1 id="benchmarks">Benchmarks</h1>
+
+<p>I&rsquo;m mainly interested in how fast files can be written on the encrypted
+partition.  This files will probably be comming from the network.</p>
+
+<h2 id="setup">Setup</h2>
+
+<p>To achieve better I/O and to avoid damaging the micro-SD (or a USB stick) I&rsquo;m
+gonna use an external USB hard disk (western digital My Passport) for storage.</p>
+
+<p>The rpi will be connected to a 1 Gbps switch (which shouldn&rsquo;t matter considering
+that the Ethernet interface of all the rpis are <sup>10</sup>&frasl;<sub>100</sub> Mbps).</p>
+
+<h2 id="cryptsetup">cryptsetup</h2>
+
+<p>This test will give us the encryption/decryption speeds running from memory, so
+they represent an upper bound on the write speed that we can achieve in disk.</p>
+
+<pre><code>lizard:~/git/public/test.git$ cryptsetup benchmark
+# Tests are approximate using memory only (no storage IO).
+PBKDF2-sha1        42555 iterations per second for 256-bit key
+PBKDF2-sha256      73635 iterations per second for 256-bit key
+PBKDF2-sha512      33781 iterations per second for 256-bit key
+PBKDF2-ripemd160   36408 iterations per second for 256-bit key
+PBKDF2-whirlpool   11497 iterations per second for 256-bit key
+#  Algorithm | Key |  Encryption |  Decryption
+     aes-cbc   128b    12.6 MiB/s    14.8 MiB/s
+ serpent-cbc   128b           N/A           N/A
+ twofish-cbc   128b           N/A           N/A
+     aes-cbc   256b    10.9 MiB/s    11.2 MiB/s
+ serpent-cbc   256b           N/A           N/A
+ twofish-cbc   256b           N/A           N/A
+     aes-xts   256b    14.6 MiB/s    14.4 MiB/s
+ serpent-xts   256b           N/A           N/A
+ twofish-xts   256b           N/A           N/A
+     aes-xts   512b    11.2 MiB/s    11.0 MiB/s
+ serpent-xts   512b           N/A           N/A
+ twofish-xts   512b           N/A           N/A
+</code></pre>
+
+<p>My encrypted partition is using AES-XTS (this mode is the current
+recommendation) with 256 bit keys, so we achieve <strong>14.6 MiB/s</strong> and <strong>14.4
+MiB/s</strong> for encryption (write) and decryption (read).</p>
+
+<h2 id="fat32-write-speed-dd">FAT32 write speed (dd)</h2>
+
+<p>For a baseline comparison, I test the write speed of an unencrypted FAT32 file
+system.</p>
+
+<pre><code>lizard:/mnt/slowpoke# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+4096+0 records in
+4095+1 records out
+real    11m 28.47s
+user    0m 0.08s
+sys     0m 45.25s
+</code></pre>
+
+<p>The measurement of write speed is <strong>5.95 MB/s</strong>.  That&rsquo;s much lower than what I
+was expecting.  I achieve write speeds of 40 MB/s from my laptop on the same
+external disk.</p>
+
+<h2 id="luks-ext4-write-speed-dd">LUKS + ext4 write speed (dd)</h2>
+
+<p>This test should theoretically give upper bound results for my setup.</p>
+
+<pre><code>lizard:/mnt/wd_ext# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+4096+0 records in
+4096+0 records out
+real    21m 23.27s
+user    0m 0.07s
+sys     0m 36.35s
+</code></pre>
+
+<p>That&rsquo;s just <strong>3.19 MB/s</strong>, which is extremely slow.</p>
+
+<h2 id="luks-ext4-rsync">LUKS + ext4 (rsync)</h2>
+
+<p>This test measures exactly one of my use cases, as I plan to use rsync for my
+backups.</p>
+
+<pre><code> % rsync -v --progress movie.mp4 green-local:/mnt/disk/
+movie.mp4
+  1,991,346,871 100%    9.17MB/s    0:03:27 (xfr#1, to-chk=0/1)
+
+sent 1,991,833,155 bytes  received 35 bytes  9,553,156.79 bytes/sec
+total size is 1,991,346,871  speedup is 1.00
+</code></pre>
+
+<p>Surprisingly this one gives much better results than the <code>dd</code> tests: <strong>9.11
+MB/s</strong>.</p>
+
+<h1 id="conclusions">Conclusions</h1>
+
+<p>First of all, I don&rsquo;t understand why the <code>dd</code> tests performed so badly.  The
+<code>fsync</code> option should make sure that data is written to disk and not cached:</p>
+
+<pre><code>        conv=fsync      Physically write data out before finishing
+</code></pre>
+
+<p>Maybe there&rsquo;s a bug in busybox&rsquo;s dd?  Or am I missing something?  I was
+expecting to find the same speeds as LUKS encryption speeds here.</p>
+
+<p>The rsync test gives us the best performance we could expect, considering that
+the limit comes from the 100 Mbit Ethernet, we won&rsquo;t be able to transfer data at
+higher speeds than ~10 MB/s.  In this case, the usage of disk encryption isn&rsquo;t
+making things slower.</p>
+
+<p>So overall I&rsquo;m expecting to get transfer speeds (including writing to the
+encrypted partition) of about <strong>9-10 MB/s</strong>.  I&rsquo;m happy with this and I believe
+it should suit my needs, as I plan do backups every day in my local network.</p>
+
+<p>In the next post I will explain how to set up a git server with a web interface.
+Stay tunned!</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://dhole.github.io/post/check_mail_gpg/"> No more unencrypted emails to gpg contacts</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2016. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
