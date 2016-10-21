@@ -28,9 +28,9 @@ server.&lt;/p&gt;
 
 &lt;p&gt;I discovered &lt;a href=&#34;https://alpinelinux.org/&#34;&gt;Alpine Linux&lt;/a&gt; while searching
 lightweight distributions for the Raspberry Pi.  This is a lovely small Linux
-distribution: one of the first things I noticed is how fast it runs on the rpi
+distribution: one of the first things I noticed is how fast it runs on the RPi
 due to using a ram filesystem by default; this is specially noticeable in the
-rpi because usualy the operating system resides in the micro-SD card, which
+RPi because usualy the operating system resides in the micro-SD card, which
 usually offers really slow read and write operations.  Another really nice
 feature is that it&amp;rsquo;s security-oriented, and as such the kernel is patched with
 &lt;a href=&#34;https://www.grsecurity.net/&#34;&gt;grsecurity/PaX&lt;/a&gt; and the userland binaries (I
@@ -47,7 +47,7 @@ systemd).&lt;/p&gt;
 &lt;h1 id=&#34;personal-requirements&#34;&gt;Personal requirements&lt;/h1&gt;
 
 &lt;p&gt;Now that I have choosen a distribution, I have a requierement for my setup: all
-the personal data I store in the rpi (git repositories, backups, websites) must
+the personal data I store in the RPi (git repositories, backups, websites) must
 be encrypted in the disk.&lt;/p&gt;
 
 &lt;h1 id=&#34;benchmarks&#34;&gt;Benchmarks&lt;/h1&gt;
@@ -60,8 +60,8 @@ partition.  This files will probably be comming from the network.&lt;/p&gt;
 &lt;p&gt;To achieve better I/O and to avoid damaging the micro-SD (or a USB stick) I&amp;rsquo;m
 gonna use an external USB hard disk (western digital My Passport) for storage.&lt;/p&gt;
 
-&lt;p&gt;The rpi will be connected to a 1 Gbps switch (which shouldn&amp;rsquo;t matter considering
-that the Ethernet interface of all the rpis are &lt;sup&gt;10&lt;/sup&gt;&amp;frasl;&lt;sub&gt;100&lt;/sub&gt; Mbps).&lt;/p&gt;
+&lt;p&gt;The RPi will be connected to a 1 Gbps switch (which shouldn&amp;rsquo;t matter considering
+that the Ethernet interface of all the RPis are &lt;sup&gt;10&lt;/sup&gt;&amp;frasl;&lt;sub&gt;100&lt;/sub&gt; Mbps).&lt;/p&gt;
 
 &lt;h2 id=&#34;cryptsetup&#34;&gt;cryptsetup&lt;/h2&gt;
 
