@@ -60,6 +60,24 @@
                             <div class="li-article">
                                 <article>
     <header>
+        <h2><a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/">Raspberry Pi: setting up alpine, lighttpd and letsencrypt </a></h2>
+        <time class="li-article-date">Friday, October 21, 2016</time>
+    </header>
+    <section class="li-article-section">
+        Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt. Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide. After instalation, we add a new user which we will use for logging in: adduser green After logging in with our new user (using password) we&rsquo;ll add some ssh public keys for future logins: vi /home/green/.ssh/authorized_keys I will also download some configurations files for Vim and tmux: curl https://gitlab.com/dhole/dot_files/raw/master/.tmux.conf -o ~/.tmux.conf curl https://gitlab.com/dhole/dot_files/raw/master/.airline_tmux -o ~/.airline_tmux curl https://gitlab.com/dhole/dot_files/raw/master/.vimrc_basic -o ~/.vimrc Now we will log in as root and store the files persistently: lbu add /home/green/.ssh/authorized_keys lbu add /home/green/.vimrc lbu add /home/green/.tmux.conf lbu add /home/green/.airline_tmux From now on everything will be done as root.
+    </section>
+    <footer>
+        <a href='https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/'>More</a>
+    </footer>
+</article>
+
+                            </div>
+                        
+                    
+                                            
+                            <div class="li-article">
+                                <article>
+    <header>
         <h2><a href="https://dhole.github.io/post/raspberry_pi_benchmarks/">Raspberry Pi 2 I/O benchmarks </a></h2>
         <time class="li-article-date">Thursday, October 20, 2016</time>
     </header>
@@ -216,8 +234,6 @@
 </article>
 
                             </div>
-                        
-                    
                         
                     
                 </div>
