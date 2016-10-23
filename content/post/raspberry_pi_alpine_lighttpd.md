@@ -326,3 +326,6 @@ Finally, commit all the changes to store them permanently:
 ```
 lbu commit
 ```
+
+In the next post I will explain how to use the RPi as a git server, with cgit a
+the web interface.

@@ -1,10 +1,24 @@
 +++
 Categories = ["alpine", "raspberry pi", "git"]
 date = "2016-10-21T15:14:27-07:00"
-draft = true
-title = "Raspberry Pi: git server"
+title = "Raspberry Pi: git server (cgit with lighttpd)"
 
 +++
+
+# Introduction
+
+In this post I will explain what's required to set up a git server.  We'll use
+[cgit](https://git.zx2c4.com/cgit/) to provide a web interface and also allow
+cloning/pulling through HTTP.  ssh will also be available for cloning/pulling
+and pushing.
+
+We'll setup two groups of repositories: a public and a private one.
+
+# Cgit
+
+First of all, we'll create a *git* user and move it's home to the encrypted
+partition.  For convenience we'll also link that home directory to `/git`.  This
+will be useful to have nice paths for our repositories.
 
 ```
 adduser git
@@ -16,9 +30,23 @@ cp -R /home/green/.ssh /home/git/.ssh
 chown -R git:git /home/git/
 ln -s /home/git/ /git
 ```
-apk add highlight git cgit
 
+Finally we install git, cgit and highlight (to provide code highlighting in
+cgit).
+
+```
+apk add highlight git cgit
+```
+
+cgit comes with a default script that will call highlight, but unfortunately
+it's expecting version 2 of highlight.  We'll copy the script and change it to
+use the argument format of version 3 of highlight (the line is already there, we
+just comment the version 2 and uncomment the version 3).
+
+```
 cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
+vim /usr/lib/cgit/filters/syntax-highlighting3.sh
+```
 
 ```
 --- /usr/lib/cgit/filters/syntax-highlighting.sh
@@ -35,9 +63,17 @@ cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-hig
 +exec highlight --force -f -I -O xhtml -S "$EXTENSION" 2>/dev/null
 ```
 
+```
 lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh
+```
 
+Highlight uses css to color the code, so we need to add some lines specifying
+the colors we want to the css file cgit uses.
+
+```
+cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
 vim /usr/share/webapps/cgit/cgit-highlight.css
+```
 
 ```
 --- /usr/share/webapps/cgit/cgit.css
@@ -65,11 +101,24 @@ vim /usr/share/webapps/cgit/cgit-highlight.css
 +.hl.kwd { color:#010181; }
 ```
 
+```
 lbu add /usr/share/webapps/cgit/cgit-highlight.css
+```
 
-# We will setup two folders, one for private repos and the other one for public
-# repos.
+As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.
+
+```
+cd /mnt/disk
+mkdir -p git/pub
+mkdir -p git/priv
+```
+
+For our setup we will use a general cgit configuration files, and two
+specialized ones for the public and private folders.
+
+```
 mkdir /etc/cgit
+```
 
 ```
 cat << EOF > /etc/cgit/cgitrc
@@ -91,7 +140,6 @@ clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git@lizard.kyasuka.c
 EOF
 ```
 
-
 ```
 cat << EOF > /etc/cgit/cgitrc.public
 include=/etc/cgit/cgitrc
@@ -101,7 +149,6 @@ scan-path=/mnt/distk/git/pub/
 EOF
 ```
 
-
 ```
 cat << EOF > /etc/cgit/cgitrc.private
 include=/etc/cgit/cgitrc
@@ -110,6 +157,12 @@ section=Private
 scan-path=/mnt/disk/git/priv/
 EOF
 ```
+
+And finally, we create a new configuration file for lighttpd which will call
+cgit via the cgi interface.  We are using the public and private configurations
+by setting the `CGIT_CONFIG` environment variable depending on the url path.
+Remember to follow the previous post to add http auth to the urls that start
+with `/private`.
 
 ```
 cat << EOF > /etc/lighttpd/cgit.conf
@@ -159,18 +212,18 @@ include "cgit.conf"
 ...
 ```
 
-cd /mnt/disk
-mkdir -p git/pub
-mkdir -p git/priv
+We commit every file to permanent storage and restart the lighttpd server.
 
-
+```
 lbu commit
 rc-service lighttpd start
+```
 
-## git usage
+We should be able to visit the cgit interface from a browser now.
 
-# I'm using the following script to generate empty repositories:
+# Git usage
 
+To automate making new repositories I wrote the following simple script:
 
 ```
 cat << EOF > /home/git/new-repo.sh
@@ -232,15 +285,19 @@ echo "git push -u origin master"
 EOF
 ```
 
-# Now, to create a new git repository I just do the following from my local
-# machine:
+Now, to create a new git repository I just do the following from my local
+machine:
 
+```
 ssh git@lizard.kyasuka.com
 ./new-repo.sh pub test "This is a test repository"
 exit
+```
 
 # Bonus
 
+I had a few repositories in github, so I wrote the following python script to
+clone them all into my server.  This will make the transition easier :)
 
 ```
 cat << EOF > /mnt/disk/git/import-github.py
@@ -268,3 +325,7 @@ for i in range(0, len(clone_urls)):
         desc_file.write(descriptions[i] + '\n')
 EOF
 ```
+
+And that concludes my initial series of posts on setting up my Raspberry Pi 2 to
+act as a git server.  I'm planning on setting up a backup system in the future,
+so I may write about it too :)

@@ -318,6 +318,9 @@ parititon.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;lbu commit
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the next post I will explain how to use the RPi as a git server, with cgit a
+the web interface.&lt;/p&gt;
 </description>
     </item>
     
