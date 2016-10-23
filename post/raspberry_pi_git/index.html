@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Raspberry Pi: git server (cgit with lighttpd) &middot; Dhole&#39;s blog</title>
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Raspberry Pi: git server (cgit with lighttpd)</h1>  
+			
+			<time class="li-article-date">Friday, October 21, 2016</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
+
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
+
+<span><a href="https://dhole.github.io/categories/git">git</a> </span>
+
+</div>
+
+                    </header>
+                    <section>
+                        
+
+<h1 id="introduction">Introduction</h1>
+
+<p>In this post I will explain what&rsquo;s required to set up a git server.  We&rsquo;ll use
+<a href="https://git.zx2c4.com/cgit/">cgit</a> to provide a web interface and also allow
+cloning/pulling through HTTP.  ssh will also be available for cloning/pulling
+and pushing.</p>
+
+<p>We&rsquo;ll setup two groups of repositories: a public and a private one.</p>
+
+<h1 id="cgit">Cgit</h1>
+
+<p>First of all, we&rsquo;ll create a <em>git</em> user and move it&rsquo;s home to the encrypted
+partition.  For convenience we&rsquo;ll also link that home directory to <code>/git</code>.  This
+will be useful to have nice paths for our repositories.</p>
+
+<pre><code>adduser git
+lbu add /home/git/
+
+rmdir /home/git
+ln -sf /mnt/disk/git /home/
+cp -R /home/green/.ssh /home/git/.ssh
+chown -R git:git /home/git/
+ln -s /home/git/ /git
+</code></pre>
+
+<p>Finally we install git, cgit and highlight (to provide code highlighting in
+cgit).</p>
+
+<pre><code>apk add highlight git cgit
+</code></pre>
+
+<p>cgit comes with a default script that will call highlight, but unfortunately
+it&rsquo;s expecting version 2 of highlight.  We&rsquo;ll copy the script and change it to
+use the argument format of version 3 of highlight (the line is already there, we
+just comment the version 2 and uncomment the version 3).</p>
+
+<pre><code>cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
+vim /usr/lib/cgit/filters/syntax-highlighting3.sh
+</code></pre>
+
+<pre><code>--- /usr/lib/cgit/filters/syntax-highlighting.sh
++++ /usr/lib/cgit/filters/syntax-highlighting3.sh
+@@ -115,7 +115,7 @@
+ # found (for example) on EPEL 6.
+ #
+ # This is for version 2
+-exec highlight --force -f -I -X -S &quot;$EXTENSION&quot; 2&gt;/dev/null
++#exec highlight --force -f -I -X -S &quot;$EXTENSION&quot; 2&gt;/dev/null
+
+ # This is for version 3
+-#exec highlight --force -f -I -O xhtml -S &quot;$EXTENSION&quot; 2&gt;/dev/null
++exec highlight --force -f -I -O xhtml -S &quot;$EXTENSION&quot; 2&gt;/dev/null
+</code></pre>
+
+<pre><code>lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh
+</code></pre>
+
+<p>Highlight uses css to color the code, so we need to add some lines specifying
+the colors we want to the css file cgit uses.</p>
+
+<pre><code>cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
+vim /usr/share/webapps/cgit/cgit-highlight.css
+</code></pre>
+
+<pre><code>--- /usr/share/webapps/cgit/cgit.css
++++ /usr/share/webapps/cgit/cgit-highlight.css
+@@ -809,3 +809,20 @@
+ div#cgit table.ssdiff td.space div {
+        min-height: 3em;
+ }
++
++body.hl { background-color:#e0eaee; }
++pre.hl  { color:#000000; background-color:#e0eaee; font-size:10pt; font-family:'Courier New',monospace;}
++.hl.num { color:#b07e00; }
++.hl.esc { color:#ff00ff; }
++.hl.str { color:#bf0303; }
++.hl.pps { color:#818100; }
++.hl.slc { color:#838183; font-style:italic; }
++.hl.com { color:#838183; font-style:italic; }
++.hl.ppc { color:#008200; }
++.hl.opt { color:#000000; }
++.hl.ipl { color:#0057ae; }
++.hl.lin { color:#555555; }
++.hl.kwa { color:#000000; font-weight:bold; }
++.hl.kwb { color:#0057ae; }
++.hl.kwc { color:#000000; font-weight:bold; }
++.hl.kwd { color:#010181; }
+</code></pre>
+
+<pre><code>lbu add /usr/share/webapps/cgit/cgit-highlight.css
+</code></pre>
+
+<p>As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.</p>
+
+<pre><code>cd /mnt/disk
+mkdir -p git/pub
+mkdir -p git/priv
+</code></pre>
+
+<p>For our setup we will use a general cgit configuration files, and two
+specialized ones for the public and private folders.</p>
+
+<pre><code>mkdir /etc/cgit
+</code></pre>
+
+<pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc
+css=/cgit/cgit-highlight.css
+logo=/cgit/cgit.png
+source-filter=/usr/lib/cgit/filters/syntax-highlighting3.sh
+enable-git-config=1
+enable-index-owner=0
+enable-commit-graph=1
+enable-index-links=1
+enable-log-linecount=1
+enable-log-filecount=1
+#cache-size=512
+robots=noindex, nofollow
+root-title=Dhole's git repositories
+root-desc=my personal repositories
+remove-suffix=1
+clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git@lizard.kyasuka.com:
+EOF
+</code></pre>
+
+<pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.public
+include=/etc/cgit/cgitrc
+clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git-kyasuka/git/pub
+section=Public
+scan-path=/mnt/distk/git/pub/
+EOF
+</code></pre>
+
+<pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.private
+include=/etc/cgit/cgitrc
+clone-prefix=https://lizard.kyasuka.com/private/cgit/cgit.cgi ssh://git-kyasuka/git/priv
+section=Private
+scan-path=/mnt/disk/git/priv/
+EOF
+</code></pre>
+
+<p>And finally, we create a new configuration file for lighttpd which will call
+cgit via the cgi interface.  We are using the public and private configurations
+by setting the <code>CGIT_CONFIG</code> environment variable depending on the url path.
+Remember to follow the previous post to add http auth to the urls that start
+with <code>/private</code>.</p>
+
+<pre><code>cat &lt;&lt; EOF &gt; /etc/lighttpd/cgit.conf
+server.modules += (&quot;mod_redirect&quot;,
+                   &quot;mod_alias&quot;,
+                   &quot;mod_cgi&quot;,
+                   &quot;mod_fastcgi&quot;,
+                   &quot;mod_rewrite&quot;,
+                   &quot;mod_alias&quot;,)
+
+var.webapps = &quot;/usr/share/webapps/&quot;
+$HTTP[&quot;url&quot;] =~ &quot;^/cgit&quot; {
+        setenv.add-environment += ( &quot;CGIT_CONFIG&quot; =&gt; &quot;/etc/cgit/cgitrc.public&quot; )
+        server.document-root = webapps
+        server.indexfiles = (&quot;cgit.cgi&quot;)
+        cgi.assign = (&quot;cgit.cgi&quot; =&gt; &quot;&quot;)
+        mimetype.assign = ( &quot;.css&quot; =&gt; &quot;text/css&quot; )
+}
+url.redirect = (
+        &quot;^/git/(.*)$&quot; =&gt; &quot;/cgit/cgit.cgi/$1&quot;,
+)
+$HTTP[&quot;url&quot;] =~ &quot;^/private/cgit&quot; {
+        #url.rewrite-once = ( &quot;^/private/cgit/(.*)&quot; =&gt; &quot;/cgit/$1&quot; )
+        alias.url = ( &quot;/private/&quot; =&gt; &quot;/usr/share/webapps/&quot; )
+        setenv.add-environment += ( &quot;CGIT_CONFIG&quot; =&gt; &quot;/etc/cgit/cgitrc.private&quot; )
+        server.document-root = webapps
+        server.indexfiles = (&quot;cgit.cgi&quot;)
+        cgi.assign = (&quot;cgit.cgi&quot; =&gt; &quot;&quot;)
+        mimetype.assign = ( &quot;.css&quot; =&gt; &quot;text/css&quot; )
+}
+EOF
+</code></pre>
+
+<pre><code>vim /etc/lighttpd/lighttpd.conf
+</code></pre>
+
+<pre><code>...
+...
+# {{{ includes
+...
+include &quot;cgit.conf&quot;
+...
+# }}}
+...
+...
+</code></pre>
+
+<p>We commit every file to permanent storage and restart the lighttpd server.</p>
+
+<pre><code>lbu commit
+rc-service lighttpd start
+</code></pre>
+
+<p>We should be able to visit the cgit interface from a browser now.</p>
+
+<h1 id="git-usage">Git usage</h1>
+
+<p>To automate making new repositories I wrote the following simple script:</p>
+
+<pre><code>cat &lt;&lt; EOF &gt; /home/git/new-repo.sh
+#! /bin/sh
+
+folder=$1
+name=$2
+desc=&quot;$3&quot;
+
+if [ &quot;$#&quot; -ne 3 ]
+then
+        echo &quot;Usage: $0 {pub|priv} name description&quot;
+        exit 1
+fi
+
+if [ ! -d &quot;$folder&quot; ]
+then
+        echo &quot;Group $folder doesn't exist.  use pub/priv.&quot;
+        exit 2
+fi
+
+if [ -d &quot;$folder/$name&quot;.git ]
+then
+        echo &quot;$folder/$name already exists&quot;
+        exit 3
+fi
+
+if [ &quot;$desc&quot; == &quot;&quot; ]
+then
+        echo &quot;Please, provide a description in the 3rd argument.&quot;
+        exit 4
+fi
+
+cd &quot;$folder&quot;
+mkdir &quot;$name&quot;.git
+cd &quot;$name&quot;.git
+git init --bare
+echo &quot;$desc&quot; &gt; description
+
+echo &quot;$folder/$name is ready.&quot;
+echo &quot;&quot;
+echo &quot;  Create a new repository&quot;
+echo &quot;&quot;
+echo &quot;git clone ssh://git-kyasuka/git/$folder/$name.git&quot;
+echo &quot;cd $name&quot;
+echo &quot;touch README.md&quot;
+echo &quot;git add README.md&quot;
+echo &quot;git commit -m \&quot;add README\&quot;&quot;
+echo &quot;git push -u origin master&quot;
+echo &quot;&quot;
+echo &quot;  Existing folder or Git repository&quot;
+echo &quot;&quot;
+echo &quot;cd existing_folder&quot;
+echo &quot;git init&quot;
+echo &quot;git remote add origin ssh://git-kyasuka/git/$folder/$name.git&quot;
+echo &quot;git add .&quot;
+echo &quot;git commit&quot;
+echo &quot;git push -u origin master&quot;
+EOF
+</code></pre>
+
+<p>Now, to create a new git repository I just do the following from my local
+machine:</p>
+
+<pre><code>ssh git@lizard.kyasuka.com
+./new-repo.sh pub test &quot;This is a test repository&quot;
+exit
+</code></pre>
+
+<h1 id="bonus">Bonus</h1>
+
+<p>I had a few repositories in github, so I wrote the following python script to
+clone them all into my server.  This will make the transition easier :)</p>
+
+<pre><code>cat &lt;&lt; EOF &gt; /mnt/disk/git/import-github.py
+#! /usr/bin/env python3
+
+from urllib.request import urlopen, urlretrieve
+import os, sys, re, subprocess
+
+user = sys.argv[1]
+content = urlopen('https://api.github.com/users/%s/repos' % user).read()
+content = content.decode('UTF-8')
+
+
+clone_urls = re.findall('(?&lt;=&quot;clone_url&quot;:)&quot;[^&quot;]*&quot;,', content)
+descriptions = re.findall('(?&lt;=&quot;description&quot;:)(null|&quot;[^&quot;]*&quot;),', content)
+
+descriptions = [d.replace('&quot;', '') for d in descriptions]
+os.chdir('pub')
+for i in range(0, len(clone_urls)):
+    clone_url = clone_urls[i]
+    clone_url = clone_url[1:-2]
+    print(clone_url)
+    subprocess.run(['git', 'clone', '--bare', clone_url])
+    with open(clone_url.split('/')[-1] + '/description', 'w') as desc_file:
+        desc_file.write(descriptions[i] + '\n')
+EOF
+</code></pre>
+
+<p>And that concludes my initial series of posts on setting up my Raspberry Pi 2 to
+act as a git server.  I&rsquo;m planning on setting up a backup system in the future,
+so I may write about it too :)</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2016. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

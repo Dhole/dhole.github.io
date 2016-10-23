@@ -10,6 +10,321 @@
     <atom:link href="https://dhole.github.io/categories/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Raspberry Pi: git server (cgit with lighttpd)</title>
+      <link>https://dhole.github.io/post/raspberry_pi_git/</link>
+      <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
+      
+      <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
+      <description>
+
+&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;In this post I will explain what&amp;rsquo;s required to set up a git server.  We&amp;rsquo;ll use
+&lt;a href=&#34;https://git.zx2c4.com/cgit/&#34;&gt;cgit&lt;/a&gt; to provide a web interface and also allow
+cloning/pulling through HTTP.  ssh will also be available for cloning/pulling
+and pushing.&lt;/p&gt;
+
+&lt;p&gt;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&lt;/p&gt;
+
+&lt;h1 id=&#34;cgit&#34;&gt;Cgit&lt;/h1&gt;
+
+&lt;p&gt;First of all, we&amp;rsquo;ll create a &lt;em&gt;git&lt;/em&gt; user and move it&amp;rsquo;s home to the encrypted
+partition.  For convenience we&amp;rsquo;ll also link that home directory to &lt;code&gt;/git&lt;/code&gt;.  This
+will be useful to have nice paths for our repositories.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;adduser git
+lbu add /home/git/
+
+rmdir /home/git
+ln -sf /mnt/disk/git /home/
+cp -R /home/green/.ssh /home/git/.ssh
+chown -R git:git /home/git/
+ln -s /home/git/ /git
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally we install git, cgit and highlight (to provide code highlighting in
+cgit).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;apk add highlight git cgit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;cgit comes with a default script that will call highlight, but unfortunately
+it&amp;rsquo;s expecting version 2 of highlight.  We&amp;rsquo;ll copy the script and change it to
+use the argument format of version 3 of highlight (the line is already there, we
+just comment the version 2 and uncomment the version 3).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
+vim /usr/lib/cgit/filters/syntax-highlighting3.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;--- /usr/lib/cgit/filters/syntax-highlighting.sh
++++ /usr/lib/cgit/filters/syntax-highlighting3.sh
+@@ -115,7 +115,7 @@
+ # found (for example) on EPEL 6.
+ #
+ # This is for version 2
+-exec highlight --force -f -I -X -S &amp;quot;$EXTENSION&amp;quot; 2&amp;gt;/dev/null
++#exec highlight --force -f -I -X -S &amp;quot;$EXTENSION&amp;quot; 2&amp;gt;/dev/null
+
+ # This is for version 3
+-#exec highlight --force -f -I -O xhtml -S &amp;quot;$EXTENSION&amp;quot; 2&amp;gt;/dev/null
++exec highlight --force -f -I -O xhtml -S &amp;quot;$EXTENSION&amp;quot; 2&amp;gt;/dev/null
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Highlight uses css to color the code, so we need to add some lines specifying
+the colors we want to the css file cgit uses.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
+vim /usr/share/webapps/cgit/cgit-highlight.css
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;--- /usr/share/webapps/cgit/cgit.css
++++ /usr/share/webapps/cgit/cgit-highlight.css
+@@ -809,3 +809,20 @@
+ div#cgit table.ssdiff td.space div {
+        min-height: 3em;
+ }
++
++body.hl { background-color:#e0eaee; }
++pre.hl  { color:#000000; background-color:#e0eaee; font-size:10pt; font-family:&#39;Courier New&#39;,monospace;}
++.hl.num { color:#b07e00; }
++.hl.esc { color:#ff00ff; }
++.hl.str { color:#bf0303; }
++.hl.pps { color:#818100; }
++.hl.slc { color:#838183; font-style:italic; }
++.hl.com { color:#838183; font-style:italic; }
++.hl.ppc { color:#008200; }
++.hl.opt { color:#000000; }
++.hl.ipl { color:#0057ae; }
++.hl.lin { color:#555555; }
++.hl.kwa { color:#000000; font-weight:bold; }
++.hl.kwb { color:#0057ae; }
++.hl.kwc { color:#000000; font-weight:bold; }
++.hl.kwd { color:#010181; }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;lbu add /usr/share/webapps/cgit/cgit-highlight.css
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cd /mnt/disk
+mkdir -p git/pub
+mkdir -p git/priv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For our setup we will use a general cgit configuration files, and two
+specialized ones for the public and private folders.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;mkdir /etc/cgit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/cgit/cgitrc
+css=/cgit/cgit-highlight.css
+logo=/cgit/cgit.png
+source-filter=/usr/lib/cgit/filters/syntax-highlighting3.sh
+enable-git-config=1
+enable-index-owner=0
+enable-commit-graph=1
+enable-index-links=1
+enable-log-linecount=1
+enable-log-filecount=1
+#cache-size=512
+robots=noindex, nofollow
+root-title=Dhole&#39;s git repositories
+root-desc=my personal repositories
+remove-suffix=1
+clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git@lizard.kyasuka.com:
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/cgit/cgitrc.public
+include=/etc/cgit/cgitrc
+clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git-kyasuka/git/pub
+section=Public
+scan-path=/mnt/distk/git/pub/
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/cgit/cgitrc.private
+include=/etc/cgit/cgitrc
+clone-prefix=https://lizard.kyasuka.com/private/cgit/cgit.cgi ssh://git-kyasuka/git/priv
+section=Private
+scan-path=/mnt/disk/git/priv/
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, we create a new configuration file for lighttpd which will call
+cgit via the cgi interface.  We are using the public and private configurations
+by setting the &lt;code&gt;CGIT_CONFIG&lt;/code&gt; environment variable depending on the url path.
+Remember to follow the previous post to add http auth to the urls that start
+with &lt;code&gt;/private&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /etc/lighttpd/cgit.conf
+server.modules += (&amp;quot;mod_redirect&amp;quot;,
+                   &amp;quot;mod_alias&amp;quot;,
+                   &amp;quot;mod_cgi&amp;quot;,
+                   &amp;quot;mod_fastcgi&amp;quot;,
+                   &amp;quot;mod_rewrite&amp;quot;,
+                   &amp;quot;mod_alias&amp;quot;,)
+
+var.webapps = &amp;quot;/usr/share/webapps/&amp;quot;
+$HTTP[&amp;quot;url&amp;quot;] =~ &amp;quot;^/cgit&amp;quot; {
+        setenv.add-environment += ( &amp;quot;CGIT_CONFIG&amp;quot; =&amp;gt; &amp;quot;/etc/cgit/cgitrc.public&amp;quot; )
+        server.document-root = webapps
+        server.indexfiles = (&amp;quot;cgit.cgi&amp;quot;)
+        cgi.assign = (&amp;quot;cgit.cgi&amp;quot; =&amp;gt; &amp;quot;&amp;quot;)
+        mimetype.assign = ( &amp;quot;.css&amp;quot; =&amp;gt; &amp;quot;text/css&amp;quot; )
+}
+url.redirect = (
+        &amp;quot;^/git/(.*)$&amp;quot; =&amp;gt; &amp;quot;/cgit/cgit.cgi/$1&amp;quot;,
+)
+$HTTP[&amp;quot;url&amp;quot;] =~ &amp;quot;^/private/cgit&amp;quot; {
+        #url.rewrite-once = ( &amp;quot;^/private/cgit/(.*)&amp;quot; =&amp;gt; &amp;quot;/cgit/$1&amp;quot; )
+        alias.url = ( &amp;quot;/private/&amp;quot; =&amp;gt; &amp;quot;/usr/share/webapps/&amp;quot; )
+        setenv.add-environment += ( &amp;quot;CGIT_CONFIG&amp;quot; =&amp;gt; &amp;quot;/etc/cgit/cgitrc.private&amp;quot; )
+        server.document-root = webapps
+        server.indexfiles = (&amp;quot;cgit.cgi&amp;quot;)
+        cgi.assign = (&amp;quot;cgit.cgi&amp;quot; =&amp;gt; &amp;quot;&amp;quot;)
+        mimetype.assign = ( &amp;quot;.css&amp;quot; =&amp;gt; &amp;quot;text/css&amp;quot; )
+}
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;vim /etc/lighttpd/lighttpd.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;...
+...
+# {{{ includes
+...
+include &amp;quot;cgit.conf&amp;quot;
+...
+# }}}
+...
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We commit every file to permanent storage and restart the lighttpd server.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;lbu commit
+rc-service lighttpd start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We should be able to visit the cgit interface from a browser now.&lt;/p&gt;
+
+&lt;h1 id=&#34;git-usage&#34;&gt;Git usage&lt;/h1&gt;
+
+&lt;p&gt;To automate making new repositories I wrote the following simple script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /home/git/new-repo.sh
+#! /bin/sh
+
+folder=$1
+name=$2
+desc=&amp;quot;$3&amp;quot;
+
+if [ &amp;quot;$#&amp;quot; -ne 3 ]
+then
+        echo &amp;quot;Usage: $0 {pub|priv} name description&amp;quot;
+        exit 1
+fi
+
+if [ ! -d &amp;quot;$folder&amp;quot; ]
+then
+        echo &amp;quot;Group $folder doesn&#39;t exist.  use pub/priv.&amp;quot;
+        exit 2
+fi
+
+if [ -d &amp;quot;$folder/$name&amp;quot;.git ]
+then
+        echo &amp;quot;$folder/$name already exists&amp;quot;
+        exit 3
+fi
+
+if [ &amp;quot;$desc&amp;quot; == &amp;quot;&amp;quot; ]
+then
+        echo &amp;quot;Please, provide a description in the 3rd argument.&amp;quot;
+        exit 4
+fi
+
+cd &amp;quot;$folder&amp;quot;
+mkdir &amp;quot;$name&amp;quot;.git
+cd &amp;quot;$name&amp;quot;.git
+git init --bare
+echo &amp;quot;$desc&amp;quot; &amp;gt; description
+
+echo &amp;quot;$folder/$name is ready.&amp;quot;
+echo &amp;quot;&amp;quot;
+echo &amp;quot;  Create a new repository&amp;quot;
+echo &amp;quot;&amp;quot;
+echo &amp;quot;git clone ssh://git-kyasuka/git/$folder/$name.git&amp;quot;
+echo &amp;quot;cd $name&amp;quot;
+echo &amp;quot;touch README.md&amp;quot;
+echo &amp;quot;git add README.md&amp;quot;
+echo &amp;quot;git commit -m \&amp;quot;add README\&amp;quot;&amp;quot;
+echo &amp;quot;git push -u origin master&amp;quot;
+echo &amp;quot;&amp;quot;
+echo &amp;quot;  Existing folder or Git repository&amp;quot;
+echo &amp;quot;&amp;quot;
+echo &amp;quot;cd existing_folder&amp;quot;
+echo &amp;quot;git init&amp;quot;
+echo &amp;quot;git remote add origin ssh://git-kyasuka/git/$folder/$name.git&amp;quot;
+echo &amp;quot;git add .&amp;quot;
+echo &amp;quot;git commit&amp;quot;
+echo &amp;quot;git push -u origin master&amp;quot;
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, to create a new git repository I just do the following from my local
+machine:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ssh git@lizard.kyasuka.com
+./new-repo.sh pub test &amp;quot;This is a test repository&amp;quot;
+exit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&#34;bonus&#34;&gt;Bonus&lt;/h1&gt;
+
+&lt;p&gt;I had a few repositories in github, so I wrote the following python script to
+clone them all into my server.  This will make the transition easier :)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;cat &amp;lt;&amp;lt; EOF &amp;gt; /mnt/disk/git/import-github.py
+#! /usr/bin/env python3
+
+from urllib.request import urlopen, urlretrieve
+import os, sys, re, subprocess
+
+user = sys.argv[1]
+content = urlopen(&#39;https://api.github.com/users/%s/repos&#39; % user).read()
+content = content.decode(&#39;UTF-8&#39;)
+
+
+clone_urls = re.findall(&#39;(?&amp;lt;=&amp;quot;clone_url&amp;quot;:)&amp;quot;[^&amp;quot;]*&amp;quot;,&#39;, content)
+descriptions = re.findall(&#39;(?&amp;lt;=&amp;quot;description&amp;quot;:)(null|&amp;quot;[^&amp;quot;]*&amp;quot;),&#39;, content)
+
+descriptions = [d.replace(&#39;&amp;quot;&#39;, &#39;&#39;) for d in descriptions]
+os.chdir(&#39;pub&#39;)
+for i in range(0, len(clone_urls)):
+    clone_url = clone_urls[i]
+    clone_url = clone_url[1:-2]
+    print(clone_url)
+    subprocess.run([&#39;git&#39;, &#39;clone&#39;, &#39;--bare&#39;, clone_url])
+    with open(clone_url.split(&#39;/&#39;)[-1] + &#39;/description&#39;, &#39;w&#39;) as desc_file:
+        desc_file.write(descriptions[i] + &#39;\n&#39;)
+EOF
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that concludes my initial series of posts on setting up my Raspberry Pi 2 to
+act as a git server.  I&amp;rsquo;m planning on setting up a backup system in the future,
+so I may write about it too :)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
       <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
@@ -318,6 +633,9 @@ parititon.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;lbu commit
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the next post I will explain how to use the RPi as a git server, with cgit a
+the web interface.&lt;/p&gt;
 </description>
     </item>
     
