@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Reproducible Builds on Dhole&#39;s blog</title>
-    <link>https://lizard.kuasuka.com/blog/categories/reproducible-builds/</link>
+    <link>https://lizard.kyasuka.com/blog/categories/reproducible-builds/</link>
     <description>Recent content in Reproducible Builds on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 06 Aug 2015 20:12:15 +0200</lastBuildDate>
-    <atom:link href="https://lizard.kuasuka.com/blog/categories/reproducible-builds/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://lizard.kyasuka.com/blog/categories/reproducible-builds/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015, 1st update</title>
-      <link>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</link>
+      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       
-      <guid>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
       <description>
 
-&lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
 
 &lt;h1 id=&#34;status-update&#34;&gt;Status update&lt;/h1&gt;
 
@@ -74,10 +74,10 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015</title>
-      <link>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</link>
+      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</link>
       <pubDate>Sun, 10 May 2015 17:14:05 +0200</pubDate>
       
-      <guid>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</guid>
       <description>
 
 &lt;p&gt;This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&lt;/p&gt;

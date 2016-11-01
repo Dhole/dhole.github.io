@@ -20,7 +20,7 @@ git push origin hugo
 git subtree push --prefix=public git@github.com:Dhole/dhole.github.io.git master
 
 # Rebuild for my domain and push to my git repo
-hugo -t liquorice_mod -b https://lizard.kuasuka.com/blog/
+hugo -t liquorice_mod -b https://lizard.kyasuka.com/blog/
 git add -A
 git commit -m "$msg"
 git push lizard hugo
