@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Stm32f4 on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/stm32f4/</link>
+    <link>https://lizard.kuasuka.com/blog/categories/stm32f4/</link>
     <description>Recent content in Stm32f4 on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 25 Dec 2014 01:35:42 +0100</lastBuildDate>
-    <atom:link href="https://dhole.github.io/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://lizard.kuasuka.com/blog/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Booting the GameBoy with a custom logo</title>
-      <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_custom_logo/</link>
       <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_custom_logo/</guid>
       <description>
 
 &lt;p&gt;With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.
@@ -73,7 +73,7 @@ binary logo to be used by the cart emulator&lt;/p&gt;
 &lt;figure &gt;
     
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/dhole_logo.png&#34; alt=&#34;Custom logo featuring my nickname and a cute Dhole&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/dhole_logo.png&#34; alt=&#34;Custom logo featuring my nickname and a cute Dhole&#34; /&gt;
     
     
     
@@ -112,13 +112,13 @@ binary logo to be used by the cart emulator&lt;/p&gt;
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2/</link>
       <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2/</guid>
       <description>
 
-&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;We have analyzed the memory bus of the GameBoy in order to obtain the timing
 information of the different signals involved in the read and write operations
@@ -153,7 +153,7 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 &lt;figure &gt;
     
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_setup.jpg&#34; alt=&#34;My setup with the GameBoy connected to the STM32F4-Discovery&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_setup.jpg&#34; alt=&#34;My setup with the GameBoy connected to the STM32F4-Discovery&#34; /&gt;
     
     
     
@@ -309,9 +309,9 @@ off.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34; alt=&#34;The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_zelda.jpg&#34; alt=&#34;The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -330,9 +330,9 @@ off.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34; alt=&#34;Dr. Mario. ROM Only game&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_drmario.jpg&#34; alt=&#34;Dr. Mario. ROM Only game&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -394,16 +394,16 @@ taken to not exceed this timing constraint.&lt;/p&gt;
 &lt;p&gt;In the following post I will write about adding a custom boot logo to the
 cartridge emulator. Stay tunned!&lt;/p&gt;
 
-&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_custom_logo&#34;&gt;Booting the GameBoy with a custom logo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Continuation: &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_custom_logo&#34;&gt;Booting the GameBoy with a custom logo&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -511,9 +511,9 @@ intercepting the cartridge pins as follows:&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34; alt=&#34;Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34; alt=&#34;Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -565,9 +565,9 @@ pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34; alt=&#34;Logic capture overview&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_overview.png&#34; alt=&#34;Logic capture overview&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -602,9 +602,9 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34; alt=&#34;Read timings&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_read_timings.png&#34; alt=&#34;Read timings&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -623,9 +623,9 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34; alt=&#34;Write timings&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_write_timings.png&#34; alt=&#34;Write timings&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -662,8 +662,8 @@ when accessing RAM (this is not clear).&lt;/p&gt;
 
 &lt;figure &gt;
     
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing_small.png&#34; alt=&#34;RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.&#34; /&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/cpu_manual_timing_small.png&#34; alt=&#34;RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.&#34; /&gt;
     &lt;/a&gt;
     
     
@@ -689,9 +689,9 @@ sprites):&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34; alt=&#34;DMA in action&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_DMA.png&#34; alt=&#34;DMA in action&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -711,7 +711,7 @@ sprites):&lt;/p&gt;
 &lt;p&gt;In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!&lt;/p&gt;
 
-&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_2&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Continuation: &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 2&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

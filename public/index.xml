@@ -2,19 +2,19 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/</link>
+    <link>https://lizard.kuasuka.com/blog/</link>
     <description>Recent content on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 01 Nov 2016 01:17:17 -0700</lastBuildDate>
-    <atom:link href="https://dhole.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://lizard.kuasuka.com/blog/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>rdiff-backup-1.2.8 in Alpine</title>
-      <link>https://dhole.github.io/post/rdiff-backup-alpine/</link>
+      <link>https://lizard.kuasuka.com/blog/post/rdiff-backup-alpine/</link>
       <pubDate>Tue, 01 Nov 2016 01:17:17 -0700</pubDate>
       
-      <guid>https://dhole.github.io/post/rdiff-backup-alpine/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/rdiff-backup-alpine/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -105,10 +105,10 @@ database, so that they are stored permanently.  I deliberately skip the docs.&lt
     
     <item>
       <title>Raspberry Pi: git server (cgit with lighttpd)</title>
-      <link>https://dhole.github.io/post/raspberry_pi_git/</link>
+      <link>https://lizard.kuasuka.com/blog/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/raspberry_pi_git/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -420,10 +420,10 @@ so I may write about it too :)&lt;/p&gt;
     
     <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
-      <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
+      <link>https://lizard.kuasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -735,10 +735,10 @@ the web interface.&lt;/p&gt;
     
     <item>
       <title>Raspberry Pi 2 I/O benchmarks</title>
-      <link>https://dhole.github.io/post/raspberry_pi_benchmarks/</link>
+      <link>https://lizard.kuasuka.com/blog/post/raspberry_pi_benchmarks/</link>
       <pubDate>Thu, 20 Oct 2016 15:03:12 -0700</pubDate>
       
-      <guid>https://dhole.github.io/post/raspberry_pi_benchmarks/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/raspberry_pi_benchmarks/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -892,10 +892,10 @@ Stay tunned!&lt;/p&gt;
     
     <item>
       <title>No more unencrypted emails to gpg contacts</title>
-      <link>https://dhole.github.io/post/check_mail_gpg/</link>
+      <link>https://lizard.kuasuka.com/blog/post/check_mail_gpg/</link>
       <pubDate>Sat, 04 Jun 2016 00:13:28 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/check_mail_gpg/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/check_mail_gpg/</guid>
       <description>
 
 &lt;p&gt;I have been using mutt for about half a year already and I&amp;rsquo;m very happy with it.
@@ -1059,13 +1059,13 @@ the pgp or smime menus. (Crypto only)&lt;/p&gt;
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015, 1st update</title>
-      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</link>
+      <link>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
       <description>
 
-&lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
+&lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;
 
 &lt;h1 id=&#34;status-update&#34;&gt;Status update&lt;/h1&gt;
 
@@ -1122,10 +1122,10 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015</title>
-      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</link>
+      <link>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</link>
       <pubDate>Sun, 10 May 2015 17:14:05 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</guid>
       <description>
 
 &lt;p&gt;This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&lt;/p&gt;
@@ -1182,10 +1182,10 @@ I&amp;rsquo;m happy with my first month, as I have worked as originally planned.
     
     <item>
       <title>Full disk encryption on Samsung Chromebook with Arch Linux</title>
-      <link>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</link>
+      <link>https://lizard.kuasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</link>
       <pubDate>Fri, 01 May 2015 23:58:40 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</guid>
       <description>
 
 &lt;p&gt;In this post I will explain the procedure I followed to have an Arch Linux
@@ -1602,10 +1602,10 @@ can be found at [5].&lt;/p&gt;
     
     <item>
       <title>Booting the GameBoy with a custom logo</title>
-      <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_custom_logo/</link>
       <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_custom_logo/</guid>
       <description>
 
 &lt;p&gt;With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.
@@ -1664,7 +1664,7 @@ binary logo to be used by the cart emulator&lt;/p&gt;
 &lt;figure &gt;
     
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/dhole_logo.png&#34; alt=&#34;Custom logo featuring my nickname and a cute Dhole&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/dhole_logo.png&#34; alt=&#34;Custom logo featuring my nickname and a cute Dhole&#34; /&gt;
     
     
     
@@ -1703,13 +1703,13 @@ binary logo to be used by the cart emulator&lt;/p&gt;
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2/</link>
       <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2/</guid>
       <description>
 
-&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;We have analyzed the memory bus of the GameBoy in order to obtain the timing
 information of the different signals involved in the read and write operations
@@ -1744,7 +1744,7 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 &lt;figure &gt;
     
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_setup.jpg&#34; alt=&#34;My setup with the GameBoy connected to the STM32F4-Discovery&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_setup.jpg&#34; alt=&#34;My setup with the GameBoy connected to the STM32F4-Discovery&#34; /&gt;
     
     
     
@@ -1900,9 +1900,9 @@ off.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_zelda.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_zelda.jpg&#34; alt=&#34;The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_zelda.jpg&#34; alt=&#34;The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -1921,9 +1921,9 @@ off.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_drmario.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_drmario.jpg&#34; alt=&#34;Dr. Mario. ROM Only game&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_drmario.jpg&#34; alt=&#34;Dr. Mario. ROM Only game&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -1985,16 +1985,16 @@ taken to not exceed this timing constraint.&lt;/p&gt;
 &lt;p&gt;In the following post I will write about adding a custom boot logo to the
 cartridge emulator. Stay tunned!&lt;/p&gt;
 
-&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_custom_logo&#34;&gt;Booting the GameBoy with a custom logo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Continuation: &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_custom_logo&#34;&gt;Booting the GameBoy with a custom logo&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
+      <link>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_1/</guid>
       <description>
 
 &lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;
@@ -2102,9 +2102,9 @@ intercepting the cartridge pins as follows:&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34; alt=&#34;Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/gb_ribbon_1.jpg&#34; alt=&#34;Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon.&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -2156,9 +2156,9 @@ pin on the PCB of the GameBoy does from a pinout picture:&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_overview.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_overview.png&#34; alt=&#34;Logic capture overview&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_overview.png&#34; alt=&#34;Logic capture overview&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -2193,9 +2193,9 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_read_timings.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_read_timings.png&#34; alt=&#34;Read timings&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_read_timings.png&#34; alt=&#34;Read timings&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -2214,9 +2214,9 @@ taken every 50 ns, leading to an error of +/- 25 ns.&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_write_timings.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_write_timings.png&#34; alt=&#34;Write timings&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_write_timings.png&#34; alt=&#34;Write timings&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -2253,8 +2253,8 @@ when accessing RAM (this is not clear).&lt;/p&gt;
 
 &lt;figure &gt;
     
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/cpu_manual_timing_small.png&#34; alt=&#34;RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.&#34; /&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/cpu_manual_timing.png&#34;&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/cpu_manual_timing_small.png&#34; alt=&#34;RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings.&#34; /&gt;
     &lt;/a&gt;
     
     
@@ -2280,9 +2280,9 @@ sprites):&lt;/p&gt;
 
 
 &lt;figure &gt;
-    &lt;a href=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
+    &lt;a href=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_DMA.png&#34;&gt;
     
-        &lt;img src=&#34;https://dhole.github.io/media/gameboy_stm32f4/screen_dump_DMA.png&#34; alt=&#34;DMA in action&#34; /&gt;
+        &lt;img src=&#34;https://lizard.kuasuka.com/blog/media/gameboy_stm32f4/screen_dump_DMA.png&#34; alt=&#34;DMA in action&#34; /&gt;
     
     &lt;/a&gt;
     
@@ -2302,16 +2302,16 @@ sprites):&lt;/p&gt;
 &lt;p&gt;In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!&lt;/p&gt;
 
-&lt;p&gt;Continuation: &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_2&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 2&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Continuation: &lt;a href=&#34;https://lizard.kuasuka.com/blog/post/gameboy_cartridge_emu_2&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 2&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>Welcome</title>
-      <link>https://dhole.github.io/post/first/</link>
+      <link>https://lizard.kuasuka.com/blog/post/first/</link>
       <pubDate>Sat, 08 Nov 2014 17:04:11 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/first/</guid>
+      <guid>https://lizard.kuasuka.com/blog/post/first/</guid>
       <description>&lt;p&gt;I had been planning on creating a blog to write about the stuff I do on my free time for a while.
 In this blog I plan to write about the projects I develop as well as talking about interesting things
 I lean about technology, hardware, security, embedded systems, programming languages and more.&lt;/p&gt;
@@ -2331,10 +2331,10 @@ it&amp;rsquo;s really fast at generating the content.&lt;/p&gt;
     
     <item>
       <title>About</title>
-      <link>https://dhole.github.io/about/</link>
+      <link>https://lizard.kuasuka.com/blog/about/</link>
       <pubDate>Fri, 07 Nov 2014 02:35:08 +0100</pubDate>
       
-      <guid>https://dhole.github.io/about/</guid>
+      <guid>https://lizard.kuasuka.com/blog/about/</guid>
       <description>
 &lt;figure &gt;
     
@@ -2360,7 +2360,7 @@ about new programming languages and stuff in general.&lt;/p&gt;
 &lt;li&gt;My email: dhole at openmailbox dot org&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Get my PGP public key at &lt;a href=&#34;https://dhole.github.io/dhole.asc&#34;&gt;dhole.asc&lt;/a&gt; or &lt;a href=&#34;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&#34;&gt;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Get my PGP public key at &lt;a href=&#34;https://lizard.kuasuka.com/blog/dhole.asc&#34;&gt;dhole.asc&lt;/a&gt; or &lt;a href=&#34;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&#34;&gt;http://pgp.mit.edu/pks/lookup?op=get&amp;amp;search=0x4FA457A18514CC63&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;PGP Fingerprint:&lt;/p&gt;
 
