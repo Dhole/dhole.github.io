@@ -5,7 +5,7 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-        <title>Welcome &middot; Dhole&#39;s blog</title>
+        <title>Alpine Linux: Upgrading on Raspberry Pi &middot; Dhole&#39;s blog</title>
         
         <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
         <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
@@ -56,9 +56,9 @@
             <div class="sixteen columns">
                 <article class="li-article">
                     <header class="li-article-header">
-                        <h1 class="li-article-title">Welcome</h1>  
+                        <h1 class="li-article-title">Alpine Linux: Upgrading on Raspberry Pi</h1>  
 			
-			<time class="li-article-date">Saturday, November 8, 2014</time>
+			<time class="li-article-date">Monday, June 26, 2017</time>
 			
 <div class="li-article-categories">
 Categories:
@@ -67,20 +67,91 @@ Categories:
 
                     </header>
                     <section>
-                        <p>I had been planning on creating a blog to write about the stuff I do on my free time for a while.
-In this blog I plan to write about the projects I develop as well as talking about interesting things
-I lean about technology, hardware, security, embedded systems, programming languages and more.</p>
+                        
 
-<p>My first thought was to use a WordPress hosted at wordpress.com, but I didn&rsquo;t want the adds. I searched
-on the net for alternatives and found out about the static website generators, which allow you to host
-the content in a static web server such as your github personal page. Right now this blog is posted in
-my server, but I may move it to github if there is some traffic.</p>
+<p>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi
+Alpine Linux installation.  Alpine Linux on the Raspberry Pi runs from ramfs
+and thus the upgrading is not straightforward.  Most of the details are taken
+from the (Alpine Linux
+Wiki)[<a href="https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release">https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release</a>].
+I&rsquo;m not sure if Alpine Linux does any verification on the new downloaded
+release, so I&rsquo;m doing that manually on another computer.</p>
 
-<p>The platform choosen is <a href="http://gohugo.io">Hugo</a>: a static website engine written in Go. There were
-other options such as Jekyll and Oktopress, but I decided to try this one because I love Go and because
-it&rsquo;s really fast at generating the content.</p>
+<h1 id="upgrading">Upgrading</h1>
 
-<p>See you arround!</p>
+<p>First of all, replace the repository confiration to point to the new version:</p>
+
+<pre><code>setup-apkrepos
+</code></pre>
+
+<p>Press <code>e</code> then replace v3.5 by v3.6 (or whichever is the new release version).</p>
+
+<pre><code>apk update
+apk upgrade --update-cache --available
+</code></pre>
+
+<p>Make sure that <code>/etc/lbu/lbu.conf</code> has the following line:</p>
+
+<pre><code>LBU_MEDIA=mmcblk0p1
+</code></pre>
+
+<p>Then load the environment variables from the file, and backup everything.</p>
+
+<pre><code>. /etc/lbu/lbu.conf
+lbu ci
+</code></pre>
+
+<p>Check that there is at least 400MB (maybe more?) free in the permament storage:</p>
+
+<pre><code>df -h | grep &quot;Filesystem\|$LBU_MEDIA&quot;
+</code></pre>
+
+<p>Now on another computer, which should have the Alpine Linux release GPG keys on
+the GPG keyring, download the new release image, verify it&rsquo;s hash and verify
+the hash signature:</p>
+
+<pre><code>VERSION=3.6.2
+wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
+wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.asc
+wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.sha256
+
+sha256sum *armhf.tar.gz
+cat *armhf.tar.gz.sha256
+gpg --verify *armhf.tar.gz.asc
+</code></pre>
+
+<p>Now we proceed with the upgrade on the Raspberry Pi:</p>
+
+<pre><code>mount -oremount,rw /media/$LBU_MEDIA
+cd /media/$LBU_MEDIA
+</code></pre>
+
+<p>Download the new release image (this time on the Raspberry Pi) and verify that
+the hash matches the one we verified on the other computer, then extract it:</p>
+
+<pre><code>VERSION=3.6.2
+wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
+sha256sum *armhf.tar.gz
+mkdir new 
+cd new 
+tar xzf ../alpine-rpi-$VERSION-armhf.tar.gz
+cd ..
+</code></pre>
+
+<p>Commented is the line suggested in the wiki, which I&rsquo;m not sure does any
+verification.  We will install from the extracted release image:</p>
+
+<pre><code>#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
+setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA
+</code></pre>
+
+<p>Now we clean what we downloaded, backup and reboot.  Hopefully everything works!</p>
+
+<pre><code>rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
+lbu ci
+sync
+reboot
+</code></pre>
 
                     </section>
                 </article>
@@ -117,8 +188,7 @@ it&rsquo;s really fast at generating the content.</p>
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        Later article<br />
-                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
+                        &nbsp;
                     
                 </div>
             </div>
@@ -126,7 +196,7 @@ it&rsquo;s really fast at generating the content.</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://dhole.github.io/about/"> About</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
