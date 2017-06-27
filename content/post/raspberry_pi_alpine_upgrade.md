@@ -1,4 +1,5 @@
 ---
+Categories = ["alpine", "raspberry pi"]
 title: "Alpine Linux: Upgrading on Raspberry Pi"
 date: 2017-06-26T23:18:39-07:00
 ---
