@@ -118,7 +118,7 @@ get information about the timings of the different operations.
 The GameBoy cartridge pinout is well known, so it's easy to figure out what every
 pin on the PCB of the GameBoy does from a pinout picture:
 
-{{% img src="https://www.insidegadgets.com/wp-content/uploads/2011/03/IMG_1994.jpg" caption="GameBoy cartridge pinout. Image from www.insidegadgets.com" %}}
+{{% img src="/media/gameboy_stm32f4/gb_cartridge_pins.jpg" caption="GameBoy cartridge pinout. Image from www.insidegadgets.com" %}}
 
 ## Results
 

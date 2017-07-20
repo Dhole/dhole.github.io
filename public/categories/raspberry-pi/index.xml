@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Raspberry Pi on Dhole&#39;s blog</title>
-    <link>https://lizard.kyasuka.com/blog/categories/raspberry-pi/</link>
+    <link>https://dhole.github.io/categories/raspberry-pi/</link>
     <description>Recent content in Raspberry Pi on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 26 Jun 2017 23:18:39 -0700</lastBuildDate>
     
-	<atom:link href="https://lizard.kyasuka.com/blog/categories/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dhole.github.io/categories/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Alpine Linux: Upgrading on Raspberry Pi</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</link>
       <pubDate>Mon, 26 Jun 2017 23:18:39 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</guid>
       <description>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi Alpine Linux installation. Alpine Linux on the Raspberry Pi runs from ramfs and thus the upgrading is not straightforward. Most of the details are taken from the (Alpine Linux Wiki)[https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release]. I&amp;rsquo;m not sure if Alpine Linux does any verification on the new downloaded release, so I&amp;rsquo;m doing that manually on another computer.
 Upgrading First of all, replace the repository confiration to point to the new version:</description>
     </item>
     
     <item>
       <title>Raspberry Pi: git server (cgit with lighttpd)</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_git/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_git/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
       <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.
 We&amp;rsquo;ll setup two groups of repositories: a public and a private one.
 Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
@@ -34,10 +34,10 @@ Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s hom
     
     <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
       <description>Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt.
 Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide.
 After instalation, we add a new user which we will use for logging in:</description>
@@ -45,10 +45,10 @@ After instalation, we add a new user which we will use for logging in:</descript
     
     <item>
       <title>Raspberry Pi 2 I/O benchmarks</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_benchmarks/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_benchmarks/</link>
       <pubDate>Thu, 20 Oct 2016 15:03:12 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_benchmarks/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_benchmarks/</guid>
       <description>Introduction I&amp;rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services. I&amp;rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to achieve my goals, which will be mainly setting up a git server and a backup server.
 Choice of distribution I discovered Alpine Linux while searching lightweight distributions for the Raspberry Pi. This is a lovely small Linux distribution: one of the first things I noticed is how fast it runs on the RPi due to using a ram filesystem by default; this is specially noticeable in the RPi because usualy the operating system resides in the micro-SD card, which usually offers really slow read and write operations.</description>
     </item>
