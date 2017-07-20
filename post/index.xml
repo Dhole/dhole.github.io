@@ -2,40 +2,40 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Dhole&#39;s blog</title>
-    <link>https://lizard.kyasuka.com/blog/post/</link>
+    <link>https://dhole.github.io/post/</link>
     <description>Recent content in Posts on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 26 Jun 2017 23:18:39 -0700</lastBuildDate>
     
-	<atom:link href="https://lizard.kyasuka.com/blog/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dhole.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Alpine Linux: Upgrading on Raspberry Pi</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</link>
       <pubDate>Mon, 26 Jun 2017 23:18:39 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</guid>
       <description>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi Alpine Linux installation. Alpine Linux on the Raspberry Pi runs from ramfs and thus the upgrading is not straightforward. Most of the details are taken from the (Alpine Linux Wiki)[https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release]. I&amp;rsquo;m not sure if Alpine Linux does any verification on the new downloaded release, so I&amp;rsquo;m doing that manually on another computer.
 Upgrading First of all, replace the repository confiration to point to the new version:</description>
     </item>
     
     <item>
       <title>rdiff-backup-1.2.8 in Alpine</title>
-      <link>https://lizard.kyasuka.com/blog/post/rdiff-backup-alpine/</link>
+      <link>https://dhole.github.io/post/rdiff-backup-alpine/</link>
       <pubDate>Tue, 01 Nov 2016 01:17:17 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/rdiff-backup-alpine/</guid>
+      <guid>https://dhole.github.io/post/rdiff-backup-alpine/</guid>
       <description>Introduction A few days ago I wanted to start doing incremental backups from my laptop to my Raspberry Pi 2 running Alpine Linux. I&amp;rsquo;ve had used rdiff-backup for some years now and I&amp;rsquo;m really happy with it. rdiff-backup is similar to rsync, in the sense that lets you synchronize folders over the network, but it has two added nice features: when synchronizing, only the differences between the files that have changed are sent; and after every synchronization, the differences between the old version of the files and the new ones is kept.</description>
     </item>
     
     <item>
       <title>Raspberry Pi: git server (cgit with lighttpd)</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_git/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_git/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
       <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.
 We&amp;rsquo;ll setup two groups of repositories: a public and a private one.
 Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
@@ -43,10 +43,10 @@ Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s hom
     
     <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
       <description>Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt.
 Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide.
 After instalation, we add a new user which we will use for logging in:</description>
@@ -54,70 +54,70 @@ After instalation, we add a new user which we will use for logging in:</descript
     
     <item>
       <title>Raspberry Pi 2 I/O benchmarks</title>
-      <link>https://lizard.kyasuka.com/blog/post/raspberry_pi_benchmarks/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_benchmarks/</link>
       <pubDate>Thu, 20 Oct 2016 15:03:12 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/raspberry_pi_benchmarks/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_benchmarks/</guid>
       <description>Introduction I&amp;rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services. I&amp;rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to achieve my goals, which will be mainly setting up a git server and a backup server.
 Choice of distribution I discovered Alpine Linux while searching lightweight distributions for the Raspberry Pi. This is a lovely small Linux distribution: one of the first things I noticed is how fast it runs on the RPi due to using a ram filesystem by default; this is specially noticeable in the RPi because usualy the operating system resides in the micro-SD card, which usually offers really slow read and write operations.</description>
     </item>
     
     <item>
       <title>No more unencrypted emails to gpg contacts</title>
-      <link>https://lizard.kyasuka.com/blog/post/check_mail_gpg/</link>
+      <link>https://dhole.github.io/post/check_mail_gpg/</link>
       <pubDate>Sat, 04 Jun 2016 00:13:28 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/check_mail_gpg/</guid>
+      <guid>https://dhole.github.io/post/check_mail_gpg/</guid>
       <description>I have been using mutt for about half a year already and I&amp;rsquo;m very happy with it. The previous email client I used was Thunderbird (with the Enigmail extension to handle GPG). There were two main reasons that made me switch.
 The first one was that I often would like to check my email while I&amp;rsquo;m offline, and it seems that Thunderbird is not very good at this. Sometimes not all my email would have been downloaded (just the headers), and I also found it frustrating that after marking more than 50 emails as read while offline, they would be marked as unread again once I went back online.</description>
     </item>
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015, 1st update</title>
-      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</link>
+      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
+      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
       <description>This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my first post)
 Status update First month It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata.</description>
     </item>
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015</title>
-      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</link>
+      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</link>
       <pubDate>Sun, 10 May 2015 17:14:05 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</guid>
+      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</guid>
       <description>This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.
 A bit about myself I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go.</description>
     </item>
     
     <item>
       <title>Full disk encryption on Samsung Chromebook with Arch Linux</title>
-      <link>https://lizard.kyasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</link>
+      <link>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</link>
       <pubDate>Fri, 01 May 2015 23:58:40 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</guid>
+      <guid>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</guid>
       <description>In this post I will explain the procedure I followed to have an Arch Linux install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption using kernel 3.8.
 Kernel compilation and preparing SD card Install dependencies Install the necessary depdendencies (In my case I was running ubuntu). Mainly you need the tools for crosscompiling the kernel, configure u-boot and partition the SD card with a GPT partition table.</description>
     </item>
     
     <item>
       <title>Booting the GameBoy with a custom logo</title>
-      <link>https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/</link>
+      <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
       <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/</guid>
+      <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
       <description>With the cartridge emulator implemented on an STM32F4 we can do some cool stuff. For example, we can make the GameBoy boot with our own custom logo!
 Bootstrap ROM When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the memory and execution begins. This bios is in charge of initializing the hardware as well as scrolling the Nintendo logo and checking that the cartridge i valid.</description>
     </item>
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
-      <link>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_2/</link>
+      <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
       <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_2/</guid>
+      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
       <description>This post is a continuation of Emulating a GameBoy Cartridge with an STM32F4. Part 1
 We have analyzed the memory bus of the GameBoy in order to obtain the timing information of the different signals involved in the read and write operations happening on the cartridge. We will now proceed to develop a system to emulate the behaviour of the cartridge with the STM32F4.
 About voltage levels As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4 works at 3.</description>
@@ -125,20 +125,20 @@ About voltage levels As we noticed in the previous post, the GameBoy works at 5V
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
-      <link>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/</link>
+      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/</guid>
+      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
       <description>Introduction The following project consists on emulating the functionality of a GameBoy cartridge with the development board STM32F4. The system is fully functional and is able to emulate real cartridges (as well as homebrew games) of the type ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain how I managed to achieve this.
 Motivation Current flashcart systems commonly use a design consisting on a FPGA or CPLD controlling the logic of the emulated cartridge (memory banking, RAM access, etc.</description>
     </item>
     
     <item>
       <title>Welcome</title>
-      <link>https://lizard.kyasuka.com/blog/post/first/</link>
+      <link>https://dhole.github.io/post/first/</link>
       <pubDate>Sat, 08 Nov 2014 17:04:11 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/first/</guid>
+      <guid>https://dhole.github.io/post/first/</guid>
       <description>I had been planning on creating a blog to write about the stuff I do on my free time for a while. In this blog I plan to write about the projects I develop as well as talking about interesting things I lean about technology, hardware, security, embedded systems, programming languages and more.
 My first thought was to use a WordPress hosted at wordpress.com, but I didn&amp;rsquo;t want the adds. I searched on the net for alternatives and found out about the static website generators, which allow you to host the content in a static web server such as your github personal page.</description>
     </item>
