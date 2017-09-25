@@ -140,6 +140,7 @@ ul.li-article-list {
 .li-article-categories {
     font-size: normal;
     float: right;
+    margin-bottom: 16px;
 }
 
 .li-article-list time {
@@ -147,16 +148,27 @@ ul.li-article-list {
 }
 
 .li-article-section {
-    padding: 16px 0px;
+    padding: 8px 0px;
+    clear: both;
 }
 
 .li-article-date {
     color: #999;
     font-size: smaller;
+    float: left;
+    margin-bottom: 10px;
+}
+
+.li-article-header {
+    clear: both;
 }
 
 .li-article-footer {
     border-top: 1px solid #ccc;
+}
+
+.li-article-body {
+    clear: both;
 }
 
 .li-pagination {
@@ -413,6 +425,7 @@ ul.li-article-list {
     .container .offset-by-thirteen,
     .container .offset-by-fourteen,
     .container .offset-by-fifteen { padding-left: 0; }
+
 }
 
 
