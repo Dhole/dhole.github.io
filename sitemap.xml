@@ -3,161 +3,161 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/rdiff-backup-alpine/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/rdiff-backup-alpine/</loc>
     <lastmod>2016-11-01T01:17:17-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/raspberry_pi_git/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/raspberry_pi_git/</loc>
     <lastmod>2016-10-21T15:14:27-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/</loc>
     <lastmod>2016-10-21T15:14:27-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/raspberry_pi_benchmarks/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/raspberry_pi_benchmarks/</loc>
     <lastmod>2016-10-20T15:03:12-07:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/check_mail_gpg/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/check_mail_gpg/</loc>
     <lastmod>2016-06-04T00:13:28+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</loc>
     <lastmod>2015-08-06T20:12:15+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</loc>
     <lastmod>2015-05-10T17:14:05+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</loc>
     <lastmod>2015-05-01T23:58:40+02:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/gameboy_custom_logo/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/</loc>
     <lastmod>2014-12-25T01:35:42+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/gameboy_cartridge_emu_2/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_2/</loc>
     <lastmod>2014-12-24T19:46:07+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/gameboy_cartridge_emu_1/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/</loc>
     <lastmod>2014-12-24T03:33:57+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/first/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/first/</loc>
     <lastmod>2014-11-08T17:04:11+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/about/</loc>
+    <loc>https://lizard.kyasuka.com/blog/about/</loc>
     <lastmod>2014-11-07T02:35:08+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/alpine/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/alpine/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/arch-linux/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/arch-linux/</loc>
     <lastmod>2015-05-01T23:58:40+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/debian/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/debian/</loc>
     <lastmod>2016-06-04T00:13:28+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/</loc>
+    <loc>https://lizard.kyasuka.com/blog/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/gameboy/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/gameboy/</loc>
     <lastmod>2014-12-25T01:35:42+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/git/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/git/</loc>
     <lastmod>2016-10-21T15:14:27-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/tags/hugo/</loc>
+    <loc>https://lizard.kyasuka.com/blog/tags/hugo/</loc>
     <lastmod>2014-11-08T17:04:11+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/lighttpd/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/lighttpd/</loc>
     <lastmod>2016-10-21T15:14:27-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/post/</loc>
+    <loc>https://lizard.kyasuka.com/blog/post/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/raspberry-pi/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/raspberry-pi/</loc>
     <lastmod>2017-06-26T23:18:39-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/rdiff-backup/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/rdiff-backup/</loc>
     <lastmod>2016-11-01T01:17:17-07:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/reproducible-builds/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/reproducible-builds/</loc>
     <lastmod>2015-08-06T20:12:15+02:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/categories/stm32f4/</loc>
+    <loc>https://lizard.kyasuka.com/blog/categories/stm32f4/</loc>
     <lastmod>2014-12-25T01:35:42+01:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://dhole.github.io/tags/</loc>
+    <loc>https://lizard.kyasuka.com/blog/tags/</loc>
     <lastmod>2014-11-08T17:04:11+01:00</lastmod>
     <priority>0</priority>
   </url>
