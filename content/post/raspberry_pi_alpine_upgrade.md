@@ -7,8 +7,8 @@ date: 2017-06-26T23:18:39-07:00
 This post describes the upgrade procedure I follow to upgrade my Raspberry Pi
 Alpine Linux installation.  Alpine Linux on the Raspberry Pi runs from ramfs
 and thus the upgrading is not straightforward.  Most of the details are taken
-from the (Alpine Linux
-Wiki)[https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release].
+from the [Alpine Linux
+Wiki](https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release).
 I'm not sure if Alpine Linux does any verification on the new downloaded
 release, so I'm doing that manually on another computer.
 
