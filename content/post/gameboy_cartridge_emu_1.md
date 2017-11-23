@@ -108,7 +108,7 @@ In order to analyze the bus while the GameBoy was performing reads and writes to
 the cartridge, I soldered an FDD ribbon to the main board of the GameBoy, 
 intercepting the cartridge pins as follows:
 
-{{% img src="/media/gameboy_stm32f4/gb_ribbon_1.jpg" caption="Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon." link_src="." %}}
+{{% img1000 src="/media/gameboy_stm32f4/gb_ribbon_1.jpg" caption="Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon." %}}
 
 Since only 16 channels are available for the logicdiscovery I decided to monitor
 the CLK, RD, WR, CS, DATA {0-4} and ADDR {0-8}. (That is, the lower 4 bits of
@@ -163,7 +163,7 @@ when accessing RAM (this is not clear).
 The writing timing analysis are sound with the analysis found in the unnoficial
 [GameBoy CPU Manual](http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf):
 
-{{% img src="/media/gameboy_stm32f4/cpu_manual_timing_small.png" caption="RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings." link="/media/gameboy_stm32f4/cpu_manual_timing.png" %}}
+{{% img1000 src="/media/gameboy_stm32f4/cpu_manual_timing_small.png" caption="RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings." %}}
 
 Now that we know that the information seen in the bus is not only the communication
 between the GameBoy and the cartridge but all the read/write operations of the

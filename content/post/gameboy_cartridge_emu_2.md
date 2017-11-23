@@ -34,7 +34,8 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 - DATA{0..7} -> PE{8..15}
 - ADDR{0..15} -> PD{0..15}
 
-{{% img src="/media/gameboy_stm32f4/gb_setup.jpg" caption="My setup with the GameBoy connected to the STM32F4-Discovery" ling_src="." %}}
+{{% img1000 src="/media/gameboy_stm32f4/gb_setup.jpg" caption="My setup with the GameBoy connected to the STM32F4-Discovery" %}}
+
 
 # Coding
 
@@ -169,9 +170,9 @@ off.
 
 ## Photos
 
-{{% img src="/media/gameboy_stm32f4/gb_zelda.jpg" caption="The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)" link_src="." %}}
+{{% img1000 src="/media/gameboy_stm32f4/gb_zelda.jpg" caption="The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)" %}}
 
-{{% img src="/media/gameboy_stm32f4/gb_drmario.jpg" caption="Dr. Mario. ROM Only game" link_src="." %}}
+{{% img1000 src="/media/gameboy_stm32f4/gb_drmario.jpg" caption="Dr. Mario. ROM Only game" %}}
 
 ## Videos
 
