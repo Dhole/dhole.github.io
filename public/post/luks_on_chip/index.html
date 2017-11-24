@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Enabling LUKS on the PocketCHIP &middot; Dhole&#39;s blog</title>
+        
+        <link rel="stylesheet" href="https://dhole.github.io/libraries/normalize.3.0.1.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Enabling LUKS on the PocketCHIP</h1>  
+			
+			<time class="li-article-date">Thursday, November 23, 2017</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/pocketchip">PocketCHIP</a> </span>
+
+<span><a href="https://dhole.github.io/categories/kernel">kernel</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        
+
+<h1 id="introduction">Introduction</h1>
+
+<p>I&rsquo;ve recently acquired a handheld ARM computer with screen and keyboard called
+the <a href="https://getchip.com/pages/pocketchip">PocketCHIP</a>.  The main board on the
+device is called the <a href="https://getchip.com/pages/chip">CHIP</a>, which is a tiny
+ARM computer capable of running Linux that is sold for $9.</p>
+
+<p>After flashing it with the <em>CHIP 4.4 GUI</em> OS, a flavor of Debian released by
+Next Thing Co (the company that made the PocketCHIP)  I noticed I wasn&rsquo;t able
+to mount LUKS-encrypted partitions due to missing kernel modules.  In this post
+I will explain what I had to do to build and install the missing modules
+without the need to replace the entire kernel.  If you want to install a new
+and different kernel you will need to follow a more involved process because
+the WiFi and GPU drivers aren&rsquo;t in the kernel sources and require you to build
+them apart (and also fiddle with the device tree).</p>
+
+<h1 id="required-toolchain">Required toolchain</h1>
+
+<p>In order to build the Linux kernel from an x86_64 machine for ARM, we need a
+cross-compiling toolchain, which includes a cross-compiling GCC among other
+tools.  I have recently installed <a href="https://www.gentoo.org/">Gentoo</a> on a
+laptop, which has an awesome tool to build cross-compiling environments for
+many combinations of architectures and settings.  If you are using another
+distribution like a Debian-based one you probably need to install
+<code>gcc-arm-linux-gnueabihf</code></p>
+
+<p>On Gentoo as root, run the following to install a cross-compiling environment
+for armv7a, the CPU architecture of the CHIP (this will take a while):</p>
+
+<pre><code>crossdev -S -v -t armv7a-hardfloat-linux-gnueabi
+</code></pre>
+
+<h1 id="building">Building</h1>
+
+<p>As a regular user, set up the environment variables needed to enable
+cross-compiling the kernel, and create some working folders:</p>
+
+<pre><code>export ARCH=arm
+export CROSS_COMPILE=armv7a-hardfloat-linux-gnueabi-
+export WORKSPACE=~/proj/CHIP/4.4.13-ntc-mlc/
+mkdir -p $WORKSPACE
+mkdir -p ~/git/CHIP
+</code></pre>
+
+<p>Now let&rsquo;s clone the kernel source git repository from Next Thing Co.  We will
+be getting the branch that was used to build the kernel shipped in the <em>CHIP
+4.4 GUI</em> release:</p>
+
+<pre><code>cd ~/git/CHIP
+git clone --single-branch -b debian/4.4.13-ntc-mlc https://github.com/NextThingCo/CHIP-linux.git
+cd CHIP-linux
+</code></pre>
+
+<p>Before configuring the kernel, we will copy the configuration that was used to
+build the kernel in <em>CHIP 4.4 GUI</em>.  We can get the file from the PocketCHIP at
+<code>/boot/config-4.4.13-ntc</code>.  I recommend having <code>sshd</code> enabled on the PocketCHIP
+to transfer files over WiFi with ease.</p>
+
+<pre><code>cp config-4.4.13-ntc .config
+</code></pre>
+
+<p>We create the empty file <code>.scmversion</code> in order to disable the &ldquo;+&rdquo; at the end
+of the kernel version that gets embedded into the modules in the <em>vermagic</em>
+property.  If we don&rsquo;t generate modules with the same <em>vermagic</em> as the one in
+the installed kernel, the modules will fail to load.</p>
+
+<pre><code>touch .scmversion
+</code></pre>
+
+<p>Now we can proceed to configure the kernel to enable the modules we need.  In
+my case, I enabled the modules needed for LUKS:</p>
+
+<pre><code>make menuconfig
+</code></pre>
+
+<h2 id="make-menuconfig-options">make menuconfig options</h2>
+
+<p>Taken from the <a href="https://wiki.gentoo.org/wiki/Dm-crypt">Dm-crypt Gentoo wiki
+entry</a>, here are the options needed to
+enable LUKS.</p>
+
+<p>Enable the crypt target for the device mapper:</p>
+
+<pre><code>Device Drivers ---&gt;
+    [*] Multiple devices driver support (RAID and LVM) ---&gt;
+        &lt;M&gt; Device mapper support
+        &lt;M&gt;   Crypt target suppor
+</code></pre>
+
+<p>Enable the cryptographic API modules required for LUKS:</p>
+
+<pre><code>[*] Cryptographic API ---&gt;
+    &lt;M&gt; XTS support
+    &lt;M&gt; SHA224 and SHA256 digest algorithm
+    -*- AES cipher algorithms
+    &lt;M&gt; User-space interface for hash algorithms
+    &lt;M&gt; User-space interface for symmetric key cipher algorithms
+</code></pre>
+
+<p>Optionally, enable the following modules of the cryptographic API to support
+TrueCrypt/VeraCrypt compatibility mode:</p>
+
+<pre><code>[*] Cryptographic API ---&gt; 
+     &lt;M&gt; RIPEMD-160 digest algorithm 
+     &lt;M&gt; SHA384 and SHA512 digest algorithms 
+     &lt;M&gt; Whirlpool digest algorithms 
+     &lt;M&gt; LRW support 
+     &lt;M&gt; Serpent cipher algorithm 
+     &lt;M&gt; Twofish cipher algorithm
+</code></pre>
+
+<p>Finally, and very importantly, set the local version of the kernel to
+<code>-ntc-mlc</code> in order to get the same <em>vermagic</em> as the installed kernel:</p>
+
+<pre><code> General setup  ---&gt;
+  () Local version - append to kernel release
+</code></pre>
+
+<h2 id="build-and-install">Build and install</h2>
+
+<p>We can now make the kernel and modules for ARM (in this case I&rsquo;m setting <code>-j4</code>
+to use 4 parallel building threads).  This will take a while:</p>
+
+<pre><code>make -j4
+</code></pre>
+
+<p>We install the modules in our workspace:</p>
+
+<pre><code>make INSTALL_MOD_PATH=$WORKSPACE modules_install
+</code></pre>
+
+<p>Now, on the CHIP as root, we make a folder to store the new modules we want to install:</p>
+
+<pre><code>mkdir -p ~/modules/{crypto,drivers/md/}
+</code></pre>
+
+<p>We copy the built modules to the CHIP:</p>
+
+<pre><code>scp crypto/*.ko root@192.168.0.106:~/modules/crypto/
+scp drivers/md/dm-crypt.ko root@192.168.0.106:~/modules/drivers/md/
+</code></pre>
+
+<p>Finally, on the CHIP as root, we copy the modules we just transfered to their
+destination so that the kernel can load them:</p>
+
+<pre><code>cp -n ~/modules/crypto/*.ko /lib/modules/4.4.13-ntc-mlc/kernel/crypto/
+cp ~/modules/drivers/md/dm-crypt.ko  /lib/modules/4.4.13-ntc-mlc/kernel/drivers/md/
+</code></pre>
+
+<p>There&rsquo;s no reboot needed.  You should be able to mount LUKS partitions using
+<code>cryptsetup</code> without problems at this point.  You can easily test that everything is working by running a benchmark:</p>
+
+<pre><code>cryptsetup benchmark
+</code></pre>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_upgrade/"> Alpine Linux: Upgrading on Raspberry Pi</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2017. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
