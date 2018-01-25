@@ -7,8 +7,8 @@
 
         <title>Full disk encryption on Samsung Chromebook with Arch Linux &middot; Dhole&#39;s blog</title>
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//libraries/normalize.3.0.1.css" />
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -19,16 +19,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +38,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,7 +63,7 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/arch-linux">arch linux</a> </span>
+<span><a href="https://dhole.github.io/categories/arch-linux">arch linux</a> </span>
 
 </div>
 
@@ -82,253 +82,157 @@ using kernel 3.8.</p>
 <p>Install the necessary depdendencies (In my case I was running ubuntu). Mainly
 you need the tools for crosscompiling the kernel, configure u-boot and partition
 the SD card with a GPT partition table.</p>
-
-<pre><code>sudo apt-get install u-boot-tools gcc-arm-linux-gnueabihf \
-    binutils-arm-linux-gnueabihf cgpt device-tree-compiler
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get install u-boot-tools gcc-arm-linux-gnueabihf <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>    binutils-arm-linux-gnueabihf cgpt device-tree-compiler</code></pre></div>
 <h2 id="set-up-some-directories-and-download-arch-and-kernel-sources">Set up some directories and download arch and kernel sources</h2>
-
-<pre><code>TMP_PATH=$(pwd)/chromeos
-mkdir -p $TMP_PATH
-cd $TMP_PATH
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">TMP_PATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">$(</span><span style="color:#204a87">pwd</span><span style="color:#204a87;font-weight:bold">)</span>/chromeos
+mkdir -p <span style="color:#000">$TMP_PATH</span>
+<span style="color:#204a87">cd</span> <span style="color:#000">$TMP_PATH</span>
 mkdir -p root
-mkdir -p mnt
-</code></pre>
-
+mkdir -p mnt</code></pre></div>
 <p>Download my custom files</p>
-
-<pre><code>git clone https://github.com/Dhole/alarm_install.git .
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/Dhole/alarm_install.git .</code></pre></div>
 <p>Download Arch rootfs tarball</p>
-
-<pre><code>wget http://archlinuxarm.org/os/ArchLinuxARM-chromebook-latest.tar.gz
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget http://archlinuxarm.org/os/ArchLinuxARM-chromebook-latest.tar.gz</code></pre></div>
 <p>Download kernel 3.8 with ChromeOS patches</p>
-
-<pre><code>KERNEL_BRANCH=&quot;chromeos-3.8&quot;
-git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
-    -b $KERNEL_BRANCH --depth 1 chromeos
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">KERNEL_BRANCH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;chromeos-3.8&#34;</span>
+git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>    -b <span style="color:#000">$KERNEL_BRANCH</span> --depth <span style="color:#0000cf;font-weight:bold">1</span> chromeos</code></pre></div>
 <h2 id="build-the-kernel">Build the kernel</h2>
 
 <p>Set up the config for the chromebook</p>
-
-<pre><code>cd $KERNEL_BRANCH
-CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make mrproper
-./chromeos/scripts/prepareconfig chromeos-exynos5
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#204a87">cd</span> <span style="color:#000">$KERNEL_BRANCH</span>
+<span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm make mrproper
+./chromeos/scripts/prepareconfig chromeos-exynos5</code></pre></div>
 <p>Configure the kernel as needed (Alternativelly, download my custom .config). In
 my case I enabled most of the cipher options to be able to use AES-XTS in LUKS.
 Be sure to disable &ldquo;Treat compiler warnings as errors&rdquo; in menuconfig</p>
-
-<pre><code>CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make menuconfig
-# or
-cp ../files/.config .
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm make menuconfig
+<span style="color:#8f5902;font-style:italic"># or
+</span><span style="color:#8f5902;font-style:italic"></span>cp ../files/.config .</code></pre></div>
 <p>Compile the kernel</p>
-
-<pre><code>CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make uImage -j2
-CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make modules -j2
-CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make dtbs -j2
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm make uImage -j2
+<span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm make modules -j2
+<span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm make dtbs -j2
 
 rm -rf ../lib/modules/
-CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm INSTALL_MOD_PATH=$TMP_PATH \
-    make modules_install
-</code></pre>
-
+<span style="color:#000">CROSS_COMPILE</span><span style="color:#ce5c00;font-weight:bold">=</span>arm-linux-gnueabihf- <span style="color:#000">ARCH</span><span style="color:#ce5c00;font-weight:bold">=</span>arm <span style="color:#000">INSTALL_MOD_PATH</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#000">$TMP_PATH</span> <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>    make modules_install</code></pre></div>
 <p>Take the kernel.its from my files and make a u-boot image</p>
-
-<pre><code># wget http://linux-exynos.org/dist/chromebook/snow/kernel.its \
-#    -O arch/arm/boot/kernel.its
-cp ../files/kernel.its arch/arm/boot/.
-mkimage -f arch/arm/boot/kernel.its $TMP_PATH/vmlinux.uimg
-cd $TMP_PATH
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#8f5902;font-style:italic"># wget http://linux-exynos.org/dist/chromebook/snow/kernel.its \
+</span><span style="color:#8f5902;font-style:italic">#    -O arch/arm/boot/kernel.its
+</span><span style="color:#8f5902;font-style:italic"></span>cp ../files/kernel.its arch/arm/boot/.
+mkimage -f arch/arm/boot/kernel.its <span style="color:#000">$TMP_PATH</span>/vmlinux.uimg
+<span style="color:#204a87">cd</span> <span style="color:#000">$TMP_PATH</span></code></pre></div>
 <h2 id="prepare-sd-card">Prepare SD card</h2>
 
 <p>Set your SD card device</p>
-
-<pre><code>DISK=/dev/sde
-sudo umount $DISK*
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">DISK</span><span style="color:#ce5c00;font-weight:bold">=</span>/dev/sde
+sudo umount <span style="color:#000">$DISK</span>*</code></pre></div>
 <p>Create a new disk label for GPT. Type y when prompted after running</p>
-
-<pre><code>sudo parted $DISK mklabel gpt
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo parted <span style="color:#000">$DISK</span> mklabel gpt</code></pre></div>
 <p>Partition the SD card</p>
-
-<pre><code>sudo cgpt create -z $DISK 
-sudo cgpt create $DISK 
-sudo cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 $DISK 
-sudo cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel $DISK
-sudo cgpt add -i 12 -t data -b 73728 -s 32768 -l Script $DISK
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cgpt create -z <span style="color:#000">$DISK</span> 
+sudo cgpt create <span style="color:#000">$DISK</span> 
+sudo cgpt add -i <span style="color:#0000cf;font-weight:bold">1</span> -t kernel -b <span style="color:#0000cf;font-weight:bold">8192</span> -s <span style="color:#0000cf;font-weight:bold">32768</span> -l U-Boot -S <span style="color:#0000cf;font-weight:bold">1</span> -T <span style="color:#0000cf;font-weight:bold">5</span> -P <span style="color:#0000cf;font-weight:bold">10</span> <span style="color:#000">$DISK</span> 
+sudo cgpt add -i <span style="color:#0000cf;font-weight:bold">2</span> -t data -b <span style="color:#0000cf;font-weight:bold">40960</span> -s <span style="color:#0000cf;font-weight:bold">32768</span> -l Kernel <span style="color:#000">$DISK</span>
+sudo cgpt add -i <span style="color:#0000cf;font-weight:bold">12</span> -t data -b <span style="color:#0000cf;font-weight:bold">73728</span> -s <span style="color:#0000cf;font-weight:bold">32768</span> -l Script <span style="color:#000">$DISK</span></code></pre></div>
 <p>Create root partition</p>
-
-<pre><code>PART_SIZE=$(cgpt show $DISK | egrep '[0-9\ ]*Sec GPT table' | awk '{print $1}')
-sudo cgpt add -i 3 -t data -b 106496 -s `expr $PART_SIZE - 106496` -l Root $DISK
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">PART_SIZE</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#204a87;font-weight:bold">$(</span>cgpt show <span style="color:#000">$DISK</span> <span style="color:#000;font-weight:bold">|</span> egrep <span style="color:#4e9a06">&#39;[0-9\ ]*Sec GPT table&#39;</span> <span style="color:#000;font-weight:bold">|</span> awk <span style="color:#4e9a06">&#39;{print $1}&#39;</span><span style="color:#204a87;font-weight:bold">)</span>
+sudo cgpt add -i <span style="color:#0000cf;font-weight:bold">3</span> -t data -b <span style="color:#0000cf;font-weight:bold">106496</span> -s <span style="color:#4e9a06">`</span>expr <span style="color:#000">$PART_SIZE</span> - <span style="color:#0000cf;font-weight:bold">106496</span><span style="color:#4e9a06">`</span> -l Root <span style="color:#000">$DISK</span></code></pre></div>
 <p>Tell the system to refresh what it knows about the disk partitions</p>
-
-<pre><code>partprobe $DISK
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">partprobe <span style="color:#000">$DISK</span></code></pre></div>
 <p>Format partitions</p>
-
-<pre><code>sudo mkfs.ext2 &quot;${DISK}2&quot;
-sudo mkfs.ext4 &quot;${DISK}3&quot;
-sudo mkfs.vfat -F 16 &quot;${DISK}12&quot;
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mkfs.ext2 <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">2&#34;</span>
+sudo mkfs.ext4 <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">3&#34;</span>
+sudo mkfs.vfat -F <span style="color:#0000cf;font-weight:bold">16</span> <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">12&#34;</span></code></pre></div>
 <h2 id="install-nv-uboot-fb">Install nv_uboot_fb</h2>
 
 <p>Download and install the nv_uboot bootloader with framebuffer support in the SD</p>
-
-<pre><code>wget -O - http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/nv_uboot-snow-simplefb.kpart.bz2 \
-    | bunzip2 &gt; nv_uboot.kpart
-sudo dd if=nv_uboot.kpart of=&quot;${DISK}1&quot;
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget -O - http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/nv_uboot-snow-simplefb.kpart.bz2 <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>    <span style="color:#000;font-weight:bold">|</span> bunzip2 &gt; nv_uboot.kpart
+sudo dd <span style="color:#204a87;font-weight:bold">if</span><span style="color:#ce5c00;font-weight:bold">=</span>nv_uboot.kpart <span style="color:#000">of</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">1&#34;</span></code></pre></div>
 <h2 id="prepare-the-rootfs-for-encryption">Prepare the rootfs for encryption</h2>
 
 <p>Create key file. Store this file safely!</p>
-
-<pre><code>dd if=/dev/urandom of=rootfs.key bs=128 count=1
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">dd <span style="color:#204a87;font-weight:bold">if</span><span style="color:#ce5c00;font-weight:bold">=</span>/dev/urandom <span style="color:#000">of</span><span style="color:#ce5c00;font-weight:bold">=</span>rootfs.key <span style="color:#000">bs</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">128</span> <span style="color:#000">count</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#0000cf;font-weight:bold">1</span></code></pre></div>
 <p>Create luks container with key file</p>
-
-<pre><code>sudo cryptsetup luksFormat &quot;${DISK}3&quot; rootfs.key -c aes-xts-plain64 -s 256 --hash sha512
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cryptsetup luksFormat <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">3&#34;</span> rootfs.key -c aes-xts-plain64 -s <span style="color:#0000cf;font-weight:bold">256</span> --hash sha512</code></pre></div>
 <p>Add password to luks container</p>
-
-<pre><code>sudo cryptsetup luksAddKey &quot;${DISK}3&quot; --key-file rootfs.key
-sudo cryptsetup luksOpen &quot;${DISK}3&quot; alarm_rootfs -y --key-file rootfs.key
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cryptsetup luksAddKey <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">3&#34;</span> --key-file rootfs.key
+sudo cryptsetup luksOpen <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">3&#34;</span> alarm_rootfs -y --key-file rootfs.key
 sudo mkfs.ext4 /dev/mapper/alarm_rootfs
-sudo cryptsetup close alarm_rootfs
-</code></pre>
-
+sudo cryptsetup close alarm_rootfs</code></pre></div>
 <h2 id="install-arch-linux-kernel-and-custom-files">Install Arch Linux, kernel and custom files</h2>
 
 <h3 id="mount-luks-and-boot-partition">Mount LUKS and boot partition</h3>
-
-<pre><code>sudo cryptsetup luksOpen &quot;${DISK}3&quot; alarm_rootfs -y --key-file rootfs.key
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cryptsetup luksOpen <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">3&#34;</span> alarm_rootfs -y --key-file rootfs.key
 sudo mount /dev/mapper/alarm_rootfs root
-sudo mount &quot;${DISK}2&quot; mnt
-</code></pre>
-
+sudo mount <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">2&#34;</span> mnt</code></pre></div>
 <p>Extract Arch Linux rootfs tarball</p>
-
-<pre><code>tar -xf ArchLinuxARM-chromebook-latest.tar.gz -C root
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">tar -xf ArchLinuxARM-chromebook-latest.tar.gz -C root</code></pre></div>
 <p>Copy the kernel to the kernel partition</p>
-
-<pre><code>cp vmlinux.uimg mnt
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp vmlinux.uimg mnt
 rm -rf root/usr/lib/modules/3.8.11/
-cp -R lib root/usr
-</code></pre>
-
+cp -R lib root/usr</code></pre></div>
 <p>Copy custom mkinitcpio.conf (with crypt hook enabled)</p>
-
-<pre><code>cp files/mkinitcpio.conf root/etc
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp files/mkinitcpio.conf root/etc</code></pre></div>
 <p>Install initramfs from my files</p>
-
-<pre><code>cp files/uInitrd.img mnt
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp files/uInitrd.img mnt</code></pre></div>
 <p>Alternatively, if you already have an Arch installation on your Chromebook you
 can create the initramfs yourself. From your Chromebook run as root.</p>
-
-<pre><code>pacman -S mkinitcpio uboot-mkimage
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pacman -S mkinitcpio uboot-mkimage
 cp /root/files/mkinitcpio.conf /etc/mkinitcpio.conf
 mkinitcpio -g ~/uInitrd.img
 mount /dev/mmcblk1p2 /boot
 mkimage -A arm -T ramdisk -C none -n initramfs -d ~/uInitrd.img /boot/uInitrd.uimg
-umount /boot
-</code></pre>
-
+umount /boot</code></pre></div>
 <p>Install custom u-boot script to boot with kernel+initramfs</p>
-
-<pre><code>sudo mount &quot;${DISK}12&quot; mnt
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mount <span style="color:#4e9a06">&#34;</span><span style="color:#4e9a06">${</span><span style="color:#000">DISK</span><span style="color:#4e9a06">}</span><span style="color:#4e9a06">12&#34;</span> mnt
 mkdir -p mnt/u-boot
-#wget http://archlinuxarm.org/os/exynos/boot.scr.uimg
-mkimage -A arm -T script -C none -n 'Chromebook Boot Script' \
-    -d boot_custom2.scr boot.scr.uimg
-cp boot.scr.uimg mnt/u-boot
-</code></pre>
-
+<span style="color:#8f5902;font-style:italic">#wget http://archlinuxarm.org/os/exynos/boot.scr.uimg
+</span><span style="color:#8f5902;font-style:italic"></span>mkimage -A arm -T script -C none -n <span style="color:#4e9a06">&#39;Chromebook Boot Script&#39;</span> <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>    -d boot_custom2.scr boot.scr.uimg
+cp boot.scr.uimg mnt/u-boot</code></pre></div>
 <p><em>Optional</em>: Copy custom files for post-installation</p>
-
-<pre><code>cp files/arch_mkinitcpio.sh root/root/
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp files/arch_mkinitcpio.sh root/root/
 cp files/postinstall.sh root/root/   
 cp files/arch/private/mlan0-wrt54gl root/etc/netctl/
 mkdir -p root/root/files/
-cp -R files/arch/* root/root/files/
-</code></pre>
-
+cp -R files/arch/* root/root/files/</code></pre></div>
 <h3 id="umount-luks-and-boot-partition">Umount LUKS and boot partition</h3>
-
-<pre><code>sudo umount mnt
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo umount mnt
 sudo umount root
 sudo cryptsetup close alarm_rootfs
-sync
-</code></pre>
-
+sync</code></pre></div>
 <h1 id="arch-configuration">Arch configuration</h1>
 
 <p>Boot your Chromebook and press Ctrl-U to boot from external drive. After you
 see U-Boot start, press any kay to interrupt the boot process and type the
 following in the prompt to reset the environment and save it to flash</p>
-
-<pre><code>env default -f
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">env default -f
 saveenv
-reset
-</code></pre>
-
+reset</code></pre></div>
 <p>You can now boot the Chromebook into Arch and configure the system. Login as
 root to continue.</p>
 
 <p>Configure and connect wifi</p>
-
-<pre><code>wifi-menu mlan0
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wifi-menu mlan0</code></pre></div>
 <p>Configure locale, timezone and hostname</p>
-
-<pre><code>MYHOSTNAME=&quot;alarm&quot;
-USERNAME=&quot;dhole&quot;
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#000">MYHOSTNAME</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;alarm&#34;</span>
+<span style="color:#000">USERNAME</span><span style="color:#ce5c00;font-weight:bold">=</span><span style="color:#4e9a06">&#34;dhole&#34;</span>
 
 locale-gen
-localectl set-locale LANG=en_US.UTF-8
+localectl set-locale <span style="color:#000">LANG</span><span style="color:#ce5c00;font-weight:bold">=</span>en_US.UTF-8
 timedatectl set-timezone Europe/Madrid
-hostnamectl set-hostname $MYHOSTNAME
-</code></pre>
-
+hostnamectl set-hostname <span style="color:#000">$MYHOSTNAME</span></code></pre></div>
 <p>Add user</p>
-
-<pre><code>pacman -Sy
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pacman -Sy
 pacman -S sudo
-useradd -m -G users -s /bin/bash $USERNAME
-passwd $USERNAME
-visudo # uncomment the wheel group
-usermod -a -G wheel $USERNAME
-</code></pre>
-
+useradd -m -G users -s /bin/bash <span style="color:#000">$USERNAME</span>
+passwd <span style="color:#000">$USERNAME</span>
+visudo <span style="color:#8f5902;font-style:italic"># uncomment the wheel group
+</span><span style="color:#8f5902;font-style:italic"></span>usermod -a -G wheel <span style="color:#000">$USERNAME</span></code></pre></div>
 <h1 id="post-install">Post install</h1>
 
 <p>At this point you should have a bootable full disk encryption Arch Install.
@@ -336,116 +240,71 @@ In the following lines I will detail the post installation steps I follow to
 cover my needs in the laptop. Run all the following commands as root.</p>
 
 <p>Install some packages (tune this to your needs)</p>
-
-<pre><code>pacman -S mesa-libgl xorg-server xorg-xinit xorg-server-utils mesa xf86-video-fbdev \
-xf86-input-synaptics unzip dbus lightdm lightdm-gtk-greeter gnome-icon-theme xfce4 \
-firefox midori gnome-keyring wget vim ttf-dejavu ttf-ubuntu-font-family htop strace \
-lsof i3 xscreensaver git conky dmenu profont dina-font tamsyn-font alsa-utils ntp \
-pm-utils p7zip xarchiver unrar zip python-pip tmux mpv mc make tmux iputils rtorrent \
-youtube-dl macchanger tree acpid pulseaudio pulseaudio-alsa mupdf clang file gvim \
-mosh nmap rxvt-unicode thunar adduser rsyslog wicd chromium xf86-video-armsoc-chromium \
-i3lock
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pacman -S mesa-libgl xorg-server xorg-xinit xorg-server-utils mesa xf86-video-fbdev <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>xf86-input-synaptics unzip dbus lightdm lightdm-gtk-greeter gnome-icon-theme xfce4 <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>firefox midori gnome-keyring wget vim ttf-dejavu ttf-ubuntu-font-family htop strace <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>lsof i3 xscreensaver git conky dmenu profont dina-font tamsyn-font alsa-utils ntp <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>pm-utils p7zip xarchiver unrar zip python-pip tmux mpv mc make tmux iputils rtorrent <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>youtube-dl macchanger tree acpid pulseaudio pulseaudio-alsa mupdf clang file gvim <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>mosh nmap rxvt-unicode thunar adduser rsyslog wicd chromium xf86-video-armsoc-chromium <span style="color:#4e9a06">\
+</span><span style="color:#4e9a06"></span>i3lock</code></pre></div>
 <p>Disable clearing of boot messages</p>
-
-<pre><code>mkdir -p /etc/systemd/system/getty@tty1.service.d/
-echo -e &quot;[Service]\nTTYVTDisallocate=no&quot; &gt; /etc/systemd/system/getty@tty1.service.d/noclear.conf
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p /etc/systemd/system/getty@tty1.service.d/
+<span style="color:#204a87">echo</span> -e <span style="color:#4e9a06">&#34;[Service]\nTTYVTDisallocate=no&#34;</span> &gt; /etc/systemd/system/getty@tty1.service.d/noclear.conf
 mkdir -p /etc/ld.conf/
-echo &quot;/usr/local/lib&quot; &gt;&gt; /etc/ld.conf.d/local.conf
-</code></pre>
-
+<span style="color:#204a87">echo</span> <span style="color:#4e9a06">&#34;/usr/local/lib&#34;</span> &gt;&gt; /etc/ld.conf.d/local.conf</code></pre></div>
 <p>Install fonts <a href="http://linuxfonts.narod.ru/">http://linuxfonts.narod.ru/</a></p>
-
-<pre><code>cp /root/files/fonts.conf /etc/fonts/conf.d/99-my-fonts.conf
-cd /usr/share
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/fonts.conf /etc/fonts/conf.d/99-my-fonts.conf
+<span style="color:#204a87">cd</span> /usr/share
 7z e /root/files/fonts.7z
-cd /root
-</code></pre>
-
+<span style="color:#204a87">cd</span> /root</code></pre></div>
 <p>Enable suspend and xscreen lock on lid close:
 <a href="https://blog.omgmog.net/post/making-suspend-on-lid-close-work-with-arch-linux-on-the-hp-chromebook-11/">https://blog.omgmog.net/post/making-suspend-on-lid-close-work-with-arch-linux-on-the-hp-chromebook-11/</a></p>
-
-<pre><code>cp /root/files/handler.sh /etc/acpi/handler.sh
-systemctl enable acpid
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/handler.sh /etc/acpi/handler.sh
+systemctl <span style="color:#204a87">enable</span> acpid</code></pre></div>
 <p>Install custom touchpad, keyboard, evdev</p>
-
-<pre><code>cp /root/files/xorg.conf.d/* /etc/X11/xorg.conf.d
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/xorg.conf.d/* /etc/X11/xorg.conf.d</code></pre></div>
 <p>Enable lightdm</p>
-
-<pre><code>systemctl enable lightdm
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl <span style="color:#204a87">enable</span> lightdm</code></pre></div>
 <p>Set default brightness on power up and script to change it</p>
-
-<pre><code>cp /root/files/brightness.conf /etc/tmpfiles.d/brightness.conf
-cp /root/files/chbr /usr/local/bin/chbr
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/brightness.conf /etc/tmpfiles.d/brightness.conf
+cp /root/files/chbr /usr/local/bin/chbr</code></pre></div>
 <p>Configure pulseaudio</p>
-
-<pre><code>echo &quot;load-module module-alsa-sink device=sysdefault&quot; &gt;&gt; /etc/pulse/default.pa
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#204a87">echo</span> <span style="color:#4e9a06">&#34;load-module module-alsa-sink device=sysdefault&#34;</span> &gt;&gt; /etc/pulse/default.pa</code></pre></div>
 <p>Enable rsyslog</p>
-
-<pre><code>systemctl enable rsyslog.service
-systemctl start rsyslog.service
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">systemctl <span style="color:#204a87">enable</span> rsyslog.service
+systemctl start rsyslog.service</code></pre></div>
 <p>Change MAC at every connection</p>
-
-<pre><code>cp /root/files/mac_change /etc/wicd/scripts/preconnect/
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/mac_change /etc/wicd/scripts/preconnect/</code></pre></div>
 <p>Fix wicd-curses:
 <a href="https://github.com/voidlinux/void-packages/commit/220de599ad3ecba14423289209a3e4e031037edf">https://github.com/voidlinux/void-packages/commit/220de599ad3ecba14423289209a3e4e031037edf</a></p>
-
-<pre><code>cp /root/files/netentry_curses.py /usr/share/wicd/curses/
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/netentry_curses.py /usr/share/wicd/curses/</code></pre></div>
 <p>Enable eduroam for wicd:
 <a href="http://chakraos.org/wiki/index.php?title=Wicd#Making_eduroam_work_with_wicd">http://chakraos.org/wiki/index.php?title=Wicd#Making_eduroam_work_with_wicd</a>
 This setup is working for eduroam at Universitat Politècnica de Catalunya</p>
-
-<pre><code>cp /root/files/ttls-80211 /etc/wicd/encryption/templates/
-cd /etc/wicd/encryption/templates
-echo ttls-80211 &gt;&gt; active
-cd /root
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/ttls-80211 /etc/wicd/encryption/templates/
+<span style="color:#204a87">cd</span> /etc/wicd/encryption/templates
+<span style="color:#204a87">echo</span> ttls-80211 &gt;&gt; active
+<span style="color:#204a87">cd</span> /root
 mkdir -p /etc/ca-certificates/custom/
-cp /root/files/AddTrustExternalCARoot.crt /etc/ca-certificates/custom/
-</code></pre>
-
+cp /root/files/AddTrustExternalCARoot.crt /etc/ca-certificates/custom/</code></pre></div>
 <p>Chromium defaults</p>
-
-<pre><code>cp /root/files/chromium_default /etc/chromium/default
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/chromium_default /etc/chromium/default</code></pre></div>
 <p>Install wicd saved networks (This is only for my personal usage, this config
 is not in github)</p>
-
-<pre><code>cp /root/files/private/wireless-settings.conf /etc/wicd/
-systemctl enable wicd
-</code></pre>
-
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /root/files/private/wireless-settings.conf /etc/wicd/
+systemctl <span style="color:#204a87">enable</span> wicd</code></pre></div>
 <p>Install my custom configuration for the user from my dot_files github repo. This
 contains my vim settings, i3 window manager configuration for chromebook,
 bashrc, tmux.conf, etc. Login as your user to run the following commands.</p>
-
-<pre><code>cd ~
+<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#204a87">cd</span> ~
 mkdir -p github
-cd github
+<span style="color:#204a87">cd</span> github
 git clone https://github.com/Dhole/dot_files.git
-cd dot_files
+<span style="color:#204a87">cd</span> dot_files
 cp -R .* ~
 cp ALARM/.* ~
-sh vim_setup.sh
-</code></pre>
-
+sh vim_setup.sh</code></pre></div>
 <h1 id="todo">TODO</h1>
 
 <p>There are only two things which I find missing from my installation.</p>
@@ -517,7 +376,7 @@ can be found at [5].</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
+                        <a href="https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
                     
                 </div>
             </div>
@@ -525,7 +384,7 @@ can be found at [5].</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
+                        <a href="https://dhole.github.io/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
                     
                 </div>
             </div>
@@ -537,7 +396,7 @@ can be found at [5].</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2017. All rights reserved. 
+                    &copy; 2018. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
