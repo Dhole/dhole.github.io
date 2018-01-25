@@ -59,7 +59,7 @@ per_account:set sendmail  = "$HOME/bin/check-mail-gpg /usr/bin/msmtp -a $my_emai
 
 And here goes the python script `check-mail-gpg`:
 
-```
+```python3
 #! /usr/bin/python3
 
 import os

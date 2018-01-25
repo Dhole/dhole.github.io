@@ -32,7 +32,7 @@ distribution like a Debian-based one you probably need to install
 
 On Gentoo as root, run the following to install a cross-compiling environment
 for armv7a, the CPU architecture of the CHIP (this will take a while):
-```
+```bash
 crossdev -S -v -t armv7a-hardfloat-linux-gnueabi
 ```
 
@@ -40,7 +40,8 @@ crossdev -S -v -t armv7a-hardfloat-linux-gnueabi
 
 As a regular user, set up the environment variables needed to enable
 cross-compiling the kernel, and create some working folders:
-```
+
+```bash
 export ARCH=arm
 export CROSS_COMPILE=armv7a-hardfloat-linux-gnueabi-
 export WORKSPACE=~/proj/CHIP/4.4.13-ntc-mlc/
@@ -51,7 +52,7 @@ mkdir -p ~/git/CHIP
 Now let's clone the kernel source git repository from Next Thing Co.  We will
 be getting the branch that was used to build the kernel shipped in the *CHIP
 4.4 GUI* release:
-```
+```bash
 cd ~/git/CHIP
 git clone --single-branch -b debian/4.4.13-ntc-mlc https://github.com/NextThingCo/CHIP-linux.git
 cd CHIP-linux
@@ -61,7 +62,7 @@ Before configuring the kernel, we will copy the configuration that was used to
 build the kernel in *CHIP 4.4 GUI*.  We can get the file from the PocketCHIP at
 `/boot/config-4.4.13-ntc`.  I recommend having `sshd` enabled on the PocketCHIP
 to transfer files over WiFi with ease.
-```
+```bash
 cp config-4.4.13-ntc .config
 ```
 
@@ -69,13 +70,13 @@ We create the empty file `.scmversion` in order to disable the "+" at the end
 of the kernel version that gets embedded into the modules in the *vermagic*
 property.  If we don't generate modules with the same *vermagic* as the one in
 the installed kernel, the modules will fail to load.
-```
+```bash
 touch .scmversion
 ```
 
 Now we can proceed to configure the kernel to enable the modules we need.  In
 my case, I enabled the modules needed for LUKS:
-```
+```bash
 make menuconfig
 ```
 
@@ -126,35 +127,35 @@ Finally, and very importantly, set the local version of the kernel to
 
 We can now make the kernel and modules for ARM (in this case I'm setting `-j4`
 to use 4 parallel building threads).  This will take a while:
-```
+```bash
 make -j4
 ```
 
 We install the modules in our workspace:
-```
+```bash
 make INSTALL_MOD_PATH=$WORKSPACE modules_install
 ```
 
 Now, on the CHIP as root, we make a folder to store the new modules we want to install:
-```
+```bash
 mkdir -p ~/modules/{crypto,drivers/md/}
 ```
 
 We copy the built modules to the CHIP:
-```
+```bash
 scp crypto/*.ko root@192.168.0.106:~/modules/crypto/
 scp drivers/md/dm-crypt.ko root@192.168.0.106:~/modules/drivers/md/
 ```
 
 Finally, on the CHIP as root, we copy the modules we just transfered to their
 destination so that the kernel can load them:
-```
+```bash
 cp -n ~/modules/crypto/*.ko /lib/modules/4.4.13-ntc-mlc/kernel/crypto/
 cp ~/modules/drivers/md/dm-crypt.ko  /lib/modules/4.4.13-ntc-mlc/kernel/drivers/md/
 ```
 
 There's no reboot needed.  You should be able to mount LUKS partitions using
 `cryptsetup` without problems at this point.  You can easily test that everything is working by running a benchmark:
-```
+```bash
 cryptsetup benchmark
 ```

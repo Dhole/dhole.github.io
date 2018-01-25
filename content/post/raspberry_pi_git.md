@@ -20,7 +20,7 @@ First of all, we'll create a *git* user and move it's home to the encrypted
 partition.  For convenience we'll also link that home directory to `/git`.  This
 will be useful to have nice paths for our repositories.
 
-```
+```bash
 adduser git
 lbu add /home/git/
 
@@ -34,7 +34,7 @@ ln -s /home/git/ /git
 Finally we install git, cgit and highlight (to provide code highlighting in
 cgit).
 
-```
+```bash
 apk add highlight git cgit
 ```
 
@@ -43,12 +43,12 @@ it's expecting version 2 of highlight.  We'll copy the script and change it to
 use the argument format of version 3 of highlight (the line is already there, we
 just comment the version 2 and uncomment the version 3).
 
-```
+```bash
 cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
 vim /usr/lib/cgit/filters/syntax-highlighting3.sh
 ```
 
-```
+```diff
 --- /usr/lib/cgit/filters/syntax-highlighting.sh
 +++ /usr/lib/cgit/filters/syntax-highlighting3.sh
 @@ -115,7 +115,7 @@
@@ -63,19 +63,19 @@ vim /usr/lib/cgit/filters/syntax-highlighting3.sh
 +exec highlight --force -f -I -O xhtml -S "$EXTENSION" 2>/dev/null
 ```
 
-```
+```bash
 lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh
 ```
 
 Highlight uses css to color the code, so we need to add some lines specifying
 the colors we want to the css file cgit uses.
 
-```
+```bash
 cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
 vim /usr/share/webapps/cgit/cgit-highlight.css
 ```
 
-```
+```diff
 --- /usr/share/webapps/cgit/cgit.css
 +++ /usr/share/webapps/cgit/cgit-highlight.css
 @@ -809,3 +809,20 @@
@@ -101,13 +101,13 @@ vim /usr/share/webapps/cgit/cgit-highlight.css
 +.hl.kwd { color:#010181; }
 ```
 
-```
+```bash
 lbu add /usr/share/webapps/cgit/cgit-highlight.css
 ```
 
 As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.
 
-```
+```bash
 cd /mnt/disk
 mkdir -p git/pub
 mkdir -p git/priv
@@ -116,7 +116,7 @@ mkdir -p git/priv
 For our setup we will use a general cgit configuration files, and two
 specialized ones for the public and private folders.
 
-```
+```bash
 mkdir /etc/cgit
 ```
 
@@ -196,11 +196,11 @@ $HTTP["url"] =~ "^/private/cgit" {
 EOF
 ```
 
-```
+```bash
 vim /etc/lighttpd/lighttpd.conf
 ```
 
-```
+```bash
 ...
 ...
 # {{{ includes
@@ -214,7 +214,7 @@ include "cgit.conf"
 
 We commit every file to permanent storage and restart the lighttpd server.
 
-```
+```bash
 lbu commit
 rc-service lighttpd start
 ```
@@ -227,6 +227,8 @@ To automate making new repositories I wrote the following simple script:
 
 ```
 cat << EOF > /home/git/new-repo.sh
+```
+```bash
 #! /bin/sh
 
 folder=$1
@@ -282,13 +284,15 @@ echo "git remote add origin ssh://git-kyasuka/git/$folder/$name.git"
 echo "git add ."
 echo "git commit"
 echo "git push -u origin master"
+```
+```
 EOF
 ```
 
 Now, to create a new git repository I just do the following from my local
 machine:
 
-```
+```bash
 ssh git@lizard.kyasuka.com
 ./new-repo.sh pub test "This is a test repository"
 exit
@@ -301,6 +305,8 @@ clone them all into my server.  This will make the transition easier :)
 
 ```
 cat << EOF > /mnt/disk/git/import-github.py
+```
+```python3
 #! /usr/bin/env python3
 
 from urllib.request import urlopen, urlretrieve
@@ -323,6 +329,8 @@ for i in range(0, len(clone_urls)):
     subprocess.run(['git', 'clone', '--bare', clone_url])
     with open(clone_url.split('/')[-1] + '/description', 'w') as desc_file:
         desc_file.write(descriptions[i] + '\n')
+```
+```
 EOF
 ```
 

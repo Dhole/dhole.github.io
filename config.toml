@@ -7,6 +7,8 @@ title = "Dhole's blog"
     author = "Dhole"
     GitHubUser = "Dhole"
     disqus_shortname = "dhole"
+    pygmentsCodeFences = true
+    pygmentsStyle = "tango"
 
 
 [[menu.main]]

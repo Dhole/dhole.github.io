@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Reproducible Builds on Dhole&#39;s blog</title>
-    <link>https://lizard.kyasuka.com/blog/categories/reproducible-builds/</link>
+    <link>https://dhole.github.io/categories/reproducible-builds/</link>
     <description>Recent content in Reproducible Builds on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 06 Aug 2015 20:12:15 +0200</lastBuildDate>
     
-	<atom:link href="https://lizard.kyasuka.com/blog/categories/reproducible-builds/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dhole.github.io/categories/reproducible-builds/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015, 1st update</title>
-      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</link>
+      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
+      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
       <description>This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my first post)
 Status update First month It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata.</description>
     </item>
     
     <item>
       <title>Reproducible builds on Debian for GSoC 2015</title>
-      <link>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</link>
+      <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</link>
       <pubDate>Sun, 10 May 2015 17:14:05 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/post/reproducible_builds_debian_gsoc2015/</guid>
+      <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</guid>
       <description>This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.
 A bit about myself I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go.</description>
     </item>

@@ -1,4 +1,5 @@
 /**
+    padding: 8px 0px;
  * http://github.com/eliasson/liquorice/
  *
  * Copyright © 2014. Markus Eliasson <markus.eliasson.gmail.com> 
@@ -24,8 +25,9 @@
 
 /** Base ********************************************************************/
 body {
-    font-family: "Open Sans", "Helvetica Neue", "Helvetica", sans-serif;
+    font-family: sans-serif;
     color: #484644;
+    margin: 0;
 }
 
 a,
@@ -37,10 +39,14 @@ a:visited {
     font-weight: bold;
 }
 
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
 h1,h2,h3,h4,h5,h6 {
     color: #202020;
-    font-weight: lighter;
-    /* font-weight: bold; */
+    font-weight: normal;
 }
 
 img {
@@ -202,14 +208,6 @@ ul.li-article-list {
     margin-top: 64px;
 }
 
-/** Extra ********************************************************************/
-/*
-.video-player {
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-}
-*/
 .video-player {
     position: relative;
     padding-bottom: 56.25%;

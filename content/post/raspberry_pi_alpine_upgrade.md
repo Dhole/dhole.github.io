@@ -17,37 +17,37 @@ release, so I'm doing that manually on another computer.
 
 First of all, replace the repository confiration to point to the new version:
 
-```
+```bash
 setup-apkrepos
 ```
 
 Press `e` then replace v3.5 by v3.6 (or whichever is the new release version).
 
-```
+```bash
 apk update
 apk upgrade --update-cache --available
 ```
 
 Make sure that `/etc/lbu/lbu.conf` has the following line:
-```
+```bash
 LBU_MEDIA=mmcblk0p1
 ```
 
 Then load the environment variables from the file, and backup everything.
-```
+```bash
 . /etc/lbu/lbu.conf
 lbu ci
 ```
 
 Check that there is at least 400MB (maybe more?) free in the permament storage:
-```
+```bash
 df -h | grep "Filesystem\|$LBU_MEDIA"
 ```
 
 Now on another computer, which should have the Alpine Linux release GPG keys on
 the GPG keyring, download the new release image, verify it's hash and verify
 the hash signature:
-```
+```bash
 VERSION=3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.asc
@@ -59,14 +59,14 @@ gpg --verify *armhf.tar.gz.asc
 ```
 
 Now we proceed with the upgrade on the Raspberry Pi:
-```
+```bash
 mount -oremount,rw /media/$LBU_MEDIA
 cd /media/$LBU_MEDIA
 ```
 
 Download the new release image (this time on the Raspberry Pi) and verify that
 the hash matches the one we verified on the other computer, then extract it:
-```
+```bash
 VERSION=3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 sha256sum *armhf.tar.gz
@@ -78,13 +78,13 @@ cd ..
 
 Commented is the line suggested in the wiki, which I'm not sure does any
 verification.  We will install from the extracted release image:
-```
+```bash
 #setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
 setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA
 ```
 
 Now we clean what we downloaded, backup and reboot.  Hopefully everything works!
-```
+```bash
 rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
 lbu ci
 sync

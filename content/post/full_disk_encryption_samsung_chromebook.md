@@ -16,14 +16,14 @@ using kernel 3.8.
 Install the necessary depdendencies (In my case I was running ubuntu). Mainly
 you need the tools for crosscompiling the kernel, configure u-boot and partition
 the SD card with a GPT partition table.
-```
+```bash
 sudo apt-get install u-boot-tools gcc-arm-linux-gnueabihf \
     binutils-arm-linux-gnueabihf cgpt device-tree-compiler
 ```
 
 ## Set up some directories and download arch and kernel sources
 
-```
+```bash
 TMP_PATH=$(pwd)/chromeos
 mkdir -p $TMP_PATH
 cd $TMP_PATH
@@ -32,17 +32,17 @@ mkdir -p mnt
 ```
 
 Download my custom files
-```
+```bash
 git clone https://github.com/Dhole/alarm_install.git .
 ```
 
 Download Arch rootfs tarball
-```
+```bash
 wget http://archlinuxarm.org/os/ArchLinuxARM-chromebook-latest.tar.gz
 ```
 
 Download kernel 3.8 with ChromeOS patches
-```
+```bash
 KERNEL_BRANCH="chromeos-3.8"
 git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
     -b $KERNEL_BRANCH --depth 1 chromeos
@@ -51,7 +51,7 @@ git clone https://chromium.googlesource.com/chromiumos/third_party/kernel.git \
 ## Build the kernel
 
 Set up the config for the chromebook
-```
+```bash
 cd $KERNEL_BRANCH
 CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make mrproper
 ./chromeos/scripts/prepareconfig chromeos-exynos5
@@ -59,14 +59,14 @@ CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make mrproper
 Configure the kernel as needed (Alternativelly, download my custom .config). In
 my case I enabled most of the cipher options to be able to use AES-XTS in LUKS.
 Be sure to disable "Treat compiler warnings as errors" in menuconfig
-```
+```bash
 CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make menuconfig
 # or
 cp ../files/.config .
 ```
 
 Compile the kernel
-```
+```bash
 CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make uImage -j2
 CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make modules -j2
 CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm make dtbs -j2
@@ -77,7 +77,7 @@ CROSS_COMPILE=arm-linux-gnueabihf- ARCH=arm INSTALL_MOD_PATH=$TMP_PATH \
 ```    
 
 Take the kernel.its from my files and make a u-boot image
-```
+```bash
 # wget http://linux-exynos.org/dist/chromebook/snow/kernel.its \
 #    -O arch/arm/boot/kernel.its
 cp ../files/kernel.its arch/arm/boot/.
@@ -88,18 +88,18 @@ cd $TMP_PATH
 ## Prepare SD card
 
 Set your SD card device
-```
+```bash
 DISK=/dev/sde
 sudo umount $DISK*
 ```
 
 Create a new disk label for GPT. Type y when prompted after running
-```
+```bash
 sudo parted $DISK mklabel gpt
 ```
 
 Partition the SD card
-```
+```bash
 sudo cgpt create -z $DISK 
 sudo cgpt create $DISK 
 sudo cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 $DISK 
@@ -108,18 +108,18 @@ sudo cgpt add -i 12 -t data -b 73728 -s 32768 -l Script $DISK
 ```
 
 Create root partition
-```
+```bash
 PART_SIZE=$(cgpt show $DISK | egrep '[0-9\ ]*Sec GPT table' | awk '{print $1}')
 sudo cgpt add -i 3 -t data -b 106496 -s `expr $PART_SIZE - 106496` -l Root $DISK
 ```
 
 Tell the system to refresh what it knows about the disk partitions
-```
+```bash
 partprobe $DISK
 ```
 
 Format partitions
-```
+```bash
 sudo mkfs.ext2 "${DISK}2"
 sudo mkfs.ext4 "${DISK}3"
 sudo mkfs.vfat -F 16 "${DISK}12"
@@ -128,7 +128,7 @@ sudo mkfs.vfat -F 16 "${DISK}12"
 ## Install nv_uboot_fb
 
 Download and install the nv_uboot bootloader with framebuffer support in the SD
-```
+```bash
 wget -O - http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/nv_uboot-snow-simplefb.kpart.bz2 \
     | bunzip2 > nv_uboot.kpart
 sudo dd if=nv_uboot.kpart of="${DISK}1"
@@ -137,17 +137,17 @@ sudo dd if=nv_uboot.kpart of="${DISK}1"
 ## Prepare the rootfs for encryption
 
  Create key file. Store this file safely!
-```
+```bash
 dd if=/dev/urandom of=rootfs.key bs=128 count=1
 ```
 
 Create luks container with key file
-```
+```bash
 sudo cryptsetup luksFormat "${DISK}3" rootfs.key -c aes-xts-plain64 -s 256 --hash sha512
 ```
 
 Add password to luks container
-```
+```bash
 sudo cryptsetup luksAddKey "${DISK}3" --key-file rootfs.key
 sudo cryptsetup luksOpen "${DISK}3" alarm_rootfs -y --key-file rootfs.key
 sudo mkfs.ext4 /dev/mapper/alarm_rootfs
@@ -157,37 +157,37 @@ sudo cryptsetup close alarm_rootfs
 ## Install Arch Linux, kernel and custom files
 
 ### Mount LUKS and boot partition
-```
+```bash
 sudo cryptsetup luksOpen "${DISK}3" alarm_rootfs -y --key-file rootfs.key
 sudo mount /dev/mapper/alarm_rootfs root
 sudo mount "${DISK}2" mnt
 ```
 
 Extract Arch Linux rootfs tarball
-```
+```bash
 tar -xf ArchLinuxARM-chromebook-latest.tar.gz -C root
 ```
 
 Copy the kernel to the kernel partition
-```
+```bash
 cp vmlinux.uimg mnt
 rm -rf root/usr/lib/modules/3.8.11/
 cp -R lib root/usr
 ```
 
 Copy custom mkinitcpio.conf (with crypt hook enabled)
-```
+```bash
 cp files/mkinitcpio.conf root/etc
 ```
 
 Install initramfs from my files 
-```
+```bash
 cp files/uInitrd.img mnt
 ```
 
 Alternatively, if you already have an Arch installation on your Chromebook you 
 can create the initramfs yourself. From your Chromebook run as root.
-```
+```bash
 pacman -S mkinitcpio uboot-mkimage
 cp /root/files/mkinitcpio.conf /etc/mkinitcpio.conf
 mkinitcpio -g ~/uInitrd.img
@@ -198,7 +198,7 @@ umount /boot
 
 
 Install custom u-boot script to boot with kernel+initramfs
-```
+```bash
 sudo mount "${DISK}12" mnt
 mkdir -p mnt/u-boot
 #wget http://archlinuxarm.org/os/exynos/boot.scr.uimg
@@ -208,7 +208,7 @@ cp boot.scr.uimg mnt/u-boot
 ```
 
 *Optional*: Copy custom files for post-installation
-```
+```bash
 cp files/arch_mkinitcpio.sh root/root/
 cp files/postinstall.sh root/root/   
 cp files/arch/private/mlan0-wrt54gl root/etc/netctl/
@@ -217,7 +217,7 @@ cp -R files/arch/* root/root/files/
 ```
 
 ### Umount LUKS and boot partition
-```
+```bash
 sudo umount mnt
 sudo umount root
 sudo cryptsetup close alarm_rootfs
@@ -229,7 +229,7 @@ sync
 Boot your Chromebook and press Ctrl-U to boot from external drive. After you
 see U-Boot start, press any kay to interrupt the boot process and type the
 following in the prompt to reset the environment and save it to flash
-```
+```bash
 env default -f
 saveenv
 reset
@@ -239,12 +239,12 @@ You can now boot the Chromebook into Arch and configure the system. Login as
 root to continue.
 
 Configure and connect wifi
-```
+```bash
 wifi-menu mlan0
 ```
 
 Configure locale, timezone and hostname
-```
+```bash
 MYHOSTNAME="alarm"
 USERNAME="dhole"
 
@@ -255,7 +255,7 @@ hostnamectl set-hostname $MYHOSTNAME
 ```
 
 Add user
-```
+```bash
 pacman -Sy
 pacman -S sudo
 useradd -m -G users -s /bin/bash $USERNAME
@@ -271,7 +271,7 @@ In the following lines I will detail the post installation steps I follow to
 cover my needs in the laptop. Run all the following commands as root.
 
 Install some packages (tune this to your needs)
-```
+```bash
 pacman -S mesa-libgl xorg-server xorg-xinit xorg-server-utils mesa xf86-video-fbdev \
 xf86-input-synaptics unzip dbus lightdm lightdm-gtk-greeter gnome-icon-theme xfce4 \
 firefox midori gnome-keyring wget vim ttf-dejavu ttf-ubuntu-font-family htop strace \
@@ -283,7 +283,7 @@ i3lock
 ```
 
 Disable clearing of boot messages
-```
+```bash
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 echo -e "[Service]\nTTYVTDisallocate=no" > /etc/systemd/system/getty@tty1.service.d/noclear.conf
 mkdir -p /etc/ld.conf/
@@ -291,7 +291,7 @@ echo "/usr/local/lib" >> /etc/ld.conf.d/local.conf
 ```
 
 Install fonts http://linuxfonts.narod.ru/
-```
+```bash
 cp /root/files/fonts.conf /etc/fonts/conf.d/99-my-fonts.conf
 cd /usr/share
 7z e /root/files/fonts.7z
@@ -300,53 +300,53 @@ cd /root
 
 Enable suspend and xscreen lock on lid close: 
 https://blog.omgmog.net/post/making-suspend-on-lid-close-work-with-arch-linux-on-the-hp-chromebook-11/
-```
+```bash
 cp /root/files/handler.sh /etc/acpi/handler.sh
 systemctl enable acpid
 ```
 
 Install custom touchpad, keyboard, evdev
-```
+```bash
 cp /root/files/xorg.conf.d/* /etc/X11/xorg.conf.d
 ```
 
 Enable lightdm
-```
+```bash
 systemctl enable lightdm
 ```
 
 Set default brightness on power up and script to change it
-```
+```bash
 cp /root/files/brightness.conf /etc/tmpfiles.d/brightness.conf
 cp /root/files/chbr /usr/local/bin/chbr
 ```
 
 Configure pulseaudio
-```
+```bash
 echo "load-module module-alsa-sink device=sysdefault" >> /etc/pulse/default.pa
 ```
 
 Enable rsyslog
-```
+```bash
 systemctl enable rsyslog.service
 systemctl start rsyslog.service
 ```
 
 Change MAC at every connection
-```
+```bash
 cp /root/files/mac_change /etc/wicd/scripts/preconnect/
 ```
 
 Fix wicd-curses: 
 https://github.com/voidlinux/void-packages/commit/220de599ad3ecba14423289209a3e4e031037edf
-```
+```bash
 cp /root/files/netentry_curses.py /usr/share/wicd/curses/
 ```
 
 Enable eduroam for wicd: 
 http://chakraos.org/wiki/index.php?title=Wicd#Making_eduroam_work_with_wicd 
 This setup is working for eduroam at Universitat Politècnica de Catalunya
-```
+```bash
 cp /root/files/ttls-80211 /etc/wicd/encryption/templates/
 cd /etc/wicd/encryption/templates
 echo ttls-80211 >> active
@@ -356,13 +356,13 @@ cp /root/files/AddTrustExternalCARoot.crt /etc/ca-certificates/custom/
 ```
 
 Chromium defaults
-```
+```bash
 cp /root/files/chromium_default /etc/chromium/default
 ```
 
 Install wicd saved networks (This is only for my personal usage, this config
 is not in github)
-```
+```bash
 cp /root/files/private/wireless-settings.conf /etc/wicd/
 systemctl enable wicd
 ```
@@ -370,7 +370,7 @@ systemctl enable wicd
 Install my custom configuration for the user from my dot_files github repo. This
 contains my vim settings, i3 window manager configuration for chromebook, 
 bashrc, tmux.conf, etc. Login as your user to run the following commands.
-```
+```bash
 cd ~
 mkdir -p github
 cd github

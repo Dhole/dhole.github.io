@@ -53,7 +53,7 @@ to avoid current drain from the GameBoy(5V) to the STM32F4(3.3V)). The bus for
 the GPIOs is configured at 100MHz (maximum frequency available).
 
 This functions can be found in [main.c](https://github.com/Dhole/stm32f_GBCart/blob/master/main.c):
-```
+```C
 void config_gpio_data();
 void config_gpio_addr();
 void config_gpio_sig();
@@ -62,7 +62,7 @@ void config_gpio_sig();
 Secondly, we will configure the CLK to act as a trigger on rise. To do this we
 enable an interrupt for the GPIO we connected the CLK to that will execute a
 handler for every level rise. In [main.c](https://github.com/Dhole/stm32f_GBCart/blob/master/main.c):
-```
+```C
 void config_PC0_int(void);
 ```
 
@@ -102,7 +102,60 @@ cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
 all this.
 
-{{% gist "Dhole/ed6cde3ec6b6574e080f" %}}
+```C
+#define BUS_RD (GPIOC->IDR & 0x0002)
+#define BUS_WR (GPIOC->IDR & 0x0004)
+#define ADDR_IN GPIOD->IDR
+#define DATA_IN GPIOE->IDR
+#define DATA_OUT GPIOE->ODR
+#define SET_DATA_MODE_IN GPIOE->MODER = 0x00000000;
+#define SET_DATA_MODE_OUT GPIOE->MODER = 0x55550000;
+
+/* Handle PC0 interrupt (rising edge of the gameboy CLK) */
+void EXTI0_IRQHandler(void) {
+	uint16_t addr;
+	uint8_t data;
+
+	uint32_t enablestatus;
+	enablestatus =  EXTI->IMR & EXTI_Line0;
+
+	if (((EXTI->PR & EXTI_Line0) != (uint32_t)RESET) &&
+	    (enablestatus != (uint32_t)RESET)) {
+		/* Do stuff on trigger */
+
+		/* Wait 10 NOPs, until the ADDR is ready in the bus */
+		REP(1,0,asm("NOP"););
+		/* Read ADDR from the bus */
+		addr = ADDR_IN;
+
+		if (BUS_RD || !BUS_WR) {
+			/* Write operation */
+
+			/* Wait 30 NOPs, until the DATA is ready in the bus */
+			REP(3,0,asm("NOP"););
+			/* Read DATA from the bus */
+			data = DATA_IN >> 8;
+			/* Write data to cartridge at addr */
+			mbc1_write(addr, data);
+		} else {
+			/* Read operation */
+
+			/* Set the GPIOE in output mode */
+			SET_DATA_MODE_OUT;
+			/* Output the data read at addr through GPIOE */
+			DATA_OUT = ((uint16_t)mbc1_read(addr)) << 8;
+			/* Wait 14 NOPs, until the gameboy has read the DATA
+			 * in the bus */
+			REP(1,4,asm("NOP"););
+			/* Set the GPIOE back to input mode */
+			SET_DATA_MODE_IN;
+		}
+	}
+	/* Clear interrupt flag */
+	EXTI->PR = EXTI_Line0;
+	//EXTI_ClearITPendingBit(EXTI_Line0);
+}
+```
 
 To perform an arbitrary number of NOP operations, I used a macro I found on
 [stackoverflow](https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times). The C preprocessor doesn't
@@ -128,7 +181,22 @@ For the read operation, three regions can be accessed. The first one maps to
 the first 16KB of the ROM. The second one to the selectable ROM bank. The third
 one to the selectable RAM bank, if any:
 
-{{% gist "Dhole/dc998ea525a208987a69" %}}
+```C
+/* Read cartridge operation for MBC1 */
+inline uint8_t mbc1_read(uint16_t addr) {
+	if (addr < 0x4000) {
+		/* 16KB ROM bank 00 */
+		return rom_gb[addr];
+	} else if (addr < 0x8000) {
+		/* 16KB ROM Bank 01-7F */
+		return rom_gb[addr + 0x4000 * (rom_bank - 1)];
+	} else if (addr >= 0xA000 && addr < 0xC000) {
+		/* 8KB RAM Bank 00-03, if any */
+		return ram[addr - 0xA000 + 0x2000 * ram_bank];
+	}
+	return 0x00;
+}
+```
 
 For the write operation, it can happen that it accesses the RAM region, where
 it performs a proper read, or it can access three other regions. The first one is
@@ -138,7 +206,48 @@ mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it's not needed here.
 
-{{% gist "Dhole/7417a4095600fe31b1dd" %}}
+```C
+/* Write cartridge operation for MBC1 */
+inline void mbc1_write(uint16_t addr, uint8_t data) {
+	if (addr >= 0xA000 && addr < 0xC000) {
+ 		/* 8KB RAM Bank 00-03, if any */
+		ram[addr - 0xA000 + 0x2000 * ram_bank] = data;
+	}
+	/*if (addr < 0x2000) {
+		if (data) {
+			ram_enable = 1;
+		} else {
+			ram_enable = 0;
+		}
+	}*/ else if (addr >= 0x2000 && addr < 0x4000) {
+		/* ROM Bank Number */
+		data &= 0x1F;
+		rom_bank = (rom_bank & 0xE0) | data;
+		if (data == 0x00) {
+			rom_bank |= 0x01;
+		}
+	} else if (addr < 0x6000) {
+		/*RAM Bank Number - or - Upper Bits of ROM Bank Number */
+		if (rom_ram_mode) {
+			/* ROM mode */
+			data &= 0x07;
+			rom_bank = (rom_bank & 0x1F) | (data << 5);
+		} else {
+			/* RAM mode */
+			ram_bank = data & 0x03;
+		}
+	} else if (addr < 0x8000) {
+		/* ROM/RAM Mode Select */
+		if (data) {
+			/* Emable RAM Banking mode */
+			rom_ram_mode = 0;
+		} else {
+			/* Emable ROM Banking mode */
+			rom_ram_mode = 1;
+		}
+	}
+}
+```
 
 ### ROM and RAM
 
@@ -146,13 +255,13 @@ In order to allow the program to access to the contents of a ROM, I used the
 unix `xxd` tool to convert the binary file into a C header file containing an array
 with the file contents:
 
-```
+```bash
 cp Tetris.gb rom.gb
 xxd -i rom.gb | sed 's/unsigned/unsigned const/g' > tetris_rom.h
 rm rom.gb
 ```
 The contents of *tetris_rom.h* will look like this:
-```
+```C
 unsigned const char rom_gb[] = {
   0xc3, 0x0c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc3, 0x0c, 0x02, 0xff,
   ...
@@ -160,7 +269,7 @@ unsigned const char rom_gb[] = {
 
 For games that use RAM, an array must be allocated on the SMT32F4. For this 
 purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:
-```
+```C
 uint8_t ram[0x8000]; // 32K
 ```
 Notice that the saved game will only remain as long as the STM32F4 is not powered

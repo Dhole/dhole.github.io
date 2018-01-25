@@ -33,7 +33,31 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.
 
-{{% gist "Dhole/a097cee60b990f65d869" %}}
+```C
+/* Read cartridge operation for MBC1 */
+inline uint8_t mbc1_read(uint16_t addr) {
+	if (addr < 0x4000) {
+		/* 16KB ROM bank 00 */
+		if (no_show_logo) {
+			/* Custom logo disabled */
+			return rom_gb[addr];
+		} else {
+			/* Custom logo enabled, only during first read at boot */
+			if (addr == 0x133) {
+				no_show_logo = 1;
+			}
+			return logo_bin[addr - 0x104];
+		}
+	} else if (addr < 0x8000) {
+		/* 16KB ROM Bank 01-7F */
+		return rom_gb[addr + 0x4000 * (rom_bank - 1)];
+	} else if (addr >= 0xA000 && addr < 0xC000) {
+		/* 8KB RAM Bank 00-03, if any */
+		return ram[addr - 0xA000 + 0x2000 * ram_bank];
+	}
+	return 0x00;
+}
+```
 
 ## Custom logo creation
 

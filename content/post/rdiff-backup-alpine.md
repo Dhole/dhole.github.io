@@ -41,14 +41,14 @@ Anyhow, here's how I installed rdiff-backup 1.2.8 manually:
 
 We first install rdiff-backup dependencies plus the packages required to build
 rdiff-backup from source.
-```
+```bash
 apk add librsync
 apk add gcc librsync-dev python-dev musl-dev patch
 ```
 
 We download the sources of rdiff-backup-1.2.8, check the hash sum to verify that
 we got it right and we extract them.
-```
+```bash
 mkdir tmp
 cd tmp/
 wget http://savannah.nongnu.org/download/rdiff-backup/rdiff-backup-1.2.8.tar.gz
@@ -60,7 +60,7 @@ tar xzf rdiff-backup-1.2.8.tar.gz
 Then we download the required patch to build rdiff-backup with librsync-1.0.0,
 in this case, from the Arch package git repository.  We check the patch and
 apply it.
-```
+```bash
 wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h=packages/rdiff-backup \
     -O rdiff-backup-1.2.8-librsync-1.0.0.patch
 [ "a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12" \
@@ -70,19 +70,19 @@ patch -Np1 -i ../rdiff-backup-1.2.8-librsync-1.0.0.patch
 ```
 
 We are ready to build rdiff-backup and install it in the system.
-```
+```bash
 python setup.py build
 python setup.py install --prefix=/usr --root=/
 ```
 
 We must not forget to add the newly installed files in the local backup
 database, so that they are stored permanently.  I deliberately skip the docs.
-```
+```bash
 lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*
 ```
 
 After we are done, we can remove the packages we used to build rdiff-backup.
-```
+```bash
 apk del gcc librsync-dev python-dev musl-dev patch
 ```
 
