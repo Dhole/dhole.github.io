@@ -8,7 +8,7 @@
         <title>rdiff-backup-1.2.8 in Alpine &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.min.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -17,18 +17,21 @@
 <header class="li-page-header">
     <div class="container">
         <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/rdiff-backup">rdiff-backup</a> </span>
+<span><a href="https://dhole.github.io/categories/rdiff-backup">rdiff-backup</a> </span>
 
 </div>
 
@@ -109,33 +112,33 @@ package by reverting the <a href="http://git.alpinelinux.org/cgit/aports/commit/
 
 <p>We first install rdiff-backup dependencies plus the packages required to build
 rdiff-backup from source.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk add librsync
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk add librsync
 apk add gcc librsync-dev python-dev musl-dev patch</code></pre></div>
 <p>We download the sources of rdiff-backup-1.2.8, check the hash sum to verify that
 we got it right and we extract them.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir tmp
-<span style="color:#204a87">cd</span> tmp/
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir tmp
+cd tmp/
 wget http://savannah.nongnu.org/download/rdiff-backup/rdiff-backup-1.2.8.tar.gz
-<span style="color:#ce5c00;font-weight:bold">[</span> <span style="color:#4e9a06">&#34;0d91a85b40949116fa8aaf15da165c34a2d15449b3cbe01c8026391310ac95db&#34;</span> <span style="color:#4e9a06">\
-</span><span style="color:#4e9a06"></span>    <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">$(</span>sha256sum rdiff-backup-1.2.8.tar.gz <span style="color:#000;font-weight:bold">|</span> cut -d <span style="color:#4e9a06">&#34; &#34;</span> -f <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#204a87;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">echo</span> OK
+<span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;0d91a85b40949116fa8aaf15da165c34a2d15449b3cbe01c8026391310ac95db&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>sha256sum rdiff-backup-1.2.8.tar.gz | cut -d <span style="color:#e6db74">&#34; &#34;</span> -f <span style="color:#ae81ff">1</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> echo OK
 tar xzf rdiff-backup-1.2.8.tar.gz</code></pre></div>
 <p>Then we download the required patch to build rdiff-backup with librsync-1.0.0,
 in this case, from the Arch package git repository.  We check the patch and
 apply it.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h<span style="color:#ce5c00;font-weight:bold">=</span>packages/rdiff-backup <span style="color:#4e9a06">\
-</span><span style="color:#4e9a06"></span>    -O rdiff-backup-1.2.8-librsync-1.0.0.patch
-<span style="color:#ce5c00;font-weight:bold">[</span> <span style="color:#4e9a06">&#34;a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12&#34;</span> <span style="color:#4e9a06">\
-</span><span style="color:#4e9a06"></span>    <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#204a87;font-weight:bold">$(</span>sha256sum rdiff-backup-1.2.8-librsync-1.0.0.patch <span style="color:#000;font-weight:bold">|</span> cut -d <span style="color:#4e9a06">&#34; &#34;</span> -f <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#204a87;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#204a87">echo</span> OK
-<span style="color:#204a87">cd</span> rdiff-backup-1.2.8/
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h<span style="color:#f92672">=</span>packages/rdiff-backup <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    -O rdiff-backup-1.2.8-librsync-1.0.0.patch
+<span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12&#34;</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>sha256sum rdiff-backup-1.2.8-librsync-1.0.0.patch | cut -d <span style="color:#e6db74">&#34; &#34;</span> -f <span style="color:#ae81ff">1</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> echo OK
+cd rdiff-backup-1.2.8/
 patch -Np1 -i ../rdiff-backup-1.2.8-librsync-1.0.0.patch</code></pre></div>
 <p>We are ready to build rdiff-backup and install it in the system.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python setup.py build
-python setup.py install --prefix<span style="color:#ce5c00;font-weight:bold">=</span>/usr --root<span style="color:#ce5c00;font-weight:bold">=</span>/</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python setup.py build
+python setup.py install --prefix<span style="color:#f92672">=</span>/usr --root<span style="color:#f92672">=</span>/</code></pre></div>
 <p>We must not forget to add the newly installed files in the local backup
 database, so that they are stored permanently.  I deliberately skip the docs.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*</code></pre></div>
 <p>After we are done, we can remove the packages we used to build rdiff-backup.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk del gcc librsync-dev python-dev musl-dev patch</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk del gcc librsync-dev python-dev musl-dev patch</code></pre></div>
 <p>Now rdiff-backup works correctly from my Debian laptop to my Alpine Raspberry Pi
 :)</p>
 
@@ -175,7 +178,7 @@ database, so that they are stored permanently.  I deliberately skip the docs.</p
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_upgrade/"> Alpine Linux: Upgrading on Raspberry Pi</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_upgrade/"> Alpine Linux: Upgrading on Raspberry Pi</a>
                     
                 </div>
             </div>
@@ -183,7 +186,7 @@ database, so that they are stored permanently.  I deliberately skip the docs.</p
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/raspberry_pi_git/"> Raspberry Pi: git server (cgit with lighttpd)</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_git/"> Raspberry Pi: git server (cgit with lighttpd)</a>
                     
                 </div>
             </div>
@@ -198,7 +201,7 @@ database, so that they are stored permanently.  I deliberately skip the docs.</p
                     &copy; 2018. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
                 </div>
             </div>
         </div>
