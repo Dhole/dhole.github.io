@@ -8,7 +8,7 @@
         <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.min.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -17,18 +17,21 @@
 <header class="li-page-header">
     <div class="container">
         <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -38,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -63,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -140,13 +143,13 @@ to avoid current drain from the GameBoy(5V) to the STM32F4(3.3V)). The bus for
 the GPIOs is configured at 100MHz (maximum frequency available).</p>
 
 <p>This functions can be found in <a href="https://github.com/Dhole/stm32f_GBCart/blob/master/main.c">main.c</a>:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">config_gpio_data</span><span style="color:#000;font-weight:bold">();</span>
-<span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">config_gpio_addr</span><span style="color:#000;font-weight:bold">();</span>
-<span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">config_gpio_sig</span><span style="color:#000;font-weight:bold">();</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">config_gpio_data</span>();
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">config_gpio_addr</span>();
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">config_gpio_sig</span>();</code></pre></div>
 <p>Secondly, we will configure the CLK to act as a trigger on rise. To do this we
 enable an interrupt for the GPIO we connected the CLK to that will execute a
 handler for every level rise. In <a href="https://github.com/Dhole/stm32f_GBCart/blob/master/main.c">main.c</a>:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">config_PC0_int</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">void</span><span style="color:#000;font-weight:bold">);</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">config_PC0_int</span>(<span style="color:#66d9ef">void</span>);</code></pre></div>
 <h2 id="read-write-handler">Read/Write handler</h2>
 
 <p>The read/write handler can be found in <a href="https://github.com/Dhole/stm32f_GBCart/blob/master/stm32f4xx_it.c">stm32f4xx_it.c</a></p>
@@ -182,58 +185,58 @@ by the specific operation. This is because calling a function consumes some
 cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
 all this.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#8f5902;font-style:italic">#define BUS_RD (GPIOC-&gt;IDR &amp; 0x0002)
-</span><span style="color:#8f5902;font-style:italic">#define BUS_WR (GPIOC-&gt;IDR &amp; 0x0004)
-</span><span style="color:#8f5902;font-style:italic">#define ADDR_IN GPIOD-&gt;IDR
-</span><span style="color:#8f5902;font-style:italic">#define DATA_IN GPIOE-&gt;IDR
-</span><span style="color:#8f5902;font-style:italic">#define DATA_OUT GPIOE-&gt;ODR
-</span><span style="color:#8f5902;font-style:italic">#define SET_DATA_MODE_IN GPIOE-&gt;MODER = 0x00000000;
-</span><span style="color:#8f5902;font-style:italic">#define SET_DATA_MODE_OUT GPIOE-&gt;MODER = 0x55550000;
-</span><span style="color:#8f5902;font-style:italic"></span>
-<span style="color:#8f5902;font-style:italic">/* Handle PC0 interrupt (rising edge of the gameboy CLK) */</span>
-<span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">EXTI0_IRQHandler</span><span style="color:#000;font-weight:bold">(</span><span style="color:#204a87;font-weight:bold">void</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-	<span style="color:#000">uint16_t</span> <span style="color:#000">addr</span><span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#000">uint8_t</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#define BUS_RD (GPIOC-&gt;IDR &amp; 0x0002)
+</span><span style="color:#75715e">#define BUS_WR (GPIOC-&gt;IDR &amp; 0x0004)
+</span><span style="color:#75715e">#define ADDR_IN GPIOD-&gt;IDR
+</span><span style="color:#75715e">#define DATA_IN GPIOE-&gt;IDR
+</span><span style="color:#75715e">#define DATA_OUT GPIOE-&gt;ODR
+</span><span style="color:#75715e">#define SET_DATA_MODE_IN GPIOE-&gt;MODER = 0x00000000;
+</span><span style="color:#75715e">#define SET_DATA_MODE_OUT GPIOE-&gt;MODER = 0x55550000;
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">/* Handle PC0 interrupt (rising edge of the gameboy CLK) */</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">EXTI0_IRQHandler</span>(<span style="color:#66d9ef">void</span>) {
+	uint16_t addr;
+	uint8_t data;
 
-	<span style="color:#000">uint32_t</span> <span style="color:#000">enablestatus</span><span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#000">enablestatus</span> <span style="color:#ce5c00;font-weight:bold">=</span>  <span style="color:#000">EXTI</span><span style="color:#ce5c00;font-weight:bold">-&gt;</span><span style="color:#000">IMR</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span> <span style="color:#000">EXTI_Line0</span><span style="color:#000;font-weight:bold">;</span>
+	uint32_t enablestatus;
+	enablestatus <span style="color:#f92672">=</span>  EXTI<span style="color:#f92672">-&gt;</span>IMR <span style="color:#f92672">&amp;</span> EXTI_Line0;
 
-	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(((</span><span style="color:#000">EXTI</span><span style="color:#ce5c00;font-weight:bold">-&gt;</span><span style="color:#000">PR</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span> <span style="color:#000">EXTI_Line0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">uint32_t</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000">RESET</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span>
-	    <span style="color:#000;font-weight:bold">(</span><span style="color:#000">enablestatus</span> <span style="color:#ce5c00;font-weight:bold">!=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">uint32_t</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000">RESET</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* Do stuff on trigger */</span>
+	<span style="color:#66d9ef">if</span> (((EXTI<span style="color:#f92672">-&gt;</span>PR <span style="color:#f92672">&amp;</span> EXTI_Line0) <span style="color:#f92672">!=</span> (uint32_t)RESET) <span style="color:#f92672">&amp;&amp;</span>
+	    (enablestatus <span style="color:#f92672">!=</span> (uint32_t)RESET)) {
+		<span style="color:#75715e">/* Do stuff on trigger */</span>
 
-		<span style="color:#8f5902;font-style:italic">/* Wait 10 NOPs, until the ADDR is ready in the bus */</span>
-		<span style="color:#000">REP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span><span style="color:#204a87;font-weight:bold">asm</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06"></span><span style="color:#4e9a06">&#34;NOP&#34;</span><span style="color:#000;font-weight:bold">););</span>
-		<span style="color:#8f5902;font-style:italic">/* Read ADDR from the bus */</span>
-		<span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">ADDR_IN</span><span style="color:#000;font-weight:bold">;</span>
+		<span style="color:#75715e">/* Wait 10 NOPs, until the ADDR is ready in the bus */</span>
+		REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+		<span style="color:#75715e">/* Read ADDR from the bus */</span>
+		addr <span style="color:#f92672">=</span> ADDR_IN;
 
-		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">BUS_RD</span> <span style="color:#ce5c00;font-weight:bold">||</span> <span style="color:#ce5c00;font-weight:bold">!</span><span style="color:#000">BUS_WR</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* Write operation */</span>
+		<span style="color:#66d9ef">if</span> (BUS_RD <span style="color:#f92672">||</span> <span style="color:#f92672">!</span>BUS_WR) {
+			<span style="color:#75715e">/* Write operation */</span>
 
-			<span style="color:#8f5902;font-style:italic">/* Wait 30 NOPs, until the DATA is ready in the bus */</span>
-			<span style="color:#000">REP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">3</span><span style="color:#000;font-weight:bold">,</span><span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">,</span><span style="color:#204a87;font-weight:bold">asm</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06"></span><span style="color:#4e9a06">&#34;NOP&#34;</span><span style="color:#000;font-weight:bold">););</span>
-			<span style="color:#8f5902;font-style:italic">/* Read DATA from the bus */</span>
-			<span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">DATA_IN</span> <span style="color:#ce5c00;font-weight:bold">&gt;&gt;</span> <span style="color:#0000cf;font-weight:bold">8</span><span style="color:#000;font-weight:bold">;</span>
-			<span style="color:#8f5902;font-style:italic">/* Write data to cartridge at addr */</span>
-			<span style="color:#000">mbc1_write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">);</span>
-		<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* Read operation */</span>
+			<span style="color:#75715e">/* Wait 30 NOPs, until the DATA is ready in the bus */</span>
+			REP(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+			<span style="color:#75715e">/* Read DATA from the bus */</span>
+			data <span style="color:#f92672">=</span> DATA_IN <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+			<span style="color:#75715e">/* Write data to cartridge at addr */</span>
+			mbc1_write(addr, data);
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#75715e">/* Read operation */</span>
 
-			<span style="color:#8f5902;font-style:italic">/* Set the GPIOE in output mode */</span>
-			<span style="color:#000">SET_DATA_MODE_OUT</span><span style="color:#000;font-weight:bold">;</span>
-			<span style="color:#8f5902;font-style:italic">/* Output the data read at addr through GPIOE */</span>
-			<span style="color:#000">DATA_OUT</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">((</span><span style="color:#000">uint16_t</span><span style="color:#000;font-weight:bold">)</span><span style="color:#000">mbc1_read</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span><span style="color:#000;font-weight:bold">))</span> <span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span> <span style="color:#0000cf;font-weight:bold">8</span><span style="color:#000;font-weight:bold">;</span>
-			<span style="color:#8f5902;font-style:italic">/* Wait 14 NOPs, until the gameboy has read the DATA
-</span><span style="color:#8f5902;font-style:italic">			 * in the bus */</span>
-			<span style="color:#000">REP</span><span style="color:#000;font-weight:bold">(</span><span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">,</span><span style="color:#0000cf;font-weight:bold">4</span><span style="color:#000;font-weight:bold">,</span><span style="color:#204a87;font-weight:bold">asm</span><span style="color:#000;font-weight:bold">(</span><span style="color:#4e9a06"></span><span style="color:#4e9a06">&#34;NOP&#34;</span><span style="color:#000;font-weight:bold">););</span>
-			<span style="color:#8f5902;font-style:italic">/* Set the GPIOE back to input mode */</span>
-			<span style="color:#000">SET_DATA_MODE_IN</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#8f5902;font-style:italic">/* Clear interrupt flag */</span>
-	<span style="color:#000">EXTI</span><span style="color:#ce5c00;font-weight:bold">-&gt;</span><span style="color:#000">PR</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">EXTI_Line0</span><span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#8f5902;font-style:italic">//EXTI_ClearITPendingBit(EXTI_Line0);
-</span><span style="color:#8f5902;font-style:italic"></span><span style="color:#000;font-weight:bold">}</span></code></pre></div>
+			<span style="color:#75715e">/* Set the GPIOE in output mode */</span>
+			SET_DATA_MODE_OUT;
+			<span style="color:#75715e">/* Output the data read at addr through GPIOE */</span>
+			DATA_OUT <span style="color:#f92672">=</span> ((uint16_t)mbc1_read(addr)) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>;
+			<span style="color:#75715e">/* Wait 14 NOPs, until the gameboy has read the DATA
+</span><span style="color:#75715e">			 * in the bus */</span>
+			REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+			<span style="color:#75715e">/* Set the GPIOE back to input mode */</span>
+			SET_DATA_MODE_IN;
+		}
+	}
+	<span style="color:#75715e">/* Clear interrupt flag */</span>
+	EXTI<span style="color:#f92672">-&gt;</span>PR <span style="color:#f92672">=</span> EXTI_Line0;
+	<span style="color:#75715e">//EXTI_ClearITPendingBit(EXTI_Line0);
+</span><span style="color:#75715e"></span>}</code></pre></div>
 <p>To perform an arbitrary number of NOP operations, I used a macro I found on
 <a href="https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times">stackoverflow</a>. The C preprocessor doesn&rsquo;t
 allow to repeat an operations a number of times.</p>
@@ -257,20 +260,20 @@ Controllers can be found in the <a href="http://gbdev.gg8.se/wiki/articles/Memor
 <p>For the read operation, three regions can be accessed. The first one maps to
 the first 16KB of the ROM. The second one to the selectable ROM bank. The third
 one to the selectable RAM bank, if any:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#8f5902;font-style:italic">/* Read cartridge operation for MBC1 */</span>
-<span style="color:#204a87;font-weight:bold">inline</span> <span style="color:#000">uint8_t</span> <span style="color:#000">mbc1_read</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">uint16_t</span> <span style="color:#000">addr</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0x4000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* 16KB ROM bank 00 */</span>
-		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">rom_gb</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">addr</span><span style="color:#000;font-weight:bold">];</span>
-	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0x8000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* 16KB ROM Bank 01-7F */</span>
-		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">rom_gb</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">0x4000</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">)];</span>
-	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#0000cf;font-weight:bold">0xA000</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0xC000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* 8KB RAM Bank 00-03, if any */</span>
-		<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#000">ram</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">0xA000</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">0x2000</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">ram_bank</span><span style="color:#000;font-weight:bold">];</span>
-	<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#204a87;font-weight:bold">return</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">;</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* Read cartridge operation for MBC1 */</span>
+<span style="color:#66d9ef">inline</span> uint8_t <span style="color:#a6e22e">mbc1_read</span>(uint16_t addr) {
+	<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x4000</span>) {
+		<span style="color:#75715e">/* 16KB ROM bank 00 */</span>
+		<span style="color:#66d9ef">return</span> rom_gb[addr];
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x8000</span>) {
+		<span style="color:#75715e">/* 16KB ROM Bank 01-7F */</span>
+		<span style="color:#66d9ef">return</span> rom_gb[addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x4000</span> <span style="color:#f92672">*</span> (rom_bank <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)];
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0xC000</span>) {
+		<span style="color:#75715e">/* 8KB RAM Bank 00-03, if any */</span>
+		<span style="color:#66d9ef">return</span> ram[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">*</span> ram_bank];
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0x00</span>;
+}</code></pre></div>
 <p>For the write operation, it can happen that it accesses the RAM region, where
 it performs a proper read, or it can access three other regions. The first one is
 used to select the lower bits of the ROM bank. The second one is used to select the
@@ -278,61 +281,61 @@ RAM bank or the upper bits of the ROM bank, depending on the state of a ROM/RAM
 mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is also
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it&rsquo;s not needed here.</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#8f5902;font-style:italic">/* Write cartridge operation for MBC1 */</span>
-<span style="color:#204a87;font-weight:bold">inline</span> <span style="color:#204a87;font-weight:bold">void</span> <span style="color:#000">mbc1_write</span><span style="color:#000;font-weight:bold">(</span><span style="color:#000">uint16_t</span> <span style="color:#000">addr</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#000">uint8_t</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-	<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#0000cf;font-weight:bold">0xA000</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0xC000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
- 		<span style="color:#8f5902;font-style:italic">/* 8KB RAM Bank 00-03, if any */</span>
-		<span style="color:#000">ram</span><span style="color:#000;font-weight:bold">[</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">-</span> <span style="color:#0000cf;font-weight:bold">0xA000</span> <span style="color:#ce5c00;font-weight:bold">+</span> <span style="color:#0000cf;font-weight:bold">0x2000</span> <span style="color:#ce5c00;font-weight:bold">*</span> <span style="color:#000">ram_bank</span><span style="color:#000;font-weight:bold">]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">;</span>
-	<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#8f5902;font-style:italic">/*if (addr &lt; 0x2000) {
-</span><span style="color:#8f5902;font-style:italic">		if (data) {
-</span><span style="color:#8f5902;font-style:italic">			ram_enable = 1;
-</span><span style="color:#8f5902;font-style:italic">		} else {
-</span><span style="color:#8f5902;font-style:italic">			ram_enable = 0;
-</span><span style="color:#8f5902;font-style:italic">		}
-</span><span style="color:#8f5902;font-style:italic">	}*/</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&gt;=</span> <span style="color:#0000cf;font-weight:bold">0x2000</span> <span style="color:#ce5c00;font-weight:bold">&amp;&amp;</span> <span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0x4000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* ROM Bank Number */</span>
-		<span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">&amp;=</span> <span style="color:#0000cf;font-weight:bold">0x1F</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span> <span style="color:#0000cf;font-weight:bold">0xE0</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000">data</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">==</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">|=</span> <span style="color:#0000cf;font-weight:bold">0x01</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0x6000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/*RAM Bank Number - or - Upper Bits of ROM Bank Number */</span>
-		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">rom_ram_mode</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* ROM mode */</span>
-			<span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">&amp;=</span> <span style="color:#0000cf;font-weight:bold">0x07</span><span style="color:#000;font-weight:bold">;</span>
-			<span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">rom_bank</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span> <span style="color:#0000cf;font-weight:bold">0x1F</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#ce5c00;font-weight:bold">|</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">&lt;&lt;</span> <span style="color:#0000cf;font-weight:bold">5</span><span style="color:#000;font-weight:bold">);</span>
-		<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* RAM mode */</span>
-			<span style="color:#000">ram_bank</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000">data</span> <span style="color:#ce5c00;font-weight:bold">&amp;</span> <span style="color:#0000cf;font-weight:bold">0x03</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">addr</span> <span style="color:#ce5c00;font-weight:bold">&lt;</span> <span style="color:#0000cf;font-weight:bold">0x8000</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-		<span style="color:#8f5902;font-style:italic">/* ROM/RAM Mode Select */</span>
-		<span style="color:#204a87;font-weight:bold">if</span> <span style="color:#000;font-weight:bold">(</span><span style="color:#000">data</span><span style="color:#000;font-weight:bold">)</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* Emable RAM Banking mode */</span>
-			<span style="color:#000">rom_ram_mode</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">0</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span> <span style="color:#204a87;font-weight:bold">else</span> <span style="color:#000;font-weight:bold">{</span>
-			<span style="color:#8f5902;font-style:italic">/* Emable ROM Banking mode */</span>
-			<span style="color:#000">rom_ram_mode</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#0000cf;font-weight:bold">1</span><span style="color:#000;font-weight:bold">;</span>
-		<span style="color:#000;font-weight:bold">}</span>
-	<span style="color:#000;font-weight:bold">}</span>
-<span style="color:#000;font-weight:bold">}</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* Write cartridge operation for MBC1 */</span>
+<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">mbc1_write</span>(uint16_t addr, uint8_t data) {
+	<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0xC000</span>) {
+ 		<span style="color:#75715e">/* 8KB RAM Bank 00-03, if any */</span>
+		ram[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">*</span> ram_bank] <span style="color:#f92672">=</span> data;
+	}
+	<span style="color:#75715e">/*if (addr &lt; 0x2000) {
+</span><span style="color:#75715e">		if (data) {
+</span><span style="color:#75715e">			ram_enable = 1;
+</span><span style="color:#75715e">		} else {
+</span><span style="color:#75715e">			ram_enable = 0;
+</span><span style="color:#75715e">		}
+</span><span style="color:#75715e">	}*/</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x4000</span>) {
+		<span style="color:#75715e">/* ROM Bank Number */</span>
+		data <span style="color:#f92672">&amp;=</span> <span style="color:#ae81ff">0x1F</span>;
+		rom_bank <span style="color:#f92672">=</span> (rom_bank <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xE0</span>) <span style="color:#f92672">|</span> data;
+		<span style="color:#66d9ef">if</span> (data <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x00</span>) {
+			rom_bank <span style="color:#f92672">|=</span> <span style="color:#ae81ff">0x01</span>;
+		}
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x6000</span>) {
+		<span style="color:#75715e">/*RAM Bank Number - or - Upper Bits of ROM Bank Number */</span>
+		<span style="color:#66d9ef">if</span> (rom_ram_mode) {
+			<span style="color:#75715e">/* ROM mode */</span>
+			data <span style="color:#f92672">&amp;=</span> <span style="color:#ae81ff">0x07</span>;
+			rom_bank <span style="color:#f92672">=</span> (rom_bank <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x1F</span>) <span style="color:#f92672">|</span> (data <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">5</span>);
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#75715e">/* RAM mode */</span>
+			ram_bank <span style="color:#f92672">=</span> data <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x03</span>;
+		}
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x8000</span>) {
+		<span style="color:#75715e">/* ROM/RAM Mode Select */</span>
+		<span style="color:#66d9ef">if</span> (data) {
+			<span style="color:#75715e">/* Emable RAM Banking mode */</span>
+			rom_ram_mode <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#75715e">/* Emable ROM Banking mode */</span>
+			rom_ram_mode <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+		}
+	}
+}</code></pre></div>
 <h3 id="rom-and-ram">ROM and RAM</h3>
 
 <p>In order to allow the program to access to the contents of a ROM, I used the
 unix <code>xxd</code> tool to convert the binary file into a C header file containing an array
 with the file contents:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp Tetris.gb rom.gb
-xxd -i rom.gb <span style="color:#000;font-weight:bold">|</span> sed <span style="color:#4e9a06">&#39;s/unsigned/unsigned const/g&#39;</span> &gt; tetris_rom.h
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp Tetris.gb rom.gb
+xxd -i rom.gb | sed <span style="color:#e6db74">&#39;s/unsigned/unsigned const/g&#39;</span> &gt; tetris_rom.h
 rm rom.gb</code></pre></div>
 <p>The contents of <em>tetris_rom.h</em> will look like this:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#204a87;font-weight:bold">unsigned</span> <span style="color:#204a87;font-weight:bold">const</span> <span style="color:#204a87;font-weight:bold">char</span> <span style="color:#000">rom_gb</span><span style="color:#000;font-weight:bold">[]</span> <span style="color:#ce5c00;font-weight:bold">=</span> <span style="color:#000;font-weight:bold">{</span>
-  <span style="color:#0000cf;font-weight:bold">0xc3</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x0c</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x02</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x00</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0xc3</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x0c</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0x02</span><span style="color:#000;font-weight:bold">,</span> <span style="color:#0000cf;font-weight:bold">0xff</span><span style="color:#000;font-weight:bold">,</span>
-  <span style="color:#000;font-weight:bold">...</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> rom_gb[] <span style="color:#f92672">=</span> {
+  <span style="color:#ae81ff">0xc3</span>, <span style="color:#ae81ff">0x0c</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0xc3</span>, <span style="color:#ae81ff">0x0c</span>, <span style="color:#ae81ff">0x02</span>, <span style="color:#ae81ff">0xff</span>,
+  ...</code></pre></div>
 <p>For games that use RAM, an array must be allocated on the SMT32F4. For this
 purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:</p>
-<div class="highlight"><pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#000">uint8_t</span> <span style="color:#000">ram</span><span style="color:#000;font-weight:bold">[</span><span style="color:#0000cf;font-weight:bold">0x8000</span><span style="color:#000;font-weight:bold">];</span> <span style="color:#ce5c00;font-weight:bold">//</span> <span style="color:#0000cf;font-weight:bold">32</span><span style="color:#000">K</span></code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">uint8_t ram[<span style="color:#ae81ff">0x8000</span>]; <span style="color:#f92672">//</span> <span style="color:#ae81ff">32</span>K</code></pre></div>
 <p>Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.</p>
 
@@ -463,7 +466,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
+                        <a href="https://dhole.github.io/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
                     
                 </div>
             </div>
@@ -471,7 +474,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
                     
                 </div>
             </div>
@@ -486,7 +489,7 @@ cartridge emulator. Stay tunned!</p>
                     &copy; 2018. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
-                    <span class=""><a href="http://github.com/eliasson/liquorice/">liquorice</a> is a theme for <a href="http://hugo.spf13.com">hugo</a></span>
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
                 </div>
             </div>
         </div>

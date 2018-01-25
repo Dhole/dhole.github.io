@@ -8,7 +8,7 @@ title = "Dhole's blog"
     GitHubUser = "Dhole"
     disqus_shortname = "dhole"
     pygmentsCodeFences = true
-    pygmentsStyle = "tango"
+    pygmentsStyle = "monokai"
 
 
 [[menu.main]]
