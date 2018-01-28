@@ -1,9 +1,9 @@
 /**
  * http://github.com/eliasson/liquorice/
  *
- * Copyright © 2014. Markus Eliasson <markus.eliasson.gmail.com> 
+ * Copyright © 2014. Markus Eliasson <markus.eliasson.gmail.com>
  * Modified by Dhole <dhole at riseup dot net>
- * 
+ *
  * Liquorice is released under the MIT license.
  *
  * The CSS grid used by liquorice is based on the Skeleton grid:
@@ -11,10 +11,10 @@
  *   Skeleton V1.2
  *   Copyright 2011, Dave Gamache
  *   www.getskeleton.com
- *   Free to use under the MIT license. 
+ *   Free to use under the MIT license.
  */
 
-/** States ******************************************************************/
+/** States **/
 .li-right {
     float: right;
 }
@@ -23,12 +23,11 @@
     float: left;
 }
 
-/** Base ********************************************************************/
+/** Base **/
 body {
     font-family: sans-serif;
-    /* color: #484644; */
     color: #e0e0e0;
-    background-color: #282828;
+    background-color: #1a1a1a;
     margin: 0;
 }
 
@@ -36,7 +35,6 @@ a,
 a:active,
 a:hover,
 a:visited {
-    /* color: #202020; */
     color: #d0d0d0;
     text-decoration: none;
     font-weight: bold;
@@ -48,7 +46,6 @@ h1 {
 }
 
 h1,h2,h3,h4,h5,h6 {
-    /* color: #202020; */
     color: #d8d8d8;
     font-weight: normal;
 }
@@ -72,9 +69,11 @@ embed {
 
 code {
     font-family: monospace;
+    color: #f8f8f2;
+    background-color: #272822;
 }
 
-/** Screen furniture ********************************************************/
+/** Screen furniture **/
 .li-page-header {
     background-color: #000;
     color: #fff;
@@ -123,7 +122,7 @@ code {
     display: none;
 }
 
-/** Article *****************************************************************/
+/** Article **/
 .li-article {
     margin-bottom: 32px;
 }
@@ -227,7 +226,7 @@ ul.li-article-list {
     height: 100%;
 }
 
-/** Mobile Portrait (320px) **************************************************/
+/** Mobile Portrait **/
 @media only screen and (max-width: 767px) {
     .li-page-header {
         padding: 16px 0px;
@@ -282,13 +281,13 @@ ul.li-article-list {
 
 /*
  * Skelton grid (www.getskeleton.com)
- */ 
+ */
 
-/** Desktop (960px) **********************************************************/
+/** Desktop **/
 .container                                  { position: relative; width: 960px; margin: 0 auto; padding: 0; }
 .container .column,
 .container .columns                         { display: inline; margin-left: 10px; margin-right: 10px; }
-.row                                        { margin: auto; /*margin-bottom: 20px;*/ }
+.row                                        { margin: auto; }
 
 /* Nested Column Classes */
 .column.alpha, .columns.alpha               { margin-left: 0; }
@@ -301,7 +300,7 @@ ul.li-article-list {
 .container .one-third.column                { width: 300px; }
 .container .two-thirds.column               { width: 620px; }
 
-/** Tablet Portrait (768px) **************************************************/
+/** Tablet Portrait **/
 @media only screen and (min-width: 768px) and (max-width: 959px) {
     .container                                  { width: 768px; }
     .container .column,
@@ -317,7 +316,7 @@ ul.li-article-list {
     .container .two-thirds.column               { width: 492px; }
 }
 
-/** Mobile Portrait (320px) **************************************************/
+/** Mobile Portrait **/
 @media only screen and (max-width: 767px) {
     .container { width: auto; margin-left: 10px; margin-right: 10px; }
     .container .columns,
@@ -329,7 +328,7 @@ ul.li-article-list {
 
 }
 
-/** Clearing *****************************************************************/
+/** Clearing **/
 /* Self Clearing Goodness */
 .container:after { content: "\0020"; display: block; height: 0; clear: both; visibility: hidden; }
 
