@@ -104,35 +104,53 @@ distribution like a Debian-based one you probably need to install
 
 <p>On Gentoo as root, run the following to install a cross-compiling environment
 for armv7a, the CPU architecture of the CHIP (this will take a while):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">crossdev -S -v -t armv7a-hardfloat-linux-gnueabi</code></pre></div>
+
+<pre><code class="language-bash">crossdev -S -v -t armv7a-hardfloat-linux-gnueabi
+</code></pre>
+
 <h1 id="building">Building</h1>
 
 <p>As a regular user, set up the environment variables needed to enable
 cross-compiling the kernel, and create some working folders:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export ARCH<span style="color:#f92672">=</span>arm
-export CROSS_COMPILE<span style="color:#f92672">=</span>armv7a-hardfloat-linux-gnueabi-
-export WORKSPACE<span style="color:#f92672">=</span>~/proj/CHIP/4.4.13-ntc-mlc/
+
+<pre><code class="language-bash">export ARCH=arm
+export CROSS_COMPILE=armv7a-hardfloat-linux-gnueabi-
+export WORKSPACE=~/proj/CHIP/4.4.13-ntc-mlc/
 mkdir -p $WORKSPACE
-mkdir -p ~/git/CHIP</code></pre></div>
+mkdir -p ~/git/CHIP
+</code></pre>
+
 <p>Now let&rsquo;s clone the kernel source git repository from Next Thing Co.  We will
 be getting the branch that was used to build the kernel shipped in the <em>CHIP
 4.4 GUI</em> release:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd ~/git/CHIP
+
+<pre><code class="language-bash">cd ~/git/CHIP
 git clone --single-branch -b debian/4.4.13-ntc-mlc https://github.com/NextThingCo/CHIP-linux.git
-cd CHIP-linux</code></pre></div>
+cd CHIP-linux
+</code></pre>
+
 <p>Before configuring the kernel, we will copy the configuration that was used to
 build the kernel in <em>CHIP 4.4 GUI</em>.  We can get the file from the PocketCHIP at
 <code>/boot/config-4.4.13-ntc</code>.  I recommend having <code>sshd</code> enabled on the PocketCHIP
 to transfer files over WiFi with ease.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp config-4.4.13-ntc .config</code></pre></div>
+
+<pre><code class="language-bash">cp config-4.4.13-ntc .config
+</code></pre>
+
 <p>We create the empty file <code>.scmversion</code> in order to disable the &ldquo;+&rdquo; at the end
 of the kernel version that gets embedded into the modules in the <em>vermagic</em>
 property.  If we don&rsquo;t generate modules with the same <em>vermagic</em> as the one in
 the installed kernel, the modules will fail to load.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">touch .scmversion</code></pre></div>
+
+<pre><code class="language-bash">touch .scmversion
+</code></pre>
+
 <p>Now we can proceed to configure the kernel to enable the modules we need.  In
 my case, I enabled the modules needed for LUKS:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make menuconfig</code></pre></div>
+
+<pre><code class="language-bash">make menuconfig
+</code></pre>
+
 <h2 id="make-menuconfig-options">make menuconfig options</h2>
 
 <p>Taken from the <a href="https://wiki.gentoo.org/wiki/Dm-crypt">Dm-crypt Gentoo wiki
@@ -180,21 +198,39 @@ TrueCrypt/VeraCrypt compatibility mode:</p>
 
 <p>We can now make the kernel and modules for ARM (in this case I&rsquo;m setting <code>-j4</code>
 to use 4 parallel building threads).  This will take a while:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make -j4</code></pre></div>
+
+<pre><code class="language-bash">make -j4
+</code></pre>
+
 <p>We install the modules in our workspace:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">make INSTALL_MOD_PATH<span style="color:#f92672">=</span>$WORKSPACE modules_install</code></pre></div>
+
+<pre><code class="language-bash">make INSTALL_MOD_PATH=$WORKSPACE modules_install
+</code></pre>
+
 <p>Now, on the CHIP as root, we make a folder to store the new modules we want to install:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p ~/modules/<span style="color:#f92672">{</span>crypto,drivers/md/<span style="color:#f92672">}</span></code></pre></div>
+
+<pre><code class="language-bash">mkdir -p ~/modules/{crypto,drivers/md/}
+</code></pre>
+
 <p>We copy the built modules to the CHIP:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">scp crypto/*.ko root@192.168.0.106:~/modules/crypto/
-scp drivers/md/dm-crypt.ko root@192.168.0.106:~/modules/drivers/md/</code></pre></div>
+
+<pre><code class="language-bash">scp crypto/*.ko root@192.168.0.106:~/modules/crypto/
+scp drivers/md/dm-crypt.ko root@192.168.0.106:~/modules/drivers/md/
+</code></pre>
+
 <p>Finally, on the CHIP as root, we copy the modules we just transfered to their
 destination so that the kernel can load them:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp -n ~/modules/crypto/*.ko /lib/modules/4.4.13-ntc-mlc/kernel/crypto/
-cp ~/modules/drivers/md/dm-crypt.ko  /lib/modules/4.4.13-ntc-mlc/kernel/drivers/md/</code></pre></div>
+
+<pre><code class="language-bash">cp -n ~/modules/crypto/*.ko /lib/modules/4.4.13-ntc-mlc/kernel/crypto/
+cp ~/modules/drivers/md/dm-crypt.ko  /lib/modules/4.4.13-ntc-mlc/kernel/drivers/md/
+</code></pre>
+
 <p>There&rsquo;s no reboot needed.  You should be able to mount LUKS partitions using
 <code>cryptsetup</code> without problems at this point.  You can easily test that everything is working by running a benchmark:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cryptsetup benchmark</code></pre></div>
+
+<pre><code class="language-bash">cryptsetup benchmark
+</code></pre>
+
                     </section>
                 </article>
             </div>
@@ -230,7 +266,8 @@ cp ~/modules/drivers/md/dm-crypt.ko  /lib/modules/4.4.13-ntc-mlc/kernel/drivers/
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        &nbsp;
+                        Later article<br />
+                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_1/"> Sniffing GameBoy serial traffic with an STM32F4</a>
                     
                 </div>
             </div>

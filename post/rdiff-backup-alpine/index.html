@@ -112,33 +112,51 @@ package by reverting the <a href="http://git.alpinelinux.org/cgit/aports/commit/
 
 <p>We first install rdiff-backup dependencies plus the packages required to build
 rdiff-backup from source.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk add librsync
-apk add gcc librsync-dev python-dev musl-dev patch</code></pre></div>
+
+<pre><code class="language-bash">apk add librsync
+apk add gcc librsync-dev python-dev musl-dev patch
+</code></pre>
+
 <p>We download the sources of rdiff-backup-1.2.8, check the hash sum to verify that
 we got it right and we extract them.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir tmp
+
+<pre><code class="language-bash">mkdir tmp
 cd tmp/
 wget http://savannah.nongnu.org/download/rdiff-backup/rdiff-backup-1.2.8.tar.gz
-<span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;0d91a85b40949116fa8aaf15da165c34a2d15449b3cbe01c8026391310ac95db&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>sha256sum rdiff-backup-1.2.8.tar.gz | cut -d <span style="color:#e6db74">&#34; &#34;</span> -f <span style="color:#ae81ff">1</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> echo OK
-tar xzf rdiff-backup-1.2.8.tar.gz</code></pre></div>
+[ &quot;0d91a85b40949116fa8aaf15da165c34a2d15449b3cbe01c8026391310ac95db&quot; \
+    = $(sha256sum rdiff-backup-1.2.8.tar.gz | cut -d &quot; &quot; -f 1) ] &amp;&amp; echo OK
+tar xzf rdiff-backup-1.2.8.tar.gz
+</code></pre>
+
 <p>Then we download the required patch to build rdiff-backup with librsync-1.0.0,
 in this case, from the Arch package git repository.  We check the patch and
 apply it.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h<span style="color:#f92672">=</span>packages/rdiff-backup <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>    -O rdiff-backup-1.2.8-librsync-1.0.0.patch
-<span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12&#34;</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>    <span style="color:#f92672">=</span> <span style="color:#66d9ef">$(</span>sha256sum rdiff-backup-1.2.8-librsync-1.0.0.patch | cut -d <span style="color:#e6db74">&#34; &#34;</span> -f <span style="color:#ae81ff">1</span><span style="color:#66d9ef">)</span> <span style="color:#f92672">]</span> <span style="color:#f92672">&amp;&amp;</span> echo OK
+
+<pre><code class="language-bash">wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h=packages/rdiff-backup \
+    -O rdiff-backup-1.2.8-librsync-1.0.0.patch
+[ &quot;a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12&quot; \
+    = $(sha256sum rdiff-backup-1.2.8-librsync-1.0.0.patch | cut -d &quot; &quot; -f 1) ] &amp;&amp; echo OK
 cd rdiff-backup-1.2.8/
-patch -Np1 -i ../rdiff-backup-1.2.8-librsync-1.0.0.patch</code></pre></div>
+patch -Np1 -i ../rdiff-backup-1.2.8-librsync-1.0.0.patch
+</code></pre>
+
 <p>We are ready to build rdiff-backup and install it in the system.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">python setup.py build
-python setup.py install --prefix<span style="color:#f92672">=</span>/usr --root<span style="color:#f92672">=</span>/</code></pre></div>
+
+<pre><code class="language-bash">python setup.py build
+python setup.py install --prefix=/usr --root=/
+</code></pre>
+
 <p>We must not forget to add the newly installed files in the local backup
 database, so that they are stored permanently.  I deliberately skip the docs.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*</code></pre></div>
+
+<pre><code class="language-bash">lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*
+</code></pre>
+
 <p>After we are done, we can remove the packages we used to build rdiff-backup.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk del gcc librsync-dev python-dev musl-dev patch</code></pre></div>
+
+<pre><code class="language-bash">apk del gcc librsync-dev python-dev musl-dev patch
+</code></pre>
+
 <p>Now rdiff-backup works correctly from my Debian laptop to my Alpine Raspberry Pi
 :)</p>
 

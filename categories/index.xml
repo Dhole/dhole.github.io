@@ -41,7 +41,7 @@
     <item>
       <title>Gameboy</title>
       <link>https://lizard.kyasuka.com/blog/categories/gameboy/</link>
-      <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
+      <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
       <guid>https://lizard.kyasuka.com/blog/categories/gameboy/</guid>
       <description></description>
@@ -111,9 +111,18 @@
     </item>
     
     <item>
+      <title>Rust</title>
+      <link>https://lizard.kyasuka.com/blog/categories/rust/</link>
+      <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
+      
+      <guid>https://lizard.kyasuka.com/blog/categories/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Stm32f4</title>
       <link>https://lizard.kyasuka.com/blog/categories/stm32f4/</link>
-      <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
+      <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
       <guid>https://lizard.kyasuka.com/blog/categories/stm32f4/</guid>
       <description></description>

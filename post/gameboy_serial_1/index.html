@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Sniffing GameBoy serial traffic with an STM32F4 &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/blog/post"> articles </a></li>
+                        
+                            <li><a href="/blog/categories"> categories </a></li>
+                        
+                            <li><a href="/blog/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/blog/post"> articles </a></li>
+                    
+                        <li><a href="/blog/categories"> categories </a></li>
+                    
+                        <li><a href="/blog/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Sniffing GameBoy serial traffic with an STM32F4</h1>  
+			
+			<time class="li-article-date">Wednesday, February 14, 2018</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/rust">rust</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        
+
+<p>In these series of blog posts I will write about the GameBoy serial communication protocol and how to interact with it by using an embedded development board.  The code for the development board will be written in C, and the code running on the computer will be writen in <a href="https://www.rust-lang.org">Rust</a>.</p>
+
+<p>The first part will consist on understanding the GameBoy serial communication protocol, becoming familiar with embedded development using the <a href="https://github.com/libopencm3/libopencm3">libopencm3</a> free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</p>
+
+<p>The second part will focus on understanding the protocol used in the GameBoy printer, and how to build a virtual printer to store images on our computer (instead of actually printing them).</p>
+
+<p>The third and final part will focus on printing on the GameBoy printer from our computer (without using a GameBoy).</p>
+
+<h1 id="intro">Intro</h1>
+
+<p>In this post I will be explaining how I build a GameBoy serial communication sniffer using an ARM embedded development board.  I will start by explaining how the GameBoy serial protocol works, then we will become familiar with the particular development board I will be using and the library to use its peripherials, and finally I will explain how I built the sniffer.</p>
+
+<p>For this project I choose to use the NUCLEO-F411RE development board from STMicroelectronics, which is based on the <a href="http://www.st.com/en/microcontrollers/stm32f411.html?querycriteria=productId=LN1877">STM32F411</a> ARM microcontroller, which runs at 100MHz, has many GPIOs, and has one USART conveniently connected to a USART to USB interface.  One of the reasons to choose this board is it&rsquo;s low price.  Instead of using the official ST library for the microcontroller to manage its hardware I decided to try the <a href="https://github.com/libopencm3/libopencm3">libopencm3</a> library, a free/libre lowlevel hardware library for many ARM Cortex-M3 and M4 microcontrollers.</p>
+
+<p>The list of materials used in this project are the following:</p>
+
+<ul>
+<li>GameBoy Game Link Cable, $1.77 (at <a href="https://www.aliexpress.com/item/2-Player-Game-Link-Cable-Connect-Cord-Lead-For-Nintendo-Gameboy-Advance-GBA-SP-GBC-Link/32663990684.html?spm=2114.search0104.3.258.151d6bcbeGwDP4&amp;ws_ab_test=searchweb0_0,searchweb201602_4_10152_10151_10065_10344_10130_10068_10342_10547_10343_10340_10548_10341_10084_10083_10618_10139_10307_10313_10059_10534_100031_10629_10103_10626_10625_10624_10623_10622_10621_10620_10142,searchweb201603_25,ppcSwitch_5&amp;algo_expid=ffacbd4c-460c-4ac3-a8bf-5c6e2b3795c6-40&amp;algo_pvid=ffacbd4c-460c-4ac3-a8bf-5c6e2b3795c6&amp;priceBeautifyAB=0">AliExpress</a>)</li>
+<li>NUCLEO-F411RE, $13 (at <a href="https://www.mouser.com/ProductDetail/STMicroelectronics/NUCLEO-F411RE?qs=%2fha2pyFaduj0LE%252bzmDN2WGOyc9ZJn6rAAaZxUZnl1jWj%2fTN4JYE9Mw%3d%3d">Mouser</a>, at <a href="http://www.newark.com/stmicroelectronics/nucleo-f411re/dev-board-arduino-mbed-nucleo/dp/55X3031?ost=NUCLEO-F411RE&amp;scope=partnumberlookahead&amp;exaMfpn=true&amp;searchref=searchlookahead&amp;ddkey=http%3Aen-US%2FElement14_US%2Fw%2Fsearch">Farnell</a>)</li>
+<li>Dupont Wire Jumper cables with at least one Female tip, $1 (at <a href="https://www.aliexpress.com/item/40PCS-Dupont-Wire-Jumper-Cables-10cm-Female-To-Female-1P-1P/32728717383.html?spm=2114.search0104.3.22.759e2b471o9HLk&amp;ws_ab_test=searchweb0_0,searchweb201602_3_10152_10151_10065_10344_10068_10130_10342_10547_10325_10343_10546_10340_10548_10341_10084_10083_10618_10139_10307_10313_10059_10534_100031_10629_10103_10626_10625_10624_10623_10622_10621_10620_10142,searchweb201603_2,ppcSwitch_5&amp;algo_expid=21181d2f-89d5-446a-8e01-cb486451a6c7-3&amp;algo_pvid=21181d2f-89d5-446a-8e01-cb486451a6c7&amp;transAbTest=ae803_5&amp;priceBeautifyAB=0">AliExpress</a>)</li>
+</ul>
+
+<h1 id="gameboy-serial-protocol">GameBoy serial protocol</h1>
+
+<p>The Gameboy (and the GameBoy Color) have a serial communication port that was used for two player games as well as to interface with peripherials like the GameBoy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):
+
+<figure >
+    <a href="/media/gameboy_serial/serial_connector.png">
+        <img src="/media/gameboy_serial/serial_connector_1000.png" alt="Game Link Cable connector pins" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Game Link Cable connector pins
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+</p>
+
+<p>For a serial communicacion two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the GameBoy Printer, and it&rsquo;s not clear if it&rsquo;s used in any way.  All signals work at 5V TTL.</p>
+
+<p>Data is sent and received in bytes, and the master decides when a byte is both sent (SOUT) and recived (SIN), which happens at the same time (basically, the two devices will exchange a byte).</p>
+
+<p>This byte transfer can be easily implemented by having a byte register on every device which keeps shifting out a sending bit and shifting in a receiving bit on every clock cycle.  The bit shifted out will be the most significant one and the bit shifted in will be the least significant one.  After 8 clock cycles, the two devices will have exchanged a complete byte.  The following diagram shows the byte register state at transfer each cycle (taken from the <a href="http://gbdev.gg8.se/wiki/articles/Serial_Data_Transfer_(Link_Cable)">Pan Docs</a>):</p>
+
+<pre><code>o7 o6 o5 o4 o3 o2 o1 o0
+o6 o5 o4 o3 o2 o1 o0 i7
+o5 o4 o3 o2 o1 o0 i7 i6
+o4 o3 o2 o1 o0 i7 i6 i5
+o3 o2 o1 o0 i7 i6 i5 i4
+o2 o1 o0 i7 i6 i5 i4 i3
+o1 o0 i7 i6 i5 i4 i3 i2
+o0 i7 i6 i5 i4 i3 i2 i1
+i7 i6 i5 i4 i3 i2 i1 i0
+</code></pre>
+
+<p>The following Oscilloscope capture of a serial communication shows the transfer of a few bytes.  Since the bits are shifted out from the most significant bit of the transfer byte, the order of bits will be from 7 to 0:</p>
+
+
+<figure >
+    <a href="/media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info.jpg">
+        <img src="/media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info_1000.jpg" alt="Oscilloscope capture by Sigint 112 posted at [www.microcontroller.net](http://www.mikrocontroller.net/topic/87532), with overlay information added by me" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Oscilloscope capture by Sigint 112 posted at <a href="http://www.mikrocontroller.net/topic/87532">www.microcontroller.net</a>, with overlay information added by me
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<p>As we can see from the oscilloscope capture, the bit value is put on the data line when the clock signal falls and is replaced by the next bit at the next clock signal fall.  This means that a good oportunity to read the bit value is when the clock signal rises.</p>
+
+<h1 id="working-with-libopencm3-and-the-nucleo-f411re">Working with libopencm3 and the NUCLEO-F411RE</h1>
+
+<p>The <a href="http://www.st.com/en/evaluation-tools/nucleo-f411re.html">NUCLEO-F411RE</a> is an ARM development board based the <a href="http://www.st.com/en/microcontrollers/stm32f411re.html">STM32F411RET6</a> microcontroller (based itself on the ARM Cortex-M4).  The CPU can run at 100 MHz and it has 512 KB of Flash and 128 KB of SRAM.  The board has an ST-LINK/V2 which allows programming and debugging the microcontroller via USB as well as offering a virtual serial port (connected to one of the USARTs).  You can learn about all the pins functionalities and the jumper configurations in the <a href="http://www.st.com/content/ccc/resource/technical/document/user_manual/98/2e/fa/4b/e0/82/43/b7/DM00105823.pdf/files/DM00105823.pdf/jcr:content/translations/en.DM00105823.pdf">NUCLEO-64 datasheet</a>.  To program the board you will want to take a look at the <a href="http://www.st.com/en/microcontrollers/stm32f411re.html#design-scroll">datasheets of the STM32F411RET6 and its periferials</a>.</p>
+
+<p>As with the STM32F4-Discovery, most of the pins of the NUCLEO-F411RE are 5V tolerant, so connecting the GPIOs to the GameBoy serial port won&rsquo;t be an issue.</p>
+
+<p>This is the first project I&rsquo;ve done using the <a href="http://libopencm3.org/">libopencm3</a> library, and I have to say that I prefer it over the official ST one.  Not only libopencm3 is fully free/libre software, I found it to be <a href="http://libopencm3.org/docs/latest/html/">better documented</a>.  Nevertheless, the library documentation will not be sufficient to succesfully use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly. use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly (that is, understand which <a href="http://www.st.com/content/ccc/resource/technical/document/datasheet/b3/a5/46/3b/b4/e5/4c/85/DM00115249.pdf/files/DM00115249.pdf/jcr:content/translations/en.DM00115249.pdf">GPIOs are connected to which peripherials</a>, learn about the different <a href="http://www.st.com/content/ccc/resource/technical/document/application_note/27/46/7c/ea/2d/91/40/a9/DM00046011.pdf/files/DM00046011.pdf/jcr:content/translations/en.DM00046011.pdf">DMA streams and channels</a>, etc.).</p>
+
+<p>For a good introduction to start using libopencm3 on the NUCLEO-F411RE, and to avoid feeling overwhelmed about all the datasheets, I recommend taking a look at the <a href="https://github.com/libopencm3/libopencm3-examples">libopencm3-examples repository</a>.  First try the <a href="https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/nucleo-f411re">NUCLEO-F411RE examples</a> which should work out of the box, and play a bit with them.  You can also take a look at the <a href="https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/stm32f4-discovery">STM32F4-Discovery examples</a>, which are more complete.  Try to adapt them to the NUCLEO by checking the datasheet for the proper configuration (you may even not need to change anything!).</p>
+
+<p>The STM32 microcontroller can run at different frequencies, which can be configured in the code itself.  Nevertheless, this configuration is not straightforward: the board includes a clock source and which is multiplied and divided by several configurable multipliers and divisors.  This means that we can&rsquo;t get any frequency we want.  Moreover, the CPU frequency must be a multiple of the APB1 bus frequency.  Not only that, but if I understood it correctly, the APB1 needs to be set at 48 MHz if we want the USB peripherial to be working correctly.  libopencm3 has some default frequency configurations, but unfortunately the highest one we can use with the STM32F411 is 84 MHz.  After learning about the <a href="https://stm32f4-discovery.net/2015/01/properly-set-clock-speed-stm32f4xx-devices/">frequencies configuration from Tilen Majerle&rsquo;s website</a>, I managed to find a setup to get 96 MHz (which is the closest I could get to the 100 MHz).  Notice that by default the NUCLEO-F411RE is connected to an external 8 MHz oscillator, but an internal oscillator can also be selected through jumpers configuration.</p>
+
+<p>Here&rsquo;s a snippet of code showing the clock configuration at 96 MHz and enabling the peripherials we will be using.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* STM32F411-Nucleo at 96 MHz */</span>
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">struct</span> rcc_clock_scale rcc_hse_8mhz_3v3_96mhz <span style="color:#f92672">=</span> {
+	.pllm <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>,
+	.plln <span style="color:#f92672">=</span> <span style="color:#ae81ff">384</span>,
+	.pllp <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>,
+	.pllq <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>,
+	.pllr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>,
+	.hpre <span style="color:#f92672">=</span> RCC_CFGR_HPRE_DIV_NONE,
+	.ppre1 <span style="color:#f92672">=</span> RCC_CFGR_PPRE_DIV_2,
+	.ppre2 <span style="color:#f92672">=</span> RCC_CFGR_PPRE_DIV_NONE,
+	.power_save <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>,
+	.flash_config <span style="color:#f92672">=</span> FLASH_ACR_ICEN <span style="color:#f92672">|</span> FLASH_ACR_DCEN <span style="color:#f92672">|</span>
+		FLASH_ACR_LATENCY_3WS,
+	.ahb_frequency  <span style="color:#f92672">=</span> <span style="color:#ae81ff">96000000</span>,
+	.apb1_frequency <span style="color:#f92672">=</span> <span style="color:#ae81ff">48000000</span>,
+	.apb2_frequency <span style="color:#f92672">=</span> <span style="color:#ae81ff">96000000</span>,
+};
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">clock_setup</span>(<span style="color:#66d9ef">void</span>)
+{
+	rcc_clock_setup_hse_3v3(<span style="color:#f92672">&amp;</span>rcc_hse_8mhz_3v3_96mhz);
+	<span style="color:#75715e">//rcc_clock_setup_hse_3v3(&amp;rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_84MHZ]);
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">/* Enable GPIOA clock for LED &amp; USARTs. */</span>
+	rcc_periph_clock_enable(RCC_GPIOA);
+
+	<span style="color:#75715e">/* Enable GPIOC for game link pins. */</span>
+	rcc_periph_clock_enable(RCC_GPIOC);
+
+	<span style="color:#75715e">/* Enable clocks for USART2. */</span>
+	rcc_periph_clock_enable(RCC_USART2);
+
+	<span style="color:#75715e">/* Enable DMA1 clock */</span>
+	<span style="color:#75715e">//rcc_periph_clock_enable(RCC_DMA1);
+</span><span style="color:#75715e"></span>}</code></pre></div>
+
+<h1 id="implementing-a-sniffer">Implementing a sniffer</h1>
+
+<p>Now that we have learned about the GameBoy serial communication protocol and how to work with the NUCLEO-F411RE we can proceed with the project: building a sniffer to view the data that is being trasnferred over the Game Link cable.</p>
+
+<p>To be able to tap into the Game Link lines, I took a Game Link cable, cut it in half, soldered a jumper at each line, and then joined it back.  I connected the lines as in the following table:</p>
+
+<ul>
+<li>SCK -&gt; PA0</li>
+<li>SIN -&gt; PC0</li>
+<li>SOUT -&gt; PC1</li>
+<li>SD -&gt; PC2</li>
+</ul>
+
+<p>I found it convenient to use constants to define the port and number for each line:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#define GPIOP_SCK  GPIOA
+</span><span style="color:#75715e">#define GPION_SCK  GPIO0
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define GPIOP_SIN  GPIOC
+</span><span style="color:#75715e">#define GPION_SIN  GPIO0
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define GPIOP_SOUT GPIOC
+</span><span style="color:#75715e">#define GPION_SOUT GPIO1
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#define GPIOP_SD   GPIOC
+</span><span style="color:#75715e">#define GPION_SD   GPIO2</span></code></pre></div>
+
+<p>The hardware setup looks like this:</p>
+
+
+<figure >
+    <a href="/media/gameboy_serial/gameboys_tetris_link.jpg">
+        <img src="/media/gameboy_serial/gameboys_tetris_link_1000.jpg" alt="Sniffing setup with two player mode in Tetris" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Sniffing setup with two player mode in Tetris
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<p>The way the sniffer will work is by reading the SIN and SOUT signals at every SCK cycle, building up the transferred bytes and sending them in pairs of (SOUT, SIN) over the USART that is connected to the ST-LINK which is connected via USB to my computer exposing a virtual serial device.  On the computer side I will receive the data and present it nicely with a program written in Rust.</p>
+
+<p>The following snippet will be required to setup the GPIO pins that are connected to the ST-LINK to work as USART (which is the alternate function number 7).</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">gpio_setup</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">/* Setup GPIO pins for USART2 transmit. */</span>
+	gpio_mode_setup(GPIOP_USART, GPIO_MODE_AF, GPIO_PUPD_NONE, GPION_USART_TX <span style="color:#f92672">|</span> GPION_USART_RX);
+
+	<span style="color:#75715e">/* Setup USART2 TX/RX pin as alternate function. */</span>
+	gpio_set_af(GPIOP_USART, GPIO_AF7, GPION_USART_TX <span style="color:#f92672">|</span> GPION_USART_RX);
+}</code></pre></div>
+
+<p>Then we configure all the GPIOs to which we have connected the Game Link Cable as input, and enable an external interrupt that will trigger when the logic level of the SCK signal rises (at which point we will read the SIN and SOUT signals).</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">gblink_sniff_gpio_setup</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">// PA0 -&gt; SCK
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SCK, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SCK);
+	<span style="color:#75715e">// PC0 -&gt; SIN
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SIN, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SIN);
+	<span style="color:#75715e">// PC1 -&gt; SOUT
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SOUT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SOUT);
+	<span style="color:#75715e">// PC2 -&gt; SD
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SD, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SD);
+
+	nvic_set_priority(NVIC_EXTI0_IRQ, <span style="color:#ae81ff">0</span>);
+	nvic_enable_irq(NVIC_EXTI0_IRQ);
+
+	exti_select_source(EXTI0, GPIOP_SCK);
+	<span style="color:#75715e">//exti_set_trigger(EXTI0, EXTI_TRIGGER_FALLING);
+</span><span style="color:#75715e"></span>	exti_set_trigger(EXTI0, EXTI_TRIGGER_RISING);
+	exti_enable_request(EXTI0);
+}</code></pre></div>
+
+<p>libopencm3 uses fixed function names to handle interrupts.  In our case we are using the external interrupt 0 that triggers when SCK goes low, so we define the function <code>exti0_isr</code> that will be called on that event.  We store the values of SIN and SOUT in <code>gb_sin</code> and <code>gb_sout</code> and keep shifting them until we&rsquo;ve received 8 values, at which point we have the entire SIN and SOUT byte that we send over USART.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">volatile</span> uint8_t gb_sin, gb_sout;
+<span style="color:#66d9ef">volatile</span> uint8_t gb_bit;
+
+<span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">exti0_isr</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">// NOTE: If this goes at the end of the function, things no longer work!
+</span><span style="color:#75715e"></span>	exti_reset_request(EXTI0);
+
+	<span style="color:#75715e">// RISING
+</span><span style="color:#75715e"></span>	gb_sin <span style="color:#f92672">|=</span> gpio_get(GPIOP_SIN, GPION_SIN) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>;
+	gb_sout <span style="color:#f92672">|=</span> gpio_get(GPIOP_SOUT, GPION_SOUT) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>;
+	gb_bit<span style="color:#f92672">++</span>;
+
+	<span style="color:#66d9ef">if</span> (gb_bit <span style="color:#f92672">==</span> <span style="color:#ae81ff">8</span>) {
+		<span style="color:#75715e">// Send gb_sin and gb_sout over USART2
+</span><span style="color:#75715e"></span>		usart_send_blocking(USART2, gb_sin);
+		usart_send_blocking(USART2, gb_sout);
+
+		<span style="color:#75715e">// Reset state
+</span><span style="color:#75715e"></span>		gb_bit <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+		gb_sin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+		gb_sout <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+	} <span style="color:#66d9ef">else</span> {
+		gb_sin <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+		gb_sout <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+	}
+}</code></pre></div>
+
+<p>Finally, on the computer side, we read the serial data over USB by using the <a href="https://github.com/dcuddeback/serial-rs">Rust serial port crate</a>.  Considering that in the GameBoy serial protocol, every time the master sends a byte it also requests a byte from the slave, which may have nothing to send, I expect that often transferred bytes will be just <code>0x00</code>, so I decided to hide those values from the output to make it easy to focus on the important parts.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_sniff</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>];
+    <span style="color:#66d9ef">loop</span> {
+        try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf));
+        <span style="color:#66d9ef">let</span> sdout <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">0</span>];
+        <span style="color:#66d9ef">let</span> sdin  <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">1</span>];
+        <span style="color:#66d9ef">let</span> sdout_s <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> sdout <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;&#34;</span>) } <span style="color:#66d9ef">else</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:02x}&#34;</span>, sdout) };
+        <span style="color:#66d9ef">let</span> sdin_s  <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> sdin  <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;&#34;</span>) } <span style="color:#66d9ef">else</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:02x}&#34;</span>,  sdin) };
+        print<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}:{} &#34;</span>, sdout_s, sdin_s);
+        io::stdout().flush()<span style="color:#f92672">?</span>;
+    }
+}</code></pre></div>
+
+<p>As a bonus, here you can find the <a href="/media/gameboy_serial/tetris.txt">serial communication capture of playing Tetris in multiplayer mode</a>.  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn&rsquo;t seem too complicated.  For instance, during the playing part, each gameboy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.</p>
+
+<p>I&rsquo;ve also made a <a href="/media/gameboy_serial/printer.txt">capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo</a>.  We will use this capture in the next part of these posts to understand how the GameBoy Printer protocol works.  And here&rsquo;s a picture of the setup:</p>
+
+
+<figure >
+    <a href="/media/gameboy_serial/gameboy_printer_link.jpg">
+        <img src="/media/gameboy_serial/gameboy_printer_link_1000.jpg" alt="Sniffing setup with GameBoy Camera connected to the GameBoy Printer" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Sniffing setup with GameBoy Camera connected to the GameBoy Printer
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<p>See you on the second part in which I&rsquo;ll explain how I built a GameBoy virtual printer to send pictures taken from the GameBoy Camera to my PC by simulating a GameBoy Printer.  Comming soon!</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://lizard.kyasuka.com/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2018. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
