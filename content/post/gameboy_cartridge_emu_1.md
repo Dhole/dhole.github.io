@@ -108,7 +108,7 @@ In order to analyze the bus while the GameBoy was performing reads and writes to
 the cartridge, I soldered an FDD ribbon to the main board of the GameBoy, 
 intercepting the cartridge pins as follows:
 
-{{% img1000 src="/media/gameboy_stm32f4/gb_ribbon_1.jpg" caption="Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon." %}}
+{{% img1000 src="../../media/gameboy_stm32f4/gb_ribbon_1.jpg" caption="Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon." %}}
 
 Since only 16 channels are available for the logicdiscovery I decided to monitor
 the CLK, RD, WR, CS, DATA {0-4} and ADDR {0-8}. (That is, the lower 4 bits of
@@ -118,13 +118,13 @@ get information about the timings of the different operations.
 The GameBoy cartridge pinout is well known, so it's easy to figure out what every
 pin on the PCB of the GameBoy does from a pinout picture:
 
-{{% img src="/media/gameboy_stm32f4/gb_cartridge_pins.jpg" caption="GameBoy cartridge pinout. Image from www.insidegadgets.com" link_src="." %}}
+{{% img src="../../media/gameboy_stm32f4/gb_cartridge_pins.jpg" caption="GameBoy cartridge pinout. Image from www.insidegadgets.com" link_src="." %}}
 
 ## Results
 
 Upon analyzing the bus with the BATMAN game (ROM Only cartridge), the following is obtained:
 
-{{% img src="/media/gameboy_stm32f4/screen_dump_overview.png" caption="Logic capture overview" link_src="." %}}
+{{% img src="../../media/gameboy_stm32f4/screen_dump_overview.png" caption="Logic capture overview" link_src="." %}}
 
 The first thing I noticed is that the CLK is at 1MHz, this is good news for us:
 we have more cycles for each operation. One oddity I found with the capture is
@@ -142,9 +142,9 @@ read operation.
 Notice that we have a 20MHz sampling rate, this means that a sample is being
 taken every 50 ns, leading to an error of +/- 25 ns.
 
-{{% img src="/media/gameboy_stm32f4/screen_dump_read_timings.png" caption="Read timings" link_src="." %}}
+{{% img src="../../media/gameboy_stm32f4/screen_dump_read_timings.png" caption="Read timings" link_src="." %}}
 
-{{% img src="/media/gameboy_stm32f4/screen_dump_write_timings.png" caption="Write timings" link_src="." %}}
+{{% img src="../../media/gameboy_stm32f4/screen_dump_write_timings.png" caption="Write timings" link_src="." %}}
 
 We can see that for a read operation, the GameBoy leaves WR and CS unactivate 
 (high) and the RD active (low). This is the default. The GameBoy sets the 
@@ -163,7 +163,7 @@ when accessing RAM (this is not clear).
 The writing timing analysis are sound with the analysis found in the unnoficial
 [GameBoy CPU Manual](http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf):
 
-{{% img1000 src="/media/gameboy_stm32f4/cpu_manual_timing_small.png" caption="RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings." %}}
+{{% img1000 src="../../media/gameboy_stm32f4/cpu_manual_timing_small.png" caption="RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings." %}}
 
 Now that we know that the information seen in the bus is not only the communication
 between the GameBoy and the cartridge but all the read/write operations of the
@@ -172,7 +172,7 @@ a DMA operation (The GameBoy has a DMA functionality to allow to fast copy conte
 from RAM or ROM to the OAM (Object Atribute Memory), used by the screen to draw
 sprites):
 
-{{% img src="/media/gameboy_stm32f4/screen_dump_DMA.png" caption="DMA in action" link_src="." %}}
+{{% img src="../../media/gameboy_stm32f4/screen_dump_DMA.png" caption="DMA in action" link_src="." %}}
 
 In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!

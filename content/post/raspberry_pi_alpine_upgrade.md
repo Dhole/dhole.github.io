@@ -17,37 +17,41 @@ release, so I'm doing that manually on another computer.
 
 First of all, replace the repository confiration to point to the new version:
 
-```bash
+{{< highlight bash >}}
 setup-apkrepos
-```
+{{< /highlight >}}
 
 Press `e` then replace v3.5 by v3.6 (or whichever is the new release version).
 
-```bash
+{{< highlight bash >}}
 apk update
 apk upgrade --update-cache --available
-```
+{{< /highlight >}}
 
 Make sure that `/etc/lbu/lbu.conf` has the following line:
-```bash
+
+{{< highlight bash >}}
 LBU_MEDIA=mmcblk0p1
-```
+{{< /highlight >}}
 
 Then load the environment variables from the file, and backup everything.
-```bash
+
+{{< highlight bash >}}
 . /etc/lbu/lbu.conf
 lbu ci
-```
+{{< /highlight >}}
 
 Check that there is at least 400MB (maybe more?) free in the permament storage:
-```bash
+
+{{< highlight bash >}}
 df -h | grep "Filesystem\|$LBU_MEDIA"
-```
+{{< /highlight >}}
 
 Now on another computer, which should have the Alpine Linux release GPG keys on
 the GPG keyring, download the new release image, verify it's hash and verify
 the hash signature:
-```bash
+
+{{< highlight bash >}}
 VERSION=3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.asc
@@ -56,17 +60,19 @@ wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-
 sha256sum *armhf.tar.gz
 cat *armhf.tar.gz.sha256
 gpg --verify *armhf.tar.gz.asc
-```
+{{< /highlight >}}
 
 Now we proceed with the upgrade on the Raspberry Pi:
-```bash
+
+{{< highlight bash >}}
 mount -oremount,rw /media/$LBU_MEDIA
 cd /media/$LBU_MEDIA
-```
+{{< /highlight >}}
 
 Download the new release image (this time on the Raspberry Pi) and verify that
 the hash matches the one we verified on the other computer, then extract it:
-```bash
+
+{{< highlight bash >}}
 VERSION=3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 sha256sum *armhf.tar.gz
@@ -74,19 +80,21 @@ mkdir new
 cd new 
 tar xzf ../alpine-rpi-$VERSION-armhf.tar.gz
 cd ..
-```
+{{< /highlight >}}
 
 Commented is the line suggested in the wiki, which I'm not sure does any
 verification.  We will install from the extracted release image:
-```bash
+
+{{< highlight bash >}}
 #setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
 setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA
-```
+{{< /highlight >}}
 
 Now we clean what we downloaded, backup and reboot.  Hopefully everything works!
-```bash
+
+{{< highlight bash >}}
 rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
 lbu ci
 sync
 reboot
-```
+{{< /highlight >}}

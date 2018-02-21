@@ -41,50 +41,56 @@ Anyhow, here's how I installed rdiff-backup 1.2.8 manually:
 
 We first install rdiff-backup dependencies plus the packages required to build
 rdiff-backup from source.
-```bash
+
+{{< highlight bash >}}
 apk add librsync
 apk add gcc librsync-dev python-dev musl-dev patch
-```
+{{< /highlight >}}
 
 We download the sources of rdiff-backup-1.2.8, check the hash sum to verify that
 we got it right and we extract them.
-```bash
+
+{{< highlight bash >}}
 mkdir tmp
 cd tmp/
 wget http://savannah.nongnu.org/download/rdiff-backup/rdiff-backup-1.2.8.tar.gz
 [ "0d91a85b40949116fa8aaf15da165c34a2d15449b3cbe01c8026391310ac95db" \
     = $(sha256sum rdiff-backup-1.2.8.tar.gz | cut -d " " -f 1) ] && echo OK
 tar xzf rdiff-backup-1.2.8.tar.gz
-```
+{{< /highlight >}}
 
 Then we download the required patch to build rdiff-backup with librsync-1.0.0,
 in this case, from the Arch package git repository.  We check the patch and
 apply it.
-```bash
+
+{{< highlight bash >}}
 wget https://git.archlinux.org/svntogit/community.git/plain/trunk/rdiff-backup-1.2.8-librsync-1.0.0.patch?h=packages/rdiff-backup \
     -O rdiff-backup-1.2.8-librsync-1.0.0.patch
 [ "a00d993d5ffea32d58a73078fa20c90c1c1c6daa0587690cec0e3da43877bf12" \
     = $(sha256sum rdiff-backup-1.2.8-librsync-1.0.0.patch | cut -d " " -f 1) ] && echo OK
 cd rdiff-backup-1.2.8/
 patch -Np1 -i ../rdiff-backup-1.2.8-librsync-1.0.0.patch
-```
+{{< /highlight >}}
 
 We are ready to build rdiff-backup and install it in the system.
-```bash
+
+{{< highlight bash >}}
 python setup.py build
 python setup.py install --prefix=/usr --root=/
-```
+{{< /highlight >}}
 
 We must not forget to add the newly installed files in the local backup
 database, so that they are stored permanently.  I deliberately skip the docs.
-```bash
+
+{{< highlight bash >}}
 lbu add /usr/lib/python2.7/site-packages/rdiff_backup* /usr/bin/rdiff-backup*
-```
+{{< /highlight >}}
 
 After we are done, we can remove the packages we used to build rdiff-backup.
-```bash
+
+{{< highlight bash >}}
 apk del gcc librsync-dev python-dev musl-dev patch
-```
+{{< /highlight >}}
 
 Now rdiff-backup works correctly from my Debian laptop to my Alpine Raspberry Pi
 :)

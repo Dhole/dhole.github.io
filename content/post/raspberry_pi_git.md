@@ -20,7 +20,7 @@ First of all, we'll create a *git* user and move it's home to the encrypted
 partition.  For convenience we'll also link that home directory to `/git`.  This
 will be useful to have nice paths for our repositories.
 
-```bash
+{{< highlight bash >}}
 adduser git
 lbu add /home/git/
 
@@ -29,26 +29,26 @@ ln -sf /mnt/disk/git /home/
 cp -R /home/green/.ssh /home/git/.ssh
 chown -R git:git /home/git/
 ln -s /home/git/ /git
-```
+{{< /highlight >}}
 
 Finally we install git, cgit and highlight (to provide code highlighting in
 cgit).
 
-```bash
+{{< highlight bash >}}
 apk add highlight git cgit
-```
+{{< /highlight >}}
 
 cgit comes with a default script that will call highlight, but unfortunately
 it's expecting version 2 of highlight.  We'll copy the script and change it to
 use the argument format of version 3 of highlight (the line is already there, we
 just comment the version 2 and uncomment the version 3).
 
-```bash
+{{< highlight bash >}}
 cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
 vim /usr/lib/cgit/filters/syntax-highlighting3.sh
-```
+{{< /highlight >}}
 
-```diff
+{{< highlight diff >}}
 --- /usr/lib/cgit/filters/syntax-highlighting.sh
 +++ /usr/lib/cgit/filters/syntax-highlighting3.sh
 @@ -115,7 +115,7 @@
@@ -61,21 +61,21 @@ vim /usr/lib/cgit/filters/syntax-highlighting3.sh
  # This is for version 3
 -#exec highlight --force -f -I -O xhtml -S "$EXTENSION" 2>/dev/null
 +exec highlight --force -f -I -O xhtml -S "$EXTENSION" 2>/dev/null
-```
+{{< /highlight >}}
 
-```bash
+{{< highlight bash >}}
 lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh
-```
+{{< /highlight >}}
 
 Highlight uses css to color the code, so we need to add some lines specifying
 the colors we want to the css file cgit uses.
 
-```bash
+{{< highlight bash >}}
 cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
 vim /usr/share/webapps/cgit/cgit-highlight.css
-```
+{{< /highlight >}}
 
-```diff
+{{< highlight diff >}}
 --- /usr/share/webapps/cgit/cgit.css
 +++ /usr/share/webapps/cgit/cgit-highlight.css
 @@ -809,3 +809,20 @@
@@ -99,26 +99,26 @@ vim /usr/share/webapps/cgit/cgit-highlight.css
 +.hl.kwb { color:#0057ae; }
 +.hl.kwc { color:#000000; font-weight:bold; }
 +.hl.kwd { color:#010181; }
-```
+{{< /highlight >}}
 
-```bash
+{{< highlight bash >}}
 lbu add /usr/share/webapps/cgit/cgit-highlight.css
-```
+{{< /highlight >}}
 
 As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.
 
-```bash
+{{< highlight bash >}}
 cd /mnt/disk
 mkdir -p git/pub
 mkdir -p git/priv
-```
+{{< /highlight >}}
 
 For our setup we will use a general cgit configuration files, and two
 specialized ones for the public and private folders.
 
-```bash
+{{< highlight bash >}}
 mkdir /etc/cgit
-```
+{{< /highlight >}}
 
 ```
 cat << EOF > /etc/cgit/cgitrc
@@ -196,11 +196,11 @@ $HTTP["url"] =~ "^/private/cgit" {
 EOF
 ```
 
-```bash
+{{< highlight bash >}}
 vim /etc/lighttpd/lighttpd.conf
-```
+{{< /highlight >}}
 
-```bash
+{{< highlight bash >}}
 ...
 ...
 # {{{ includes
@@ -210,14 +210,14 @@ include "cgit.conf"
 # }}}
 ...
 ...
-```
+{{< /highlight >}}
 
 We commit every file to permanent storage and restart the lighttpd server.
 
-```bash
+{{< highlight bash >}}
 lbu commit
 rc-service lighttpd start
-```
+{{< /highlight >}}
 
 We should be able to visit the cgit interface from a browser now.
 
@@ -228,7 +228,7 @@ To automate making new repositories I wrote the following simple script:
 ```
 cat << EOF > /home/git/new-repo.sh
 ```
-```bash
+{{< highlight bash >}}
 #! /bin/sh
 
 folder=$1
@@ -284,7 +284,7 @@ echo "git remote add origin ssh://git-kyasuka/git/$folder/$name.git"
 echo "git add ."
 echo "git commit"
 echo "git push -u origin master"
-```
+{{< /highlight >}}
 ```
 EOF
 ```
@@ -292,11 +292,11 @@ EOF
 Now, to create a new git repository I just do the following from my local
 machine:
 
-```bash
+{{< highlight bash >}}
 ssh git@lizard.kyasuka.com
 ./new-repo.sh pub test "This is a test repository"
 exit
-```
+{{< /highlight >}}
 
 # Bonus
 
@@ -306,7 +306,7 @@ clone them all into my server.  This will make the transition easier :)
 ```
 cat << EOF > /mnt/disk/git/import-github.py
 ```
-```python3
+{{< highlight python3 >}}
 #! /usr/bin/env python3
 
 from urllib.request import urlopen, urlretrieve
@@ -329,7 +329,7 @@ for i in range(0, len(clone_urls)):
     subprocess.run(['git', 'clone', '--bare', clone_url])
     with open(clone_url.split('/')[-1] + '/description', 'w') as desc_file:
         desc_file.write(descriptions[i] + '\n')
-```
+{{< /highlight >}}
 ```
 EOF
 ```

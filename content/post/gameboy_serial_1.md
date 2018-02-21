@@ -212,7 +212,7 @@ exti0_isr(void)
 }
 {{< /highlight >}}
 
-Finally, on the computer side, we read the serial data over USB by using the [Rust serial port crate](https://github.com/dcuddeback/serial-rs).  Considering that in the GameBoy serial protocol, every time the master sends a byte it also requests a byte from the slave, which may have nothing to send, I expect that often transferred bytes will be just `0x00`, so I decided to hide those values from the output to make it easy to focus on the important parts.
+Finally, on the computer side, we read the serial data over USB by using the [Rust serial port crate](https://github.com/dcuddeback/serial-rs).  Considering that in the GameBoy serial protocol, every time the master sends a byte it also requests a byte from the slave, which may have nothing to send, I expect that often transferred bytes will be just `0x00`, so I decided to hide those values from the output to make it easy to focus on the important parts.  The output format for every byte pair is `{SOUT}:{SIN}`.
 
 {{< highlight rust >}}
 fn mode_sniff<T: SerialPort>(port: &mut BufStream<T>) -> Result<(), io::Error> {

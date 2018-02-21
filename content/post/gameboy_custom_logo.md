@@ -33,7 +33,7 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.
 
-```C
+{{< highlight C >}}
 /* Read cartridge operation for MBC1 */
 inline uint8_t mbc1_read(uint16_t addr) {
 	if (addr < 0x4000) {
@@ -57,7 +57,7 @@ inline uint8_t mbc1_read(uint16_t addr) {
 	}
 	return 0x00;
 }
-```
+{{< /highlight >}}
 
 ## Custom logo creation
 
@@ -78,7 +78,7 @@ binary logo to be used by the cart emulator
 
 I have drawn the following logo to be used at boot:
 
-{{% img src="/media/gameboy_stm32f4/dhole_logo.png" caption="Custom logo featuring my nickname and a cute Dhole" %}}
+{{% img src="../../media/gameboy_stm32f4/dhole_logo.png" caption="Custom logo featuring my nickname and a cute Dhole" %}}
 
 In the following videos the GameBoy booting with the custom logo can be seen:
 

@@ -34,7 +34,7 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 - DATA{0..7} -> PE{8..15}
 - ADDR{0..15} -> PD{0..15}
 
-{{% img1000 src="/media/gameboy_stm32f4/gb_setup.jpg" caption="My setup with the GameBoy connected to the STM32F4-Discovery" %}}
+{{% img1000 src="../../media/gameboy_stm32f4/gb_setup.jpg" caption="My setup with the GameBoy connected to the STM32F4-Discovery" %}}
 
 
 # Coding
@@ -53,18 +53,19 @@ to avoid current drain from the GameBoy(5V) to the STM32F4(3.3V)). The bus for
 the GPIOs is configured at 100MHz (maximum frequency available).
 
 This functions can be found in [main.c](https://github.com/Dhole/stm32f_GBCart/blob/master/main.c):
-```C
+{{< highlight C >}}
 void config_gpio_data();
 void config_gpio_addr();
 void config_gpio_sig();
-```
+{{< /highlight >}}
 
 Secondly, we will configure the CLK to act as a trigger on rise. To do this we
 enable an interrupt for the GPIO we connected the CLK to that will execute a
 handler for every level rise. In [main.c](https://github.com/Dhole/stm32f_GBCart/blob/master/main.c):
-```C
+
+{{< highlight C >}}
 void config_PC0_int(void);
-```
+{{< /highlight >}}
 
 ## Read/Write handler
 
@@ -102,7 +103,7 @@ cycles (due to the context change) and also they contain asserts to verify the
 input, which consumes more cycles. We are short in cycles here, so we try to avoid
 all this.
 
-```C
+{{< highlight C >}}
 #define BUS_RD (GPIOC->IDR & 0x0002)
 #define BUS_WR (GPIOC->IDR & 0x0004)
 #define ADDR_IN GPIOD->IDR
@@ -155,7 +156,7 @@ void EXTI0_IRQHandler(void) {
 	EXTI->PR = EXTI_Line0;
 	//EXTI_ClearITPendingBit(EXTI_Line0);
 }
-```
+{{< /highlight >}}
 
 To perform an arbitrary number of NOP operations, I used a macro I found on
 [stackoverflow](https://stackoverflow.com/questions/8551418/c-preprocessor-macro-for-returning-a-string-repeated-a-certain-number-of-times). The C preprocessor doesn't
@@ -181,7 +182,7 @@ For the read operation, three regions can be accessed. The first one maps to
 the first 16KB of the ROM. The second one to the selectable ROM bank. The third
 one to the selectable RAM bank, if any:
 
-```C
+{{< highlight C >}}
 /* Read cartridge operation for MBC1 */
 inline uint8_t mbc1_read(uint16_t addr) {
 	if (addr < 0x4000) {
@@ -196,7 +197,7 @@ inline uint8_t mbc1_read(uint16_t addr) {
 	}
 	return 0x00;
 }
-```
+{{< /highlight >}}
 
 For the write operation, it can happen that it accesses the RAM region, where
 it performs a proper read, or it can access three other regions. The first one is
@@ -206,7 +207,7 @@ mode flag. The third one is to enable or disable the ROM/RAM mode flag. There is
 an initial region to enable or disable the RAM, used by the cartridges to protect
 the RAM agains data corruption, but it's not needed here.
 
-```C
+{{< highlight C >}}
 /* Write cartridge operation for MBC1 */
 inline void mbc1_write(uint16_t addr, uint8_t data) {
 	if (addr >= 0xA000 && addr < 0xC000) {
@@ -247,7 +248,7 @@ inline void mbc1_write(uint16_t addr, uint8_t data) {
 		}
 	}
 }
-```
+{{< /highlight >}}
 
 ### ROM and RAM
 
@@ -255,23 +256,27 @@ In order to allow the program to access to the contents of a ROM, I used the
 unix `xxd` tool to convert the binary file into a C header file containing an array
 with the file contents:
 
-```bash
+{{< highlight bash >}}
 cp Tetris.gb rom.gb
 xxd -i rom.gb | sed 's/unsigned/unsigned const/g' > tetris_rom.h
 rm rom.gb
-```
+{{< /highlight >}}
+
 The contents of *tetris_rom.h* will look like this:
-```C
+
+{{< highlight C >}}
 unsigned const char rom_gb[] = {
   0xc3, 0x0c, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0xc3, 0x0c, 0x02, 0xff,
   ...
-```
+{{< /highlight >}}
 
 For games that use RAM, an array must be allocated on the SMT32F4. For this 
 purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:
-```C
+
+{{< highlight C >}}
 uint8_t ram[0x8000]; // 32K
-```
+{{< /highlight >}}
+
 Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.
 
@@ -279,9 +284,9 @@ off.
 
 ## Photos
 
-{{% img1000 src="/media/gameboy_stm32f4/gb_zelda.jpg" caption="The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)" %}}
+{{% img1000 src="../../media/gameboy_stm32f4/gb_zelda.jpg" caption="The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)" %}}
 
-{{% img1000 src="/media/gameboy_stm32f4/gb_drmario.jpg" caption="Dr. Mario. ROM Only game" %}}
+{{% img1000 src="../../media/gameboy_stm32f4/gb_drmario.jpg" caption="Dr. Mario. ROM Only game" %}}
 
 ## Videos
 

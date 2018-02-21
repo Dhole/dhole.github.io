@@ -127,79 +127,78 @@ without returning an error.</p>
 
 <p>And here goes the python script <code>check-mail-gpg</code>:</p>
 
-<pre><code class="language-python3">#! /usr/bin/python3
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#75715e">#! /usr/bin/python3</span>
 
-import os
-import sys
-import subprocess
-import email.parser
-from email.header import decode_header
-from email.utils import parseaddr
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> sys
+<span style="color:#f92672">import</span> subprocess
+<span style="color:#f92672">import</span> email.parser
+<span style="color:#f92672">from</span> email.header <span style="color:#66d9ef">import</span> decode_header
+<span style="color:#f92672">from</span> email.utils <span style="color:#66d9ef">import</span> parseaddr
 
-STATUS_FILE = '/tmp/check-mail-gpg.tmp'
+STATUS_FILE <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;/tmp/check-mail-gpg.tmp&#39;</span>
 
-def dec(header):
-    head = decode_header(header)
-    if len(head) == 1 and head[0][1] == None:
-        return head[0][0]
-    else:
-        return ''.join([h.decode(enc) if enc else h.decode('ascii') \
-                for (h,enc) in head])
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">dec</span>(header):
+    head <span style="color:#f92672">=</span> decode_header(header)
+    <span style="color:#66d9ef">if</span> len(head) <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> head[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">1</span>] <span style="color:#f92672">==</span> <span style="color:#66d9ef">None</span>:
+        <span style="color:#66d9ef">return</span> head[<span style="color:#ae81ff">0</span>][<span style="color:#ae81ff">0</span>]
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">return</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">.</span>join([h<span style="color:#f92672">.</span>decode(enc) <span style="color:#66d9ef">if</span> enc <span style="color:#66d9ef">else</span> h<span style="color:#f92672">.</span>decode(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;ascii&#39;</span>) \
+                <span style="color:#66d9ef">for</span> (h,enc) <span style="color:#f92672">in</span> head])
 
-def send_mail(mail):
-    print('Calling external email client to send the email...')
-    #return -1 # testing mode
-    p = subprocess.Popen(sys.argv[1:], stdin=subprocess.PIPE)
-    p.stdin.write(mail.encode('utf-8'))
-    p.stdin.close()
-    return p.wait()
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_mail</span>(mail):
+    print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Calling external email client to send the email...&#39;</span>)
+    <span style="color:#75715e">#return -1 # testing mode</span>
+    p <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>Popen(sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>:], stdin<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>PIPE)
+    p<span style="color:#f92672">.</span>stdin<span style="color:#f92672">.</span>write(mail<span style="color:#f92672">.</span>encode(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;utf-8&#39;</span>))
+    p<span style="color:#f92672">.</span>stdin<span style="color:#f92672">.</span>close()
+    <span style="color:#66d9ef">return</span> p<span style="color:#f92672">.</span>wait()
 
-def main():
-    mail = sys.stdin.read()
-    heads = email.parser.Parser().parsestr(mail, headersonly=True)
-    content = heads['Content-Type'].split(';')[0].strip()
-    print('Content is:', content)
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">main</span>():
+    mail <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>stdin<span style="color:#f92672">.</span>read()
+    heads <span style="color:#f92672">=</span> email<span style="color:#f92672">.</span>parser<span style="color:#f92672">.</span>Parser()<span style="color:#f92672">.</span>parsestr(mail, headersonly<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+    content <span style="color:#f92672">=</span> heads[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Content-Type&#39;</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;;&#39;</span>)[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>strip()
+    print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Content is:&#39;</span>, content)
 
-    if content == 'multipart/encrypted':
-        print('Ok: encrypted mail, we can return now...')
-        sys.exit(send_mail(mail))
+    <span style="color:#66d9ef">if</span> content <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;multipart/encrypted&#39;</span>:
+        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Ok: encrypted mail, we can return now...&#39;</span>)
+        sys<span style="color:#f92672">.</span>exit(send_mail(mail))
 
-    addrs = [parseaddr(addr) for addr in heads['To'].split(',')]
-    print('Found emails:', addrs)
+    addrs <span style="color:#f92672">=</span> [parseaddr(addr) <span style="color:#66d9ef">for</span> addr <span style="color:#f92672">in</span> heads[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;To&#39;</span>]<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;,&#39;</span>)]
+    print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Found emails:&#39;</span>, addrs)
 
-    gpg_cnt = 0
-    for name, addr in addrs:
-        print('Looking for', addr, 'in the keyring...')
-        res = subprocess.call(['gpg', '--list-keys', addr],
-                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        if res == 0:
-            gpg_cnt += 1
+    gpg_cnt <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+    <span style="color:#66d9ef">for</span> name, addr <span style="color:#f92672">in</span> addrs:
+        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Looking for&#39;</span>, addr, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;in the keyring...&#39;</span>)
+        res <span style="color:#f92672">=</span> subprocess<span style="color:#f92672">.</span>call([<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;gpg&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;--list-keys&#39;</span>, addr],
+                stdout<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>DEVNULL, stderr<span style="color:#f92672">=</span>subprocess<span style="color:#f92672">.</span>DEVNULL)
+        <span style="color:#66d9ef">if</span> res <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+            gpg_cnt <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
 
-    if gpg_cnt == 0:
-        print('Ok: no email found in the gpg keyring, we can return now...')
-        sys.exit(send_mail(mail))
+    <span style="color:#66d9ef">if</span> gpg_cnt <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Ok: no email found in the gpg keyring, we can return now...&#39;</span>)
+        sys<span style="color:#f92672">.</span>exit(send_mail(mail))
 
-    if not os.path.exists(STATUS_FILE):
-        open(STATUS_FILE, 'w').close()
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>exists(STATUS_FILE):
+        open(STATUS_FILE, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;w&#39;</span>)<span style="color:#f92672">.</span>close()
 
-    msg_id = heads['Message-ID']
-    msg_id_prev = ''
-    with open(STATUS_FILE, 'r') as f:
-        msg_id_prev = f.read()
+    msg_id <span style="color:#f92672">=</span> heads[<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Message-ID&#39;</span>]
+    msg_id_prev <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#39;</span>
+    <span style="color:#66d9ef">with</span> open(STATUS_FILE, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;r&#39;</span>) <span style="color:#66d9ef">as</span> f:
+        msg_id_prev <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>read()
 
-    if msg_id.strip() == msg_id_prev.strip():
-        sys.exit(send_mail(mail))
-    else:
-        with open(STATUS_FILE, 'w') as f:
-            f.write(msg_id)
-        print('Alert: trying to send an unencrypted email to', addrs,
-                ', for which some gpg keys were found in the keyring!')
-        print('Try again if you are sure to send this message unencrypted.')
-        sys.exit(1)
+    <span style="color:#66d9ef">if</span> msg_id<span style="color:#f92672">.</span>strip() <span style="color:#f92672">==</span> msg_id_prev<span style="color:#f92672">.</span>strip():
+        sys<span style="color:#f92672">.</span>exit(send_mail(mail))
+    <span style="color:#66d9ef">else</span>:
+        <span style="color:#66d9ef">with</span> open(STATUS_FILE, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> f:
+            f<span style="color:#f92672">.</span>write(msg_id)
+        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Alert: trying to send an unencrypted email to&#39;</span>, addrs,
+                <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;, for which some gpg keys were found in the keyring!&#39;</span>)
+        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;Try again if you are sure to send this message unencrypted.&#39;</span>)
+        sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">1</span>)
 
-if __name__ == '__main__':
-    main()
-</code></pre>
+<span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;__main__&#39;</span>:
+    main()</code></pre></div>
 
 <h1 id="update">Update</h1>
 
