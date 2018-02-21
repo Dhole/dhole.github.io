@@ -28,7 +28,7 @@ The list of materials used in this project are the following:
 # GameBoy serial protocol
 
 The Gameboy (and the GameBoy Color) have a serial communication port that was used for two player games as well as to interface with peripherials like the GameBoy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):
-{{% img1000 src="/media/gameboy_serial/serial_connector.png" caption="Game Link Cable connector pins" %}}
+{{% img1000 src="../../media/gameboy_serial/serial_connector.png" caption="Game Link Cable connector pins" %}}
 
 For a serial communicacion two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the GameBoy Printer, and it's not clear if it's used in any way.  All signals work at 5V TTL.
 
@@ -50,7 +50,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 The following Oscilloscope capture of a serial communication shows the transfer of a few bytes.  Since the bits are shifted out from the most significant bit of the transfer byte, the order of bits will be from 7 to 0:
 
-{{% img1000 src="/media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info.jpg" caption="Oscilloscope capture by Sigint 112 posted at [www.microcontroller.net](http://www.mikrocontroller.net/topic/87532), with overlay information added by me" %}}
+{{% img1000 src="../../media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info.jpg" caption="Oscilloscope capture by Sigint 112 posted at [www.microcontroller.net](http://www.mikrocontroller.net/topic/87532), with overlay information added by me" %}}
 
 As we can see from the oscilloscope capture, the bit value is put on the data line when the clock signal falls and is replaced by the next bit at the next clock signal fall.  This means that a good oportunity to read the bit value is when the clock signal rises.
 
@@ -136,7 +136,7 @@ I found it convenient to use constants to define the port and number for each li
 
 The hardware setup looks like this:
 
-{{% img1000 src="/media/gameboy_serial/gameboys_tetris_link.jpg" caption="Sniffing setup with two player mode in Tetris" %}}
+{{% img1000 src="../../media/gameboy_serial/gameboys_tetris_link.jpg" caption="Sniffing setup with two player mode in Tetris" %}}
 
 The way the sniffer will work is by reading the SIN and SOUT signals at every SCK cycle, building up the transferred bytes and sending them in pairs of (SOUT, SIN) over the USART that is connected to the ST-LINK which is connected via USB to my computer exposing a virtual serial device.  On the computer side I will receive the data and present it nicely with a program written in Rust.
 
@@ -229,10 +229,10 @@ fn mode_sniff<T: SerialPort>(port: &mut BufStream<T>) -> Result<(), io::Error> {
 }
 {{< /highlight >}}
 
-As a bonus, here you can find the [serial communication capture of playing Tetris in multiplayer mode](/media/gameboy_serial/tetris.txt).  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn't seem too complicated.  For instance, during the playing part, each gameboy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.
+As a bonus, here you can find the [serial communication capture of playing Tetris in multiplayer mode](../../media/gameboy_serial/tetris.txt).  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn't seem too complicated.  For instance, during the playing part, each gameboy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.
 
-I've also made a [capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo](/media/gameboy_serial/printer.txt).  We will use this capture in the next part of these posts to understand how the GameBoy Printer protocol works.  And here's a picture of the setup:
+I've also made a [capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo](../../media/gameboy_serial/printer.txt).  We will use this capture in the next part of these posts to understand how the GameBoy Printer protocol works.  And here's a picture of the setup:
 
-{{% img1000 src="/media/gameboy_serial/gameboy_printer_link.jpg" caption="Sniffing setup with GameBoy Camera connected to the GameBoy Printer" %}}
+{{% img1000 src="../../media/gameboy_serial/gameboy_printer_link.jpg" caption="Sniffing setup with GameBoy Camera connected to the GameBoy Printer" %}}
 
 See you on the second part in which I'll explain how I built a GameBoy virtual printer to send pictures taken from the GameBoy Camera to my PC by simulating a GameBoy Printer.  Comming soon!
