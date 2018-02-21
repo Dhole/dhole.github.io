@@ -88,77 +88,67 @@ release, so I&rsquo;m doing that manually on another computer.</p>
 
 <p>First of all, replace the repository confiration to point to the new version:</p>
 
-<pre><code class="language-bash">setup-apkrepos
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">setup-apkrepos</code></pre></div>
 
 <p>Press <code>e</code> then replace v3.5 by v3.6 (or whichever is the new release version).</p>
 
-<pre><code class="language-bash">apk update
-apk upgrade --update-cache --available
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk update
+apk upgrade --update-cache --available</code></pre></div>
 
 <p>Make sure that <code>/etc/lbu/lbu.conf</code> has the following line:</p>
 
-<pre><code class="language-bash">LBU_MEDIA=mmcblk0p1
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">LBU_MEDIA<span style="color:#f92672">=</span>mmcblk0p1</code></pre></div>
 
 <p>Then load the environment variables from the file, and backup everything.</p>
 
-<pre><code class="language-bash">. /etc/lbu/lbu.conf
-lbu ci
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">. /etc/lbu/lbu.conf
+lbu ci</code></pre></div>
 
 <p>Check that there is at least 400MB (maybe more?) free in the permament storage:</p>
 
-<pre><code class="language-bash">df -h | grep &quot;Filesystem\|$LBU_MEDIA&quot;
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">df -h | grep <span style="color:#e6db74">&#34;Filesystem\|</span>$LBU_MEDIA<span style="color:#e6db74">&#34;</span></code></pre></div>
 
 <p>Now on another computer, which should have the Alpine Linux release GPG keys on
 the GPG keyring, download the new release image, verify it&rsquo;s hash and verify
 the hash signature:</p>
 
-<pre><code class="language-bash">VERSION=3.6.2
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.asc
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.sha256
 
 sha256sum *armhf.tar.gz
 cat *armhf.tar.gz.sha256
-gpg --verify *armhf.tar.gz.asc
-</code></pre>
+gpg --verify *armhf.tar.gz.asc</code></pre></div>
 
 <p>Now we proceed with the upgrade on the Raspberry Pi:</p>
 
-<pre><code class="language-bash">mount -oremount,rw /media/$LBU_MEDIA
-cd /media/$LBU_MEDIA
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount -oremount,rw /media/$LBU_MEDIA
+cd /media/$LBU_MEDIA</code></pre></div>
 
 <p>Download the new release image (this time on the Raspberry Pi) and verify that
 the hash matches the one we verified on the other computer, then extract it:</p>
 
-<pre><code class="language-bash">VERSION=3.6.2
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 sha256sum *armhf.tar.gz
 mkdir new 
 cd new 
 tar xzf ../alpine-rpi-$VERSION-armhf.tar.gz
-cd ..
-</code></pre>
+cd ..</code></pre></div>
 
 <p>Commented is the line suggested in the wiki, which I&rsquo;m not sure does any
 verification.  We will install from the extracted release image:</p>
 
-<pre><code class="language-bash">#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
-setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA
-</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
+</span><span style="color:#75715e"></span>setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA</code></pre></div>
 
 <p>Now we clean what we downloaded, backup and reboot.  Hopefully everything works!</p>
 
-<pre><code class="language-bash">rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
 lbu ci
 sync
-reboot
-</code></pre>
+reboot</code></pre></div>
 
                     </section>
                 </article>

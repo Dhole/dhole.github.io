@@ -104,30 +104,29 @@ in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.</p>
 
-<pre><code class="language-C">/* Read cartridge operation for MBC1 */
-inline uint8_t mbc1_read(uint16_t addr) {
-	if (addr &lt; 0x4000) {
-		/* 16KB ROM bank 00 */
-		if (no_show_logo) {
-			/* Custom logo disabled */
-			return rom_gb[addr];
-		} else {
-			/* Custom logo enabled, only during first read at boot */
-			if (addr == 0x133) {
-				no_show_logo = 1;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* Read cartridge operation for MBC1 */</span>
+<span style="color:#66d9ef">inline</span> uint8_t <span style="color:#a6e22e">mbc1_read</span>(uint16_t addr) {
+	<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x4000</span>) {
+		<span style="color:#75715e">/* 16KB ROM bank 00 */</span>
+		<span style="color:#66d9ef">if</span> (no_show_logo) {
+			<span style="color:#75715e">/* Custom logo disabled */</span>
+			<span style="color:#66d9ef">return</span> rom_gb[addr];
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#75715e">/* Custom logo enabled, only during first read at boot */</span>
+			<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x133</span>) {
+				no_show_logo <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
 			}
-			return logo_bin[addr - 0x104];
+			<span style="color:#66d9ef">return</span> logo_bin[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x104</span>];
 		}
-	} else if (addr &lt; 0x8000) {
-		/* 16KB ROM Bank 01-7F */
-		return rom_gb[addr + 0x4000 * (rom_bank - 1)];
-	} else if (addr &gt;= 0xA000 &amp;&amp; addr &lt; 0xC000) {
-		/* 8KB RAM Bank 00-03, if any */
-		return ram[addr - 0xA000 + 0x2000 * ram_bank];
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x8000</span>) {
+		<span style="color:#75715e">/* 16KB ROM Bank 01-7F */</span>
+		<span style="color:#66d9ef">return</span> rom_gb[addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x4000</span> <span style="color:#f92672">*</span> (rom_bank <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)];
+	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0xC000</span>) {
+		<span style="color:#75715e">/* 8KB RAM Bank 00-03, if any */</span>
+		<span style="color:#66d9ef">return</span> ram[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">*</span> ram_bank];
 	}
-	return 0x00;
-}
-</code></pre>
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0x00</span>;
+}</code></pre></div>
 
 <h2 id="custom-logo-creation">Custom logo creation</h2>
 
@@ -150,11 +149,11 @@ binary logo to be used by the cart emulator</p>
 
 <p>I have drawn the following logo to be used at boot:</p>
 
-
+<p>
 <figure >
     
     
-        <img src="/media/gameboy_stm32f4/dhole_logo.png" alt="Custom logo featuring my nickname and a cute Dhole" />
+        <img src="../../media/gameboy_stm32f4/dhole_logo.png" alt="Custom logo featuring my nickname and a cute Dhole" />
     
     
     
@@ -169,7 +168,7 @@ binary logo to be used by the cart emulator</p>
     
 </figure>
 
-
+</p>
 
 <p>In the following videos the GameBoy booting with the custom logo can be seen:</p>
 
