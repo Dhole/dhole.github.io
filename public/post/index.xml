@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Nov 2017 14:35:56 -0800</lastBuildDate>
+    <lastBuildDate>Wed, 14 Feb 2018 02:33:57 +0100</lastBuildDate>
     
 	<atom:link href="https://lizard.kyasuka.com/blog/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Sniffing GameBoy serial traffic with an STM32F4</title>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</link>
+      <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
+      
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</guid>
+      <description>In these series of blog posts I will write about the GameBoy serial communication protocol and how to interact with it by using an embedded development board. The code for the development board will be written in C, and the code running on the computer will be writen in Rust.
+The first part will consist on understanding the GameBoy serial communication protocol, becoming familiar with embedded development using the libopencm3 free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</description>
+    </item>
     
     <item>
       <title>Enabling LUKS on the PocketCHIP</title>
