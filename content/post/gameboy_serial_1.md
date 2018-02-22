@@ -60,7 +60,7 @@ The [NUCLEO-F411RE](http://www.st.com/en/evaluation-tools/nucleo-f411re.html) is
 
 As with the STM32F4-Discovery, most of the pins of the NUCLEO-F411RE are 5V tolerant, so connecting the GPIOs to the GameBoy serial port won't be an issue.
 
-This is the first project I've done using the [libopencm3](http://libopencm3.org/) library, and I have to say that I prefer it over the official ST one.  Not only libopencm3 is fully free/libre software, I found it to be [better documented](http://libopencm3.org/docs/latest/html/).  Nevertheless, the library documentation will not be sufficient to succesfully use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly. use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly (that is, understand which [GPIOs are connected to which peripherials](http://www.st.com/content/ccc/resource/technical/document/datasheet/b3/a5/46/3b/b4/e5/4c/85/DM00115249.pdf/files/DM00115249.pdf/jcr:content/translations/en.DM00115249.pdf), learn about the different [DMA streams and channels](http://www.st.com/content/ccc/resource/technical/document/application_note/27/46/7c/ea/2d/91/40/a9/DM00046011.pdf/files/DM00046011.pdf/jcr:content/translations/en.DM00046011.pdf), etc.).
+This is the first project I've done using the [libopencm3](http://libopencm3.org/) library, and I have to say that I prefer it over the official ST one.  Not only libopencm3 is fully free/libre software, I found it to be [better documented](http://libopencm3.org/docs/latest/html/).  Nevertheless, the library documentation will not be sufficient to succesfully use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure them properly (that is, understand which [GPIOs are can be routed to which peripherials](http://www.st.com/content/ccc/resource/technical/document/datasheet/b3/a5/46/3b/b4/e5/4c/85/DM00115249.pdf/files/DM00115249.pdf/jcr:content/translations/en.DM00115249.pdf), learn about the different [DMA streams and channels](http://www.st.com/content/ccc/resource/technical/document/application_note/27/46/7c/ea/2d/91/40/a9/DM00046011.pdf/files/DM00046011.pdf/jcr:content/translations/en.DM00046011.pdf), etc.).
 
 For a good introduction to start using libopencm3 on the NUCLEO-F411RE, and to avoid feeling overwhelmed about all the datasheets, I recommend taking a look at the [libopencm3-examples repository](https://github.com/libopencm3/libopencm3-examples).  First try the [NUCLEO-F411RE examples](https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/nucleo-f411re) which should work out of the box, and play a bit with them.  You can also take a look at the [STM32F4-Discovery examples](https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/stm32f4-discovery), which are more complete.  Try to adapt them to the NUCLEO by checking the datasheet for the proper configuration (you may even not need to change anything!).
 
@@ -118,7 +118,7 @@ To be able to tap into the Game Link lines, I took a Game Link cable, cut it in 
 - SOUT -> PC1
 - SD -> PC2
 
-I found it convenient to use constants to define the port and number for each line:
+I found it convenient to use constants to define the GPIO port (`GPIOP_XXX`) and GPIO number (`GPION_XXX`) for each line:
 
 {{< highlight C >}}
 #define GPIOP_SCK  GPIOA
