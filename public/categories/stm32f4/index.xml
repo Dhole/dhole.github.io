@@ -2,41 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Stm32f4 on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/stm32f4/</link>
+    <link>https://lizard.kyasuka.com/blog/categories/stm32f4/</link>
     <description>Recent content in Stm32f4 on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 14 Feb 2018 02:33:57 +0100</lastBuildDate>
     
-	<atom:link href="https://dhole.github.io/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://lizard.kyasuka.com/blog/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Sniffing GameBoy serial traffic with an STM32F4</title>
-      <link>https://dhole.github.io/post/gameboy_serial_1/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_serial_1/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</guid>
       <description>In these series of blog posts I will write about the GameBoy serial communication protocol and how to interact with it by using an embedded development board. The code for the development board will be written in C, and the code running on the computer will be writen in Rust.
 The first part will consist on understanding the GameBoy serial communication protocol, becoming familiar with embedded development using the libopencm3 free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</description>
     </item>
     
     <item>
       <title>Booting the GameBoy with a custom logo</title>
-      <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/</link>
       <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/</guid>
       <description>With the cartridge emulator implemented on an STM32F4 we can do some cool stuff. For example, we can make the GameBoy boot with our own custom logo!
 Bootstrap ROM When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the memory and execution begins. This bios is in charge of initializing the hardware as well as scrolling the Nintendo logo and checking that the cartridge i valid.</description>
     </item>
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_2/</link>
       <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_2/</guid>
       <description>This post is a continuation of Emulating a GameBoy Cartridge with an STM32F4. Part 1
 We have analyzed the memory bus of the GameBoy in order to obtain the timing information of the different signals involved in the read and write operations happening on the cartridge. We will now proceed to develop a system to emulate the behaviour of the cartridge with the STM32F4.
 About voltage levels As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4 works at 3.</description>
@@ -44,10 +44,10 @@ About voltage levels As we noticed in the previous post, the GameBoy works at 5V
     
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
-      <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/</guid>
       <description>Introduction The following project consists on emulating the functionality of a GameBoy cartridge with the development board STM32F4. The system is fully functional and is able to emulate real cartridges (as well as homebrew games) of the type ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain how I managed to achieve this.
 Motivation Current flashcart systems commonly use a design consisting on a FPGA or CPLD controlling the logic of the emulated cartridge (memory banking, RAM access, etc.</description>
     </item>
