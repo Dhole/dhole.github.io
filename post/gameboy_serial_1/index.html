@@ -8,7 +8,7 @@
         <title>Sniffing GameBoy serial traffic with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -170,7 +170,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 <p>As with the STM32F4-Discovery, most of the pins of the NUCLEO-F411RE are 5V tolerant, so connecting the GPIOs to the GameBoy serial port won&rsquo;t be an issue.</p>
 
-<p>This is the first project I&rsquo;ve done using the <a href="http://libopencm3.org/">libopencm3</a> library, and I have to say that I prefer it over the official ST one.  Not only libopencm3 is fully free/libre software, I found it to be <a href="http://libopencm3.org/docs/latest/html/">better documented</a>.  Nevertheless, the library documentation will not be sufficient to succesfully use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly. use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure the properly (that is, understand which <a href="http://www.st.com/content/ccc/resource/technical/document/datasheet/b3/a5/46/3b/b4/e5/4c/85/DM00115249.pdf/files/DM00115249.pdf/jcr:content/translations/en.DM00115249.pdf">GPIOs are connected to which peripherials</a>, learn about the different <a href="http://www.st.com/content/ccc/resource/technical/document/application_note/27/46/7c/ea/2d/91/40/a9/DM00046011.pdf/files/DM00046011.pdf/jcr:content/translations/en.DM00046011.pdf">DMA streams and channels</a>, etc.).</p>
+<p>This is the first project I&rsquo;ve done using the <a href="http://libopencm3.org/">libopencm3</a> library, and I have to say that I prefer it over the official ST one.  Not only libopencm3 is fully free/libre software, I found it to be <a href="http://libopencm3.org/docs/latest/html/">better documented</a>.  Nevertheless, the library documentation will not be sufficient to succesfully use all the peripherials, you will need to read the STM32F411RET6 datasheets in order to understand how to configure them properly (that is, understand which <a href="http://www.st.com/content/ccc/resource/technical/document/datasheet/b3/a5/46/3b/b4/e5/4c/85/DM00115249.pdf/files/DM00115249.pdf/jcr:content/translations/en.DM00115249.pdf">GPIOs are can be routed to which peripherials</a>, learn about the different <a href="http://www.st.com/content/ccc/resource/technical/document/application_note/27/46/7c/ea/2d/91/40/a9/DM00046011.pdf/files/DM00046011.pdf/jcr:content/translations/en.DM00046011.pdf">DMA streams and channels</a>, etc.).</p>
 
 <p>For a good introduction to start using libopencm3 on the NUCLEO-F411RE, and to avoid feeling overwhelmed about all the datasheets, I recommend taking a look at the <a href="https://github.com/libopencm3/libopencm3-examples">libopencm3-examples repository</a>.  First try the <a href="https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/nucleo-f411re">NUCLEO-F411RE examples</a> which should work out of the box, and play a bit with them.  You can also take a look at the <a href="https://github.com/libopencm3/libopencm3-examples/tree/master/examples/stm32/f4/stm32f4-discovery">STM32F4-Discovery examples</a>, which are more complete.  Try to adapt them to the NUCLEO by checking the datasheet for the proper configuration (you may even not need to change anything!).</p>
 
@@ -228,7 +228,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
 <li>SD -&gt; PC2</li>
 </ul>
 
-<p>I found it convenient to use constants to define the port and number for each line:</p>
+<p>I found it convenient to use constants to define the GPIO port (<code>GPIOP_XXX</code>) and GPIO number (<code>GPION_XXX</code>) for each line:</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">#define GPIOP_SCK  GPIOA
 </span><span style="color:#75715e">#define GPION_SCK  GPIO0
@@ -416,7 +416,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                        <a href="https://dhole.github.io/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
                     
                 </div>
             </div>

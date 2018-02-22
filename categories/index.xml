@@ -2,129 +2,129 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Dhole&#39;s blog</title>
-    <link>https://lizard.kyasuka.com/blog/categories/</link>
+    <link>https://dhole.github.io/categories/</link>
     <description>Recent content in Categories on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 26 Jun 2017 23:18:39 -0700</lastBuildDate>
     
-	<atom:link href="https://lizard.kyasuka.com/blog/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Alpine</title>
-      <link>https://lizard.kyasuka.com/blog/categories/alpine/</link>
+      <link>https://dhole.github.io/categories/alpine/</link>
       <pubDate>Mon, 26 Jun 2017 23:18:39 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/alpine/</guid>
+      <guid>https://dhole.github.io/categories/alpine/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Arch Linux</title>
-      <link>https://lizard.kyasuka.com/blog/categories/arch-linux/</link>
+      <link>https://dhole.github.io/categories/arch-linux/</link>
       <pubDate>Fri, 01 May 2015 23:58:40 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/arch-linux/</guid>
+      <guid>https://dhole.github.io/categories/arch-linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Debian</title>
-      <link>https://lizard.kyasuka.com/blog/categories/debian/</link>
+      <link>https://dhole.github.io/categories/debian/</link>
       <pubDate>Sat, 04 Jun 2016 00:13:28 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/debian/</guid>
+      <guid>https://dhole.github.io/categories/debian/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Gameboy</title>
-      <link>https://lizard.kyasuka.com/blog/categories/gameboy/</link>
+      <link>https://dhole.github.io/categories/gameboy/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/gameboy/</guid>
+      <guid>https://dhole.github.io/categories/gameboy/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Git</title>
-      <link>https://lizard.kyasuka.com/blog/categories/git/</link>
+      <link>https://dhole.github.io/categories/git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/git/</guid>
+      <guid>https://dhole.github.io/categories/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Kernel</title>
-      <link>https://lizard.kyasuka.com/blog/categories/kernel/</link>
+      <link>https://dhole.github.io/categories/kernel/</link>
       <pubDate>Thu, 23 Nov 2017 14:35:56 -0800</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/kernel/</guid>
+      <guid>https://dhole.github.io/categories/kernel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Lighttpd</title>
-      <link>https://lizard.kyasuka.com/blog/categories/lighttpd/</link>
+      <link>https://dhole.github.io/categories/lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/lighttpd/</guid>
+      <guid>https://dhole.github.io/categories/lighttpd/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Pocketchip</title>
-      <link>https://lizard.kyasuka.com/blog/categories/pocketchip/</link>
+      <link>https://dhole.github.io/categories/pocketchip/</link>
       <pubDate>Thu, 23 Nov 2017 14:35:56 -0800</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/pocketchip/</guid>
+      <guid>https://dhole.github.io/categories/pocketchip/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Raspberry Pi</title>
-      <link>https://lizard.kyasuka.com/blog/categories/raspberry-pi/</link>
+      <link>https://dhole.github.io/categories/raspberry-pi/</link>
       <pubDate>Mon, 26 Jun 2017 23:18:39 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/raspberry-pi/</guid>
+      <guid>https://dhole.github.io/categories/raspberry-pi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rdiff Backup</title>
-      <link>https://lizard.kyasuka.com/blog/categories/rdiff-backup/</link>
+      <link>https://dhole.github.io/categories/rdiff-backup/</link>
       <pubDate>Tue, 01 Nov 2016 01:17:17 -0700</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/rdiff-backup/</guid>
+      <guid>https://dhole.github.io/categories/rdiff-backup/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reproducible Builds</title>
-      <link>https://lizard.kyasuka.com/blog/categories/reproducible-builds/</link>
+      <link>https://dhole.github.io/categories/reproducible-builds/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/reproducible-builds/</guid>
+      <guid>https://dhole.github.io/categories/reproducible-builds/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rust</title>
-      <link>https://lizard.kyasuka.com/blog/categories/rust/</link>
+      <link>https://dhole.github.io/categories/rust/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/rust/</guid>
+      <guid>https://dhole.github.io/categories/rust/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Stm32f4</title>
-      <link>https://lizard.kyasuka.com/blog/categories/stm32f4/</link>
+      <link>https://dhole.github.io/categories/stm32f4/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://lizard.kyasuka.com/blog/categories/stm32f4/</guid>
+      <guid>https://dhole.github.io/categories/stm32f4/</guid>
       <description></description>
     </item>
     
