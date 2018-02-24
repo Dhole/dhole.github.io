@@ -6,10 +6,19 @@
     <description>Recent content in Stm32f4 on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 14 Feb 2018 02:33:57 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 23 Feb 2018 16:33:57 +0100</lastBuildDate>
     
 	<atom:link href="https://lizard.kyasuka.com/blog/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Virtual GameBoy Printer with an STM32F4</title>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_serial_2/</link>
+      <pubDate>Fri, 23 Feb 2018 16:33:57 +0100</pubDate>
+      
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_serial_2/</guid>
+      <description>In this second part of the project about interfacing the GameBoy serial communication with an embedded development board I will explain how I built a Virtual GameBoy Printer. The embedded board will be simulating a real GameBoy Printer, replying to the GameBoy following the protocol used by the GameBoy Printer so that the GameBoy sends the entire data meant to be print. This data will then be forwarded to my computer which will construct a png image out of it.</description>
+    </item>
     
     <item>
       <title>Sniffing GameBoy serial traffic with an STM32F4</title>

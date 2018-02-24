@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Virtual GameBoy Printer with an STM32F4 &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/blog/post"> articles </a></li>
+                        
+                            <li><a href="/blog/categories"> categories </a></li>
+                        
+                            <li><a href="/blog/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/blog/post"> articles </a></li>
+                    
+                        <li><a href="/blog/categories"> categories </a></li>
+                    
+                        <li><a href="/blog/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Virtual GameBoy Printer with an STM32F4</h1>  
+			
+			<time class="li-article-date">Friday, February 23, 2018</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+
+<span><a href="https://lizard.kyasuka.com/blog//categories/rust">rust</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        
+
+<p>In this second part of the project about interfacing the GameBoy serial communication with an embedded development board I will explain how I built a Virtual GameBoy Printer.  The embedded board will be simulating a real GameBoy Printer, replying to the GameBoy following the protocol used by the GameBoy Printer so that the GameBoy sends the entire data meant to be print.  This data will then be forwarded to my computer which will construct a png image out of it.</p>
+
+<h1 id="gameboy-printer-protocol">GameBoy Printer protocol</h1>
+
+<p>The first step for this part of the project is understanding how the GameBoy Printer protocol works so that we can interpret the commands the GameBoy sends to it.  In the first part of the project I posted a <a href="../../media/gameboy_serial/printer.txt">capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo</a>.  This will be useful to verify that we understand how each command should look like.</p>
+
+<p>Thankfully, we won&rsquo;t need to be reverse engineering the protocol (a task that should be doable with the sniffer we built in the first part) because it is well documented online.  My main sources of information were <a href="http://furrtek.free.fr/?a=gbprinter&amp;i=2">Furrtek&rsquo;s website</a> and the <a href="https://en.wikipedia.org/wiki/Game_Boy_Printer">GameBoy Printer entry at Wikipedia</a>.</p>
+
+<p>I will summarize the protocol here, but bear in mind that I&rsquo;m not adding new information, I&rsquo;m just merging the information from Furrtek&rsquo;s website and the Wikipedia entry.</p>
+
+<p>In the GameBoy Printer protocol, the GameBoy will act as master and the Printer as slave.  All the communications start with a command sent from the GameBoy and end with a reply from the Printer (which consists of an acknowledgement and a status code).</p>
+
+<h2 id="packet-format">Packet Format</h2>
+
+<p>The command format consists of a header, a variable length payload (<code>DATA</code> of length <code>LEN</code>) and a checksum.  The following table shows the complete packet format along with the reply:</p>
+
+<pre><code>Byte    |  0   |  1   |  2  |  3   | 4 | 5 |  6   | 6+LEN | 6+LEN+1 | 6+LEN+2 | 6+LEN+3
+--------|------|------|-----|------|---|---|------|-------|---------|---------|---------
+GameBoy | MAGIC_BYTES | CMD | ARG0 |  LEN  | DATA |   CHECKSUM      |         |
+Printer |      |      |     |      |   |   |      |       |         |   ACK   | STATUS
+
+MAGIC_BYTES := 0x88 0x33
+ACK := 0x81
+</code></pre>
+
+<p>16 bit values (<code>LEN</code> and <code>CHECKSUM</code>) are sent in little-endian format (low byte first, high byte second).</p>
+
+<p>The <code>CHECKSUM</code> is the 16 bit integer value that is obtained by summing all the packet bytes except for the <code>MAGIC_BYTES</code> and the <code>CHECKSUM</code> itself.</p>
+
+<p>The following picture shows the beginning of a packet captured with an oscilloscope.</p>
+
+
+<figure >
+    <a href="../../media/gameboy_serial/furrtek_printer_protocol.png">
+        <img src="../../media/gameboy_serial/furrtek_printer_protocol_1000.png" alt="GameBoy Printer serial communication capture by [Furrtek](http://furrtek.free.fr/?a=gbprinter&amp;i=2)" />
+    </a>
+    
+    <figcaption>
+        <p>
+        GameBoy Printer serial communication capture by <a href="http://furrtek.free.fr/?a=gbprinter&amp;i=2">Furrtek</a>
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<h2 id="commands">Commands</h2>
+
+<h3 id="initialize-cmd-0x01-data"><strong>Initialize</strong> (<code>CMD = 0x01, DATA = {}</code>)</h3>
+
+<p>This command is sent before sending data to be printed, it prepares the Printer to start receiving data.</p>
+
+<h3 id="print-cmd-0x02-len-4-data-print-opts"><strong>Print</strong> (<code>CMD = 0x02, LEN = 4, DATA = PRINT_OPTS</code>)</h3>
+
+<p>This command is sent after some data has ben transmitted and starts the printing process of the previously transmited data.  <code>PRINT_OPTS</code> specifies some printing options:</p>
+
+<pre><code>Byte          |  0   |    1    |    2    |    3
+--------------|------|---------|---------|----------
+typical value | 0x01 |  0x13   |  0xE4   |   0x40
+meaning       |   ?  | MARGINS | PALETTE | EXPOSURE
+
+MARGINS: High nibble is margin before printing, low nibble is margin after printing.
+PALETTE: Color palette following the GameBoy palette representation:
+    
+    Bit   |  0,1  |     2,3    |    4,5    |  6,7 
+    ------|-------|------------|-----------|-------
+    Color | White | Light Gray | Dark Gray | Black
+
+EXPOSURE: Color exposure as a 7 bit value
+</code></pre>
+
+<h3 id="send-data-cmd-0x04-len-640-data-gb-tiles"><strong>Send data</strong> (<code>CMD = 0x04, LEN = 640, DATA = GB_TILES</code>)</h3>
+
+<p>This command is used to send the data to be printed in batches of two rows of 20 GameBoy tiles, which require 640 bytes.  Each tile is an 8x8 pixels image using 4 grayscale tones, and require 8x8x2 = 32 bits.  Since the GameBoy has a 160x144 pixels display, 20 tiles will create a row of (20x8)x8 = 160x8 pixels (320 bytes).</p>
+
+<p>The tile pixels are stored by rows, where each row is stored as 2 bytes.  For every row, the first byte represents the less significant bits of the 2-bit tone pixels and the second byte represents the most significant bits.  The following example shows how 2 bytes are decoded into a 2-bit tone pixel row:</p>
+
+<pre><code>1st byte: 00110011 ----&gt;  00112233
+2nd byte: 00001111 --'
+</code></pre>
+
+<p>In order to print an image corresponding to the GameBoy screen, 18 tile rows are required, which means that this command will be called 9 times.  This is the way the GameBoy Camera prints.  If you&rsquo;d like to print images higher than 144 pixels, you can combine several images and print them independently leaving a 0-length margin in between.</p>
+
+<h3 id="query-status-cmd-0x0f-data"><strong>Query status</strong> (<code>CMD = 0x0F, DATA = {}</code>)</h3>
+
+<p>This command queries the current status of the Printer.  It is commonly used after the print command to check when the Printer has finished printing.</p>
+
+<h2 id="status-codes">Status codes</h2>
+
+<p>The status code is a byte where each bit, if set, indicates the following:</p>
+
+<pre><code>Bit 0: Checksum Error
+Bit 1: Printer Busy (printing)
+Bit 2: Image Data Full
+Bit 3: Unprocessed Data
+Bit 4: Packet Error
+Bit 5: Paper Jam
+Bit 6: Other Error
+Bit 7: Battery Too Low
+</code></pre>
+
+<p>More than one bit can be set at the same time.</p>
+
+<h2 id="wrap-up">Wrap up</h2>
+
+<p>A 160x144 pixels image is commonly printed issuing the following commands:</p>
+
+<ul>
+<li>Initialize</li>
+<li>Loop until all data is sent:
+
+<ul>
+<li>Send data</li>
+<li>Query status for any error</li>
+</ul></li>
+<li>Send data with empty payload</li>
+<li>Print</li>
+<li>Loop until the GameBoy printer is no longer busy:
+
+<ul>
+<li>Query status</li>
+</ul></li>
+</ul>
+
+<p>If a Send data with empty payload is not sent after the tile data has been sent and before the Print command, the GameBoy Printer will not print and instead return an error!</p>
+
+<h1 id="implementation">Implementation</h1>
+
+<h2 id="nucleo-f411re-side">NUCLEO-F411RE side</h2>
+
+<p>The connection of the Game Link Cable to the NUCLEO will be the same as in the first part of the project.  The GPIO setup will be the same except for the <code>SIN</code> pin, which will be configured as output (so that we can reply to the GameBoy simulating a GameBoy Printer).  Unlike in the first part, we setup the interrupt to trigger both then the <code>SCK</code> signal goes low (to output the sending bit) and when the <code>SCK</code> signal goes high (to read the receiving bit).</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">gblink_slave_gpio_setup</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">// PA0 -&gt; SCK
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SCK, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SCK);
+	<span style="color:#75715e">// PC0 -&gt; SIN
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SIN, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, GPION_SIN);
+	gpio_set_output_options(GPIOP_SIN, GPIO_OTYPE_PP, GPIO_OSPEED_100MHZ, GPION_SIN);
+	gpio_clear(GPIOP_SIN, GPION_SIN);
+	<span style="color:#75715e">// PC1 -&gt; SOUT
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SOUT, GPIO_MODE_INPUT, GPIO_PUPD_NONE, GPION_SOUT);
+
+	nvic_set_priority(NVIC_EXTI0_IRQ, <span style="color:#ae81ff">0</span>);
+	nvic_enable_irq(NVIC_EXTI0_IRQ);
+
+	exti_select_source(EXTI0, GPIOP_SCK);
+	exti_set_trigger(EXTI0, EXTI_TRIGGER_BOTH);
+	exti_enable_request(EXTI0);
+}</code></pre></div>
+
+<p>Now that we have a way to receive and send serial bytes, we need to simulate a GameBoy Printer.  In order to do so I have implemented a state machine that simulates the GameBoy Printer on the NUCLEO, but it&rsquo;s a simplified one: it always replies with the same status where all bits are cleared.  The GameBoy will be fine with these replies, and will think that all the data is being received correctly and printed instantly.  While doing this, the NUCLEO will be sending all the bytes received from the GameBoy over USART to my computer.</p>
+
+<p>The interrupt handler now looks like this:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">exti0_isr</span>(<span style="color:#66d9ef">void</span>)
+{
+	exti_reset_request(EXTI0);
+
+	<span style="color:#66d9ef">if</span> (gpio_get(GPIOP_SCK, GPION_SCK) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) { <span style="color:#75715e">// FALLING
+</span><span style="color:#75715e"></span>		gb_sout <span style="color:#f92672">|=</span> gpio_get(GPIOP_SOUT, GPION_SOUT) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>;
+		gb_bit<span style="color:#f92672">++</span>;
+
+		<span style="color:#66d9ef">if</span> (gb_bit <span style="color:#f92672">==</span> <span style="color:#ae81ff">8</span>) {
+			<span style="color:#75715e">// Send gb_sout over USART2
+</span><span style="color:#75715e"></span>			usart_send_blocking(USART2, gb_sout);
+
+                        printer_state_update(gb_sout);
+                        <span style="color:#66d9ef">switch</span> (printer_state) {
+                        <span style="color:#66d9ef">case</span> ACK:
+                                buf_push(<span style="color:#f92672">&amp;</span>recv_buf, <span style="color:#ae81ff">0x81</span>);
+                                <span style="color:#66d9ef">break</span>;
+                        <span style="color:#66d9ef">case</span> STATUS:
+                                buf_push(<span style="color:#f92672">&amp;</span>recv_buf, <span style="color:#ae81ff">0x00</span>);
+                                <span style="color:#66d9ef">break</span>;
+                        <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+                                <span style="color:#66d9ef">break</span>;
+                        }
+
+			<span style="color:#75715e">// Reset state
+</span><span style="color:#75715e"></span>			gb_bit <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+			gb_sout <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+
+			<span style="color:#75715e">// Prepare next gb_sin
+</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> (buf_empty(<span style="color:#f92672">&amp;</span>recv_buf)) {
+				gb_sin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
+			} <span style="color:#66d9ef">else</span> {
+				gb_sin <span style="color:#f92672">=</span> buf_pop(<span style="color:#f92672">&amp;</span>recv_buf);
+			}
+		} <span style="color:#66d9ef">else</span> {
+			gb_sin <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+			gb_sout <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+		}
+	} <span style="color:#66d9ef">else</span> { <span style="color:#75715e">// RISING
+</span><span style="color:#75715e"></span>		(gb_sin <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x80</span>) <span style="color:#f92672">?</span> gpio_set(GPIOP_SIN, GPION_SIN) <span style="color:#f92672">:</span> gpio_clear(GPIOP_SIN, GPION_SIN);
+	}
+}</code></pre></div>
+
+<p>The following snippet shows how the state machine is implemented and how the transitions work.  Implementing the state machine is required because the commands sent by the GameBoy have a variable length payload, and the GameBoy Printer is required to reply with an ACK at the precise end of the command packet.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> printer_magic[] <span style="color:#f92672">=</span> {<span style="color:#ae81ff">0x88</span>, <span style="color:#ae81ff">0x33</span>};
+
+<span style="color:#66d9ef">enum</span> printer_state {MAGIC0, MAGIC1, CMD, ARG0, LEN_LOW, LEN_HIGH, DATA, CHECKSUM0, CHECKSUM1, ACK, STATUS};
+<span style="color:#66d9ef">enum</span> printer_state printer_state;
+<span style="color:#66d9ef">enum</span> printer_state printer_state_prev;
+uint16_t printer_data_len;
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">printer_state_update</span>(uint8_t b)
+{
+	printer_state_prev <span style="color:#f92672">=</span> printer_state;
+	<span style="color:#66d9ef">switch</span> (printer_state) {
+	<span style="color:#66d9ef">case</span> MAGIC0:
+		<span style="color:#66d9ef">if</span> (b <span style="color:#f92672">==</span> printer_magic[<span style="color:#ae81ff">0</span>]) {
+			printer_state <span style="color:#f92672">=</span> MAGIC1;
+		}
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> MAGIC1:
+		<span style="color:#66d9ef">if</span> (b <span style="color:#f92672">==</span> printer_magic[<span style="color:#ae81ff">1</span>]) {
+			printer_state <span style="color:#f92672">=</span> CMD;
+		} <span style="color:#66d9ef">else</span> {
+			printer_state <span style="color:#f92672">=</span> MAGIC0;
+		}
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> CMD:
+		printer_state <span style="color:#f92672">=</span> ARG0;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> ARG0:
+		printer_state <span style="color:#f92672">=</span> LEN_LOW;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> LEN_LOW:
+		printer_data_len <span style="color:#f92672">=</span> b;
+		printer_state <span style="color:#f92672">=</span> LEN_HIGH;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> LEN_HIGH:
+		printer_data_len <span style="color:#f92672">|=</span> b <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>;
+		<span style="color:#66d9ef">if</span> (printer_data_len <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>) {
+			printer_state <span style="color:#f92672">=</span> DATA;
+		} <span style="color:#66d9ef">else</span> {
+			printer_state <span style="color:#f92672">=</span> CHECKSUM0;
+		}
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> DATA:
+		printer_data_len<span style="color:#f92672">--</span>;
+		printer_state <span style="color:#f92672">=</span> (printer_data_len <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> CHECKSUM0 : DATA;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> CHECKSUM0:
+		printer_state <span style="color:#f92672">=</span> CHECKSUM1;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> CHECKSUM1:
+		printer_state <span style="color:#f92672">=</span> ACK;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> ACK:
+		printer_state <span style="color:#f92672">=</span> STATUS;
+		<span style="color:#66d9ef">break</span>;
+	<span style="color:#66d9ef">case</span> STATUS:
+		printer_state <span style="color:#f92672">=</span> MAGIC0;
+		<span style="color:#66d9ef">break</span>;
+	}
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">printer_state_reset</span>(<span style="color:#66d9ef">void</span>)
+{
+	printer_data_len <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+	printer_state <span style="color:#f92672">=</span> MAGIC0;
+	printer_state_prev <span style="color:#f92672">=</span> printer_state;
+}</code></pre></div>
+
+<h2 id="computer-side">Computer side</h2>
+
+<p>On the computer side, we will be receiving all the data the GameBoy is sending to the virtual printer.  We will need to parse the packets, extract the tile data and reconstruct the images so that we can visualize and store them.  As in the previous part, I&rsquo;ll be using Rust, reusing the same code to interface with the serial port as in part one.  To store the image as a PNG I will use the <a href="https://github.com/PistonDevelopers/image">Rust image crate from the Piston project</a>.</p>
+
+<p>The code will run in a loop waiting for the magic bytes and parse the following bytes to make a packet.  If the packet is a Send data command, the tile rows will be appended to a vector called <code>tile_rows</code>.  If the packet is an Init command, the <code>tile_rows</code> vector will be cleared.  Finally, if the packet is a Print command, the <code>tile_rows</code> vector will be decoded into a matrix that will be stored as a PNG image.  This will allow us to send (or virtually print) multiple pictures from the GameBoy to the computer on the same run of the program.</p>
+
+<p>The following code shows this behaviour.  I&rsquo;ve ommited some constants and enum declarations that encode the different protocol values:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_printer</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(<span style="color:#66d9ef">mut</span> port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows <span style="color:#f92672">=</span> Vec::<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span>::new();
+    <span style="color:#66d9ef">loop</span> {
+        <span style="color:#75715e">// Wait for the magic bytes.
+</span><span style="color:#75715e"></span>        try<span style="color:#f92672">!</span>(read_until_magic(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> port, <span style="color:#f92672">&amp;</span>PRINT_MAGIC));
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">4</span>];
+        <span style="color:#75715e">// Read cmd, arg1, len_low, len_high
+</span><span style="color:#75715e"></span>        try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf));
+        <span style="color:#66d9ef">let</span> cmd <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">0</span>];
+        <span style="color:#66d9ef">let</span> args <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>buf[<span style="color:#ae81ff">1</span>..<span style="color:#ae81ff">4</span>];
+        <span style="color:#66d9ef">let</span> len <span style="color:#f92672">=</span> (args[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>) <span style="color:#f92672">+</span> ((args[<span style="color:#ae81ff">2</span>] <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>);
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> payload <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; len <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> checksum <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+        try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> payload));
+        try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> checksum));
+        <span style="color:#66d9ef">match</span> PrintCommand::from_u8(cmd) {
+            Some(PrintCommand::Init) <span style="color:#f92672">=&gt;</span> {
+                println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Receiving data...&#34;</span>);
+                tile_rows.clear();
+            }
+            Some(PrintCommand::Print) <span style="color:#f92672">=&gt;</span> {
+                <span style="color:#66d9ef">let</span> palette <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>payload[<span style="color:#ae81ff">2</span>];
+                <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> format<span style="color:#f92672">!</span>(
+                    <span style="color:#e6db74">&#34;gb_printer_{}.png&#34;</span>,
+                    time::now().strftime(<span style="color:#e6db74">&#34;%FT%H%M%S&#34;</span>).unwrap()
+                );
+                println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Saving image at {}&#34;</span>, filename);
+                try<span style="color:#f92672">!</span>(printer_save_image(<span style="color:#f92672">&amp;</span>tile_rows, palette, filename));
+            }
+            Some(PrintCommand::Data) <span style="color:#f92672">=&gt;</span> {
+                <span style="color:#66d9ef">if</span> len <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+                    tile_rows.push(payload);
+                }
+            }
+            Some(PrintCommand::Status) <span style="color:#f92672">=&gt;</span> {}
+            None <span style="color:#f92672">=&gt;</span> {}
+        }
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+        try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
+    }
+}</code></pre></div>
+
+<p>The function <code>printer_save_image</code> will decode the tile rows into a matrix so that the image can be saved as a grayscale PNG.  The helper function <code>tile_row_to_pixel_rows</code> decodes a single tile row into &lsquo;pixel rows&rsquo;, that is 8 rows of 160 grayscale pixels each.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">printer_save_image</span>(
+    tile_rows: <span style="color:#66d9ef">&amp;</span>Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span>,
+    palette_byte: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">u8</span>,
+    filename: String,
+) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> palette: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;</span> <span style="color:#f92672">=</span> BitVec::from_bytes(<span style="color:#f92672">&amp;</span>[<span style="color:#f92672">*</span>palette_byte])
+        .iter()
+        .tuples()
+        .map(<span style="color:#f92672">|</span>(h, l)<span style="color:#f92672">|</span> (l <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> (h <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>))
+        .map(<span style="color:#f92672">|</span>v<span style="color:#f92672">|</span> v <span style="color:#f92672">*</span> (<span style="color:#ae81ff">255</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">3</span>))
+        .collect();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> img <span style="color:#f92672">=</span> ImageBuffer::new(<span style="color:#ae81ff">160</span>, <span style="color:#ae81ff">16</span> <span style="color:#f92672">*</span> tile_rows.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u32</span>);
+    img.put_pixel(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, image::Luma([<span style="color:#ae81ff">255</span><span style="color:#66d9ef">u8</span>]));
+
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows <span style="color:#f92672">=</span> Vec::new();
+    <span style="color:#66d9ef">for</span> tile_row <span style="color:#66d9ef">in</span> tile_rows {
+        <span style="color:#66d9ef">let</span> (tile_row_a, tile_row_b) <span style="color:#f92672">=</span> tile_row.split_at(tile_row.len() <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>);
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows_a <span style="color:#f92672">=</span> tile_row_to_pixel_rows(tile_row_a);
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows_b <span style="color:#f92672">=</span> tile_row_to_pixel_rows(tile_row_b);
+        pixel_rows.append(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> pixel_rows_a);
+        pixel_rows.append(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> pixel_rows_b);
+    }
+
+    <span style="color:#66d9ef">for</span> (y, pixel_row) <span style="color:#66d9ef">in</span> pixel_rows.iter().enumerate() {
+        <span style="color:#66d9ef">for</span> (x, val) <span style="color:#66d9ef">in</span> pixel_row.iter().enumerate() {
+            img.put_pixel(x <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u32</span>, y <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u32</span>, image::Luma([palette[<span style="color:#f92672">*</span>val <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>]]));
+        }
+    }
+
+    img.save(<span style="color:#f92672">&amp;</span>Path::new(<span style="color:#f92672">&amp;</span>filename))<span style="color:#f92672">?</span>;
+    <span style="color:#66d9ef">return</span> Ok(());
+}
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">tile_row_to_pixel_rows</span>(tile_row: <span style="color:#66d9ef">&amp;</span>[<span style="color:#66d9ef">u8</span>]) -&gt; Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">160</span>]).collect();
+    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..(tile_row.len() <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>) {
+        <span style="color:#66d9ef">let</span> tile <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>tile_row[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span>..i <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">16</span>];
+        <span style="color:#66d9ef">for</span> j <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+            <span style="color:#66d9ef">let</span> tile_pixel_row <span style="color:#f92672">=</span> BitVec::from_bytes(<span style="color:#f92672">&amp;</span>[tile[j <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>]])
+                .iter()
+                .zip(BitVec::from_bytes(<span style="color:#f92672">&amp;</span>[tile[j <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>]]).iter())
+                .map(<span style="color:#f92672">|</span>(l, h)<span style="color:#f92672">|</span> (l <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> (h <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>))
+                .collect::<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span>();
+            <span style="color:#66d9ef">for</span> k <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+                pixel_rows[j][i <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> k] <span style="color:#f92672">=</span> tile_pixel_row[k];
+            }
+        }
+    }
+    <span style="color:#66d9ef">return</span> pixel_rows;
+}</code></pre></div>
+
+<h1 id="result">Result</h1>
+
+<p>And finally, the result:</p>
+
+
+<figure >
+    <a href="../../media/gameboy_serial/gb_printer_2017-09-02T165217.png">
+        <img src="../../media/gameboy_serial/gb_printer_2017-09-02T165217_1000.png" alt="Picture taken with a GameBoy Camera and transferred to my computer using the virtual printer" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Picture taken with a GameBoy Camera and transferred to my computer using the virtual printer
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<p>To see the full source code of this project, check out the following repositories:</p>
+
+<ul>
+<li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
+<li><a href="https://github.com/Dhole/gb-link-host">gb-link-host: the code that runs on the computer</a></li>
+</ul>
+
+<p>The source code contains the three parts of the project joined into a single code base.</p>
+
+<p>And this concludes the second part of the project.  Stay tunned for the third part, where I&rsquo;ll do the reverse of this part: print from my computer on a real GameBoy Printer.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_1/"> Sniffing GameBoy serial traffic with an STM32F4</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2018. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

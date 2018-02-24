@@ -125,6 +125,8 @@ Categories:
 
 <p>For a serial communicacion two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the GameBoy Printer, and it&rsquo;s not clear if it&rsquo;s used in any way.  All signals work at 5V TTL.</p>
 
+<p>The original GameBoy dives the clock (SCK) at 8192 Hz, allowing a transfer rate of 1 KB/s.</p>
+
 <p>Data is sent and received in bytes, and the master decides when a byte is both sent (SOUT) and recived (SIN), which happens at the same time (basically, the two devices will exchange a byte).</p>
 
 <p>This byte transfer can be easily implemented by having a byte register on every device which keeps shifting out a sending bit and shifting in a receiving bit on every clock cycle.  The bit shifted out will be the most significant one and the bit shifted in will be the least significant one.  After 8 clock cycles, the two devices will have exchanged a complete byte.  The following diagram shows the byte register state at transfer each cycle (taken from the <a href="http://gbdev.gg8.se/wiki/articles/Serial_Data_Transfer_(Link_Cable)">Pan Docs</a>):</p>
@@ -309,8 +311,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
 <span style="color:#66d9ef">void</span>
 <span style="color:#a6e22e">exti0_isr</span>(<span style="color:#66d9ef">void</span>)
 {
-	<span style="color:#75715e">// NOTE: If this goes at the end of the function, things no longer work!
-</span><span style="color:#75715e"></span>	exti_reset_request(EXTI0);
+	exti_reset_request(EXTI0);
 
 	<span style="color:#75715e">// RISING
 </span><span style="color:#75715e"></span>	gb_sin <span style="color:#f92672">|=</span> gpio_get(GPIOP_SIN, GPION_SIN) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>;
@@ -371,6 +372,15 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 
 
+<p>To see the full source code of this project, check out the following repositories:</p>
+
+<ul>
+<li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
+<li><a href="https://github.com/Dhole/gb-link-host">gb-link-host: the code that runs on the computer</a></li>
+</ul>
+
+<p>The source code contains the three parts of the project joined into a single code base.</p>
+
 <p>See you on the second part in which I&rsquo;ll explain how I built a GameBoy virtual printer to send pictures taken from the GameBoy Camera to my PC by simulating a GameBoy Printer.  Comming soon!</p>
 
                     </section>
@@ -408,7 +418,8 @@ i7 i6 i5 i4 i3 i2 i1 i0
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        &nbsp;
+                        Later article<br />
+                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_2/"> Virtual GameBoy Printer with an STM32F4</a>
                     
                 </div>
             </div>
