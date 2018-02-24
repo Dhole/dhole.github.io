@@ -32,6 +32,8 @@ The Gameboy (and the GameBoy Color) have a serial communication port that was us
 
 For a serial communicacion two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the GameBoy Printer, and it's not clear if it's used in any way.  All signals work at 5V TTL.
 
+The original GameBoy dives the clock (SCK) at 8192 Hz, allowing a transfer rate of 1 KB/s.
+
 Data is sent and received in bytes, and the master decides when a byte is both sent (SOUT) and recived (SIN), which happens at the same time (basically, the two devices will exchange a byte).  
 
 This byte transfer can be easily implemented by having a byte register on every device which keeps shifting out a sending bit and shifting in a receiving bit on every clock cycle.  The bit shifted out will be the most significant one and the bit shifted in will be the least significant one.  After 8 clock cycles, the two devices will have exchanged a complete byte.  The following diagram shows the byte register state at transfer each cycle (taken from the [Pan Docs](http://gbdev.gg8.se/wiki/articles/Serial_Data_Transfer_(Link_Cable))):
@@ -188,7 +190,6 @@ volatile uint8_t gb_bit;
 void
 exti0_isr(void)
 {
-	// NOTE: If this goes at the end of the function, things no longer work!
 	exti_reset_request(EXTI0);
 
 	// RISING
@@ -234,5 +235,12 @@ As a bonus, here you can find the [serial communication capture of playing Tetri
 I've also made a [capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo](../../media/gameboy_serial/printer.txt).  We will use this capture in the next part of these posts to understand how the GameBoy Printer protocol works.  And here's a picture of the setup:
 
 {{% img1000 src="../../media/gameboy_serial/gameboy_printer_link.jpg" caption="Sniffing setup with GameBoy Camera connected to the GameBoy Printer" %}}
+
+To see the full source code of this project, check out the following repositories:
+
+- [gb-link-stm32f411: the code that runs on the NUCLEO-F411RE](https://github.com/Dhole/gb-link-stm32f411)
+- [gb-link-host: the code that runs on the computer](https://github.com/Dhole/gb-link-host)
+
+The source code contains the three parts of the project joined into a single code base.
 
 See you on the second part in which I'll explain how I built a GameBoy virtual printer to send pictures taken from the GameBoy Camera to my PC by simulating a GameBoy Printer.  Comming soon!
