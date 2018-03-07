@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Rust on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/rust/</link>
+    <link>https://lizard.kyasuka.com/blog/categories/rust/</link>
     <description>Recent content in Rust on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 23 Feb 2018 16:33:57 +0100</lastBuildDate>
     
-	<atom:link href="https://dhole.github.io/categories/rust/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://lizard.kyasuka.com/blog/categories/rust/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Virtual GameBoy Printer with an STM32F4</title>
-      <link>https://dhole.github.io/post/gameboy_serial_2/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_serial_2/</link>
       <pubDate>Fri, 23 Feb 2018 16:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_serial_2/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_serial_2/</guid>
       <description>In this second part of the project about interfacing the GameBoy serial communication with an embedded development board I will explain how I built a Virtual GameBoy Printer. The embedded board will be simulating a real GameBoy Printer, replying to the GameBoy following the protocol used by the GameBoy Printer so that the GameBoy sends the entire data meant to be print. This data will then be forwarded to my computer which will construct a png image out of it.</description>
     </item>
     
     <item>
       <title>Sniffing GameBoy serial traffic with an STM32F4</title>
-      <link>https://dhole.github.io/post/gameboy_serial_1/</link>
+      <link>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://dhole.github.io/post/gameboy_serial_1/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/gameboy_serial_1/</guid>
       <description>In these series of blog posts I will write about the GameBoy serial communication protocol and how to interact with it by using an embedded development board. The code for the development board will be written in C, and the code running on the computer will be writen in Rust.
 The first part will consist on understanding the GameBoy serial communication protocol, becoming familiar with embedded development using the libopencm3 free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</description>
     </item>
