@@ -15,9 +15,13 @@
                 </div>
             </div>
             <h2 style="text-align: center">
-                <a href="{{ .Site.Menus.post }}">
-                    See all articles
-                </a>
+                {{ range .Site.Menus.main }}
+                    {{ if eq .Name "articles" }}
+                    <a href="{{ .URL }}">
+                        See all articles
+                    </a>
+                    {{ end }}
+                {{ end }}
             </h2>
         </div>
     </div>
