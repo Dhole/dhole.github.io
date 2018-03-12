@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Printing on the Game Boy Printer using an STM32F4 &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Printing on the Game Boy Printer using an STM32F4</h1>  
+			
+			<time class="li-article-date">Sunday, February 25, 2018</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
+
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
+
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        
+
+<p>In this third and final part of the project about the Game Boy serial communication I will explain how I managed to print on the Game Boy Printer from my PC using an STM32F4 as the bridge between the two.  The encoding of the image into Game Boy tiles will happen on the PC, which will send it to the STM32F4 following the packet format of the Game Boy Printer.  The STM32F4 will only forward the data to the Game Boy Printer.</p>
+
+<h1 id="game-boy-printer-protocol">Game Boy Printer protocol</h1>
+
+<p>You can find all the information about the Game Boy Printer protocol in the <a href="../gameboy_serial_2/">second part of this project</a>.  That&rsquo;s all the resources we need to interact with the Game Boy Printer to print images.</p>
+
+<h1 id="implementation">Implementation</h1>
+
+<p>For this part of the project, the NUCLEO-F411RE will be acting as the master in the Game Boy serial protocol, so we will need to generate the SCK clock signal.</p>
+
+<p>The first step will be to set up the GPIOs, with the only difference that now the SCK will be configured as output.</p>
+
+<p>There&rsquo;s one particular detail that I missed when I started this part that is essential for the communication with the Game Boy printer to work.  The output signals of the Game Boy printer serial port work in open drain mode, that means that the transistor driving the signal will connect the output to ground to signal low, and would leave the output floating to signal high.  That means that in order to read high signals properly there needs to be a resistor from the output line to VCC.  This can be done either by connecting a physical resistor, or from the NUCLEO-F411RE, by configuring the GPIO input as pull-up (which does the same internally).</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">gblink_master_gpio_setup</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">// PA0 -&gt; SCK
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SCK, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, GPION_SCK);
+	<span style="color:#75715e">// PC0 -&gt; SIN
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// NOTE: The gameboy printer signals 0 by connecting to ground and 1 by
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// floating.  This means that a pullup resistor is required to read the
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 1.  Either connect a pullup resistor to the pin (for example
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 15KOhm), or set GPIO_PUPD_PULLUP as in the following line.
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SIN, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, GPION_SIN);
+	<span style="color:#75715e">// PC1 -&gt; SOUT
+</span><span style="color:#75715e"></span>	gpio_mode_setup(GPIOP_SOUT, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN, GPION_SOUT);
+	gpio_set_output_options(GPIOP_SOUT, GPIO_OTYPE_PP, GPIO_OSPEED_100MHZ, GPION_SOUT);
+	gpio_clear(GPIOP_SOUT, GPION_SOUT);
+
+	gpio_set(GPIOP_SD, GPION_SD);
+}</code></pre></div>
+
+<p>To generate the SCK signal at a stable frequency we will configure the timer to trigger periodically and flip the GPIO value in the timer interrupt function.</p>
+
+<p>Configuring the timer at a specific frequency is not straightforward.  The NUCLEO-F411RE has only one clock source at a fixed frequency, and from it all the rest of the clocks are generated using frequency multipliers and dividers.  The timer clock takes as a source clock the APB1 clock, and through a prescaler it gets a tick frequency.  The timer will increment a counter at every tick, and we can configure it to trigger an interrupt when the counter reaches a certain value.  As there are many parameters involved in the configuration, it&rsquo;s easy to get something wrong and end up not getting our intended frequency.  If you have an oscilloscope, I would recommend that you analyze the generated clock signal to verify that the frequency is correct.</p>
+
+<p>For those who don&rsquo;t have an oscilloscope, here&rsquo;s a trick I used to verify the frequency: Configure the timer and interrupt to flip a GPIO at an audible frequency, connect an earphone to the GPIO, and use an audio spectrum analyzer app on your smartphone (<a href="https://f-droid.org/packages/org.billthefarmer.scope/">like this one</a>) to verify the frequency.</p>
+
+<p>The following functions set up the timer to trigger at the desired frequency and allow us to start and stop it.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">tim_setup</span>(uint32_t freq)
+{
+	<span style="color:#75715e">/* Enable TIM2 clock. */</span>
+	rcc_periph_clock_enable(RCC_TIM2);
+
+	<span style="color:#75715e">/* Enable TIM2 interrupt. */</span>
+	nvic_enable_irq(NVIC_TIM2_IRQ);
+
+	<span style="color:#75715e">/* Reset TIM2 peripheral to defaults. */</span>
+	rcc_periph_reset_pulse(RST_TIM2);
+
+	<span style="color:#75715e">/* Timer global mode:
+</span><span style="color:#75715e">	 * - No divider
+</span><span style="color:#75715e">	 * - Alignment edge
+</span><span style="color:#75715e">	 * - Direction up
+</span><span style="color:#75715e">	 * (These are actually default values after reset above, so this call
+</span><span style="color:#75715e">	 * is strictly unnecessary, but demos the api for alternative settings)
+</span><span style="color:#75715e">	 */</span>
+	timer_set_mode(TIM2, TIM_CR1_CKD_CK_INT,
+		TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+
+	<span style="color:#75715e">/* Set the prescaler to run at 1MHz */</span>
+	timer_set_prescaler(TIM2, ((rcc_apb1_frequency <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">/</span> <span style="color:#ae81ff">1000000</span>) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+
+	<span style="color:#75715e">/* Set the initual output compare value for OC1. */</span>
+	timer_set_oc_value(TIM2, TIM_OC1, <span style="color:#ae81ff">0</span>);
+
+	<span style="color:#75715e">/* Disable preload. */</span>
+	timer_disable_preload(TIM2);
+	timer_continuous_mode(TIM2);
+
+	<span style="color:#75715e">/* count full range, as we&#39;ll update compare value continuously */</span>
+	timer_set_period(TIM2, (<span style="color:#ae81ff">1000000</span> <span style="color:#f92672">/</span> freq) <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">tim_start</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#75715e">/* Counter enable. */</span>
+	timer_enable_counter(TIM2);
+
+	<span style="color:#75715e">/* Enable Channel 1 compare interrupt to recalculate compare values */</span>
+	timer_enable_irq(TIM2, TIM_DIER_CC1IE);
+}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">tim_stop</span>(<span style="color:#66d9ef">void</span>)
+{
+	timer_disable_counter(TIM2);
+	timer_disable_irq(TIM2, TIM_DIER_CC1IE);
+}</code></pre></div>
+
+<p>As mentioned before, in the timer interrupt we will be flipping the SCK signal, and similar to the second part, on the falling edge we will prepare the output bit, and on the rising edge we will read the input bit.  I decided to reuse the printer state machine to keep track of the Game Boy Printer reply (that is, the ACK and STATUS byte), and those two bytes will be the only ones I&rsquo;ll send over USART (the rest are just &lsquo;0x00&rsquo;, so there&rsquo;s no need to send them).  The data to be sent will be stored in the &lsquo;recv_buf&rsquo; buffer, and once the buffer is empty we will stop the timer.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">tim2_isr</span>(<span style="color:#66d9ef">void</span>)
+{
+	<span style="color:#66d9ef">if</span> (timer_get_flag(TIM2, TIM_SR_CC1IF)) {
+		<span style="color:#66d9ef">if</span> (high) { <span style="color:#75715e">// FALLING
+</span><span style="color:#75715e"></span>			(gb_sout <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x80</span>) <span style="color:#f92672">?</span> gpio_set(GPIOP_SOUT, GPION_SOUT) <span style="color:#f92672">:</span> gpio_clear(GPIOP_SOUT, GPION_SOUT);
+			<span style="color:#66d9ef">if</span> (gb_bit <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+				<span style="color:#66d9ef">switch</span> (master_mode) {
+				<span style="color:#66d9ef">case</span> PRINTER_MASTER:
+					printer_state_update(gb_sout);
+				}
+			}
+
+			gpio_clear(GPIOP_SCK, GPION_SCK);
+		} <span style="color:#66d9ef">else</span> { <span style="color:#75715e">// RISING
+</span><span style="color:#75715e"></span>
+			gb_sin <span style="color:#f92672">|=</span> gpio_get(GPIOP_SIN, GPION_SIN) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span>;
+			gb_bit<span style="color:#f92672">++</span>;
+
+			<span style="color:#66d9ef">if</span> (gb_bit <span style="color:#f92672">==</span> <span style="color:#ae81ff">8</span>) {
+				<span style="color:#66d9ef">switch</span> (master_mode) {
+				<span style="color:#66d9ef">case</span> PRINTER_MASTER:
+					<span style="color:#66d9ef">switch</span> (printer_state_prev) {
+					<span style="color:#66d9ef">case</span> ACK:
+						usart_send_blocking(USART2, gb_sin);
+						<span style="color:#66d9ef">break</span>;
+					<span style="color:#66d9ef">case</span> STATUS:
+						usart_send_blocking(USART2, gb_sin);
+						<span style="color:#66d9ef">break</span>;
+					<span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+						<span style="color:#66d9ef">break</span>;
+					}
+					<span style="color:#66d9ef">break</span>;
+				}
+
+				<span style="color:#75715e">// Reset state
+</span><span style="color:#75715e"></span>				gb_bit <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+				gb_sin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+
+				<span style="color:#75715e">// Prepare next gb_sout
+</span><span style="color:#75715e"></span>				<span style="color:#66d9ef">if</span> (buf_empty(<span style="color:#f92672">&amp;</span>recv_buf)) {
+					gb_sout <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
+					stop <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+				} <span style="color:#66d9ef">else</span> {
+					gb_sout <span style="color:#f92672">=</span> buf_pop(<span style="color:#f92672">&amp;</span>recv_buf);
+				}
+			} <span style="color:#66d9ef">else</span> {
+				gb_sout <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+				gb_sin <span style="color:#f92672">&lt;&lt;=</span> <span style="color:#ae81ff">1</span>;
+			}
+
+			<span style="color:#66d9ef">if</span> (stop) {
+				tim_stop();
+			}
+
+			gpio_set(GPIOP_SCK, GPION_SCK);
+		}
+		high <span style="color:#f92672">=</span> <span style="color:#f92672">!</span>high;
+
+		<span style="color:#75715e">/* Clear compare interrupt flag. */</span>
+		timer_clear_flag(TIM2, TIM_SR_CC1IF);
+	}
+}</code></pre></div>
+
+<p>The following function acts as the main loop; it will receive data from the PC via USART, store it in the &lsquo;recv_buf&rsquo; buffer and start the timer to send the stored data to the Game Boy Printer.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
+<span style="color:#a6e22e">mode_master_printer</span>(<span style="color:#66d9ef">void</span>)
+{
+	uint8_t len_low, len_high;
+	uint16_t len;
+	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">int</span> i;
+
+	gpio_set(GPIOP_SCK, GPION_SCK);
+	high <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+
+	<span style="color:#75715e">// Block until we get confirmation that the printer has ben turned on
+</span><span style="color:#75715e"></span>	usart_recv_blocking(USART2);
+
+	<span style="color:#66d9ef">while</span> (<span style="color:#ae81ff">1</span>) {
+		len_low <span style="color:#f92672">=</span> usart_recv_blocking(USART2);
+		len_high <span style="color:#f92672">=</span> usart_recv_blocking(USART2);
+		len <span style="color:#f92672">=</span> len_low <span style="color:#f92672">|</span> ((uint16_t) len_high) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>;
+
+		buf_clear(<span style="color:#f92672">&amp;</span>recv_buf);
+		<span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> len; i<span style="color:#f92672">++</span>) {
+			buf_push(<span style="color:#f92672">&amp;</span>recv_buf, usart_recv_blocking(USART2));
+		}
+
+		gb_bit <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+		gb_sin <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+		stop <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+
+		<span style="color:#75715e">// Prepare fist byte
+</span><span style="color:#75715e"></span>		gb_sout <span style="color:#f92672">=</span> buf_pop(<span style="color:#f92672">&amp;</span>recv_buf);
+
+		tim_start();
+	}
+}</code></pre></div>
+
+<p>Now, the only remaining part is the PC side, where we need to take an image, encode it as Game Boy tiles, and prepare the packets using the Game Boy Printer format.  Considering the fact that we can choose the picture margins that the printer will add, we can print long images by printing several times without margin in between.</p>
+
+<p>We start with a helper function that will create and send a packet to the Game Boy Printer, taking care of sending the lengths and the proper checksum:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">send_print_cmd</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(
+    port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>,
+    cmd: <span style="color:#a6e22e">PrintCommand</span>,
+    payload: <span style="color:#66d9ef">&amp;</span>[<span style="color:#66d9ef">u8</span>],
+) -&gt; Result<span style="color:#f92672">&lt;</span>Option<span style="color:#f92672">&lt;</span>PrinterStatus<span style="color:#f92672">&gt;</span>, io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#75715e">// Tell stm32f411 the data length
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>u16_to_low_high(<span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> payload.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>))<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write magic
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>PRINT_MAGIC)<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write cmd
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>[cmd <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>])<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write arg
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0x00</span>])<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write len
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>u16_to_low_high(payload.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>))<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write payload
+</span><span style="color:#75715e"></span>    port.write_all(payload)<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write crc
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>gen_crc(cmd, payload))<span style="color:#f92672">?</span>;
+    <span style="color:#75715e">// write empty array to receive ACK and STATUS
+</span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>])<span style="color:#f92672">?</span>;
+    port.flush()<span style="color:#f92672">?</span>;
+
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+    try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
+    <span style="color:#66d9ef">if</span> ack_status[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> PRINT_ACK {
+        <span style="color:#66d9ef">return</span> Ok(Some(PrinterStatus::from(ack_status[<span style="color:#ae81ff">1</span>])));
+    } <span style="color:#66d9ef">else</span> {
+        <span style="color:#66d9ef">return</span> Ok(None);
+    }
+}</code></pre></div>
+
+<p>Next we will use the following function to print a single image, sending the proper packets to the Game Boy Printer and waiting for it to finish:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(
+    port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>,
+    tile_rows: <span style="color:#66d9ef">&amp;</span>[Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;</span>],
+    margins: (<span style="color:#66d9ef">u8</span>, <span style="color:#66d9ef">u8</span>),
+) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#75715e">// Init printer
+</span><span style="color:#75715e"></span>    println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Initializing printer...&#34;</span>);
+    <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Init, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+    <span style="color:#66d9ef">if</span> status.any_info() {
+        <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:?}&#34;</span>, status)));
+    }
+    <span style="color:#75715e">// Send data
+</span><span style="color:#75715e"></span>    println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Sending data to printer...&#34;</span>);
+    <span style="color:#66d9ef">for</span> tile_row <span style="color:#66d9ef">in</span> tile_rows {
+        check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>tile_row)<span style="color:#f92672">?</span>));
+        check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+    }
+    <span style="color:#75715e">// Send 0 length data to notify the Printer that we&#39;ve sent all data
+</span><span style="color:#75715e"></span>    check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+    <span style="color:#75715e">// Print
+</span><span style="color:#75715e"></span>    println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Printing...&#34;</span>);
+    check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Print,
+                                                  <span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0x01</span>, margins.<span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span> margins.<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0xE4</span>, <span style="color:#ae81ff">0x40</span>])<span style="color:#f92672">?</span>));
+    <span style="color:#75715e">// Query Printing status
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> sleep_time <span style="color:#f92672">=</span> Duration::from_millis(<span style="color:#ae81ff">500</span>);
+    <span style="color:#66d9ef">loop</span> {
+        thread::sleep(sleep_time);
+        <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+        check_status_error<span style="color:#f92672">!</span>(status);
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.any_info() {
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Printing successfull!&#34;</span>);
+            <span style="color:#66d9ef">break</span>;
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.printer_busy {
+            <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:?}&#34;</span>, status)));
+        }
+    }
+    <span style="color:#66d9ef">return</span> Ok(());
+}</code></pre></div>
+
+<p>To encode the image we want to print into tiles, we use the following function, which takes an image and returns a vector of tile rows (the exact same data representation that the Game Boy Printer uses).  This function will also convert the image color space from 8 to 2 bits by using the thresholds 0-63, 64-127, 128-191, 192-255.  I highly recommend converting the image to 2 bit grayscale color space using an external program that supports <a href="https://en.wikipedia.org/wiki/Dithering">dithering</a>, like <a href="https://www.gimp.org/">GIMP</a> for better results.</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">img_to_tile_rows</span>(img: <span style="color:#a6e22e">image</span>::GrayImage) -&gt; Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span>..img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">16</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">640</span>]).collect();
+    <span style="color:#66d9ef">for</span> row <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> {
+        <span style="color:#66d9ef">for</span> col <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..img.width()<span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> {
+            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+                <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> lsb <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>;
+                <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> msb <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>;
+                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+                    <span style="color:#66d9ef">let</span> p <span style="color:#f92672">=</span> img.get_pixel(col <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x, row <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> y).data[<span style="color:#ae81ff">0</span>];
+                    <span style="color:#66d9ef">let</span> (low, high) <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> p <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">64</span> {
+                        (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>)
+                    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> p <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">128</span> {
+                        (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>)
+                    } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> p <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">192</span> {
+                        (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0</span>)
+                    } <span style="color:#66d9ef">else</span> {
+                        (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>)
+                    };
+                    lsb <span style="color:#f92672">=</span> lsb <span style="color:#f92672">|</span> (low  <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span><span style="color:#f92672">-</span>x));
+                    msb <span style="color:#f92672">=</span> msb <span style="color:#f92672">|</span> (high <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span><span style="color:#f92672">-</span>x));
+                }
+                tile_rows[(row<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>][((row <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">320</span> <span style="color:#f92672">+</span> col<span style="color:#f92672">*</span><span style="color:#ae81ff">16</span> <span style="color:#f92672">+</span> y<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span>    ) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#f92672">=</span> lsb;
+                tile_rows[(row<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>][((row <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span>) <span style="color:#f92672">*</span> <span style="color:#ae81ff">320</span> <span style="color:#f92672">+</span> col<span style="color:#f92672">*</span><span style="color:#ae81ff">16</span> <span style="color:#f92672">+</span> y<span style="color:#f92672">*</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>] <span style="color:#f92672">=</span> msb;
+            }
+        }
+    }
+    <span style="color:#66d9ef">return</span> tile_rows;
+}</code></pre></div>
+
+<p>Finally, the main function starts by taking an input image and transforming it into tile rows, which are then grouped into groups of 9 (which represent the biggest image that the Game Boy Printer can print at once) and sends them to the Game Boy Printer to be printed consecutively, leaving no margin in between:</p>
+
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_print</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>, filename: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span> image::open(<span style="color:#f92672">&amp;</span>Path::new(filename)) {
+        Ok(img) <span style="color:#f92672">=&gt;</span> img,
+        Err(err) <span style="color:#f92672">=&gt;</span> {
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Error opening image at file {:?}: {:?}&#34;</span>, filename, err);
+            <span style="color:#66d9ef">return</span> Ok(());
+        }
+    };
+    <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> img.grayscale();
+
+    <span style="color:#75715e">/* ... */</span>
+
+    <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> img.to_luma();
+    <span style="color:#66d9ef">let</span> tile_rows <span style="color:#f92672">=</span> img_to_tile_rows(img);
+
+    <span style="color:#75715e">// Send confirmation to notify that the printer has ben turned on
+</span><span style="color:#75715e"></span>    try<span style="color:#f92672">!</span>(port.write_all(<span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0x00</span>]));
+    try<span style="color:#f92672">!</span>(port.flush());
+
+    <span style="color:#66d9ef">let</span> k <span style="color:#f92672">=</span> ((tile_rows.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">f64</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">9.0</span>).ceil() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>;
+    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..k {
+        <span style="color:#66d9ef">let</span> margin <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+            (<span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>)
+        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> i <span style="color:#f92672">==</span> (k<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
+            (<span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x03</span>)
+        } <span style="color:#66d9ef">else</span> {
+            (<span style="color:#ae81ff">0x00</span>, <span style="color:#ae81ff">0x00</span>)
+        };
+        <span style="color:#66d9ef">let</span> (a, b) <span style="color:#f92672">=</span> (i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span>, cmp::min(i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">9</span>, tile_rows.len()));
+        <span style="color:#66d9ef">if</span> k <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Printing part [{:?}/{:?}]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
+        }
+        print(port, <span style="color:#f92672">&amp;</span>tile_rows[a..b], margin)<span style="color:#f92672">?</span>;
+        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> (k<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
+            thread::sleep(Duration::from_millis(<span style="color:#ae81ff">400</span>));;
+        }
+    }
+
+    <span style="color:#66d9ef">return</span> Ok(());
+}</code></pre></div>
+
+<h1 id="result">Result</h1>
+
+<p>Finally, we can print using the Game Boy Printer.  The Game Boy printer uses thermal paper to print: there&rsquo;s no ink in the printer, the header just heats the paper, which turns dark on the heated spot.  Since thermal paper is used in shops and supermarkets to print receipts, I took a receipt, cut it to have 38mm width (the Game Boy Printer paper size), and printed on top of that.</p>
+
+<p>Here are the results!</p>
+
+
+<figure >
+    <a href="../../media/gameboy_serial/printing.jpg">
+        <img src="../../media/gameboy_serial/printing_1000.jpg" alt="Printing from the PC via the NUCLEO-F411RE" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Printing from the PC via the NUCLEO-F411RE
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+
+<figure >
+    <a href="../../media/gameboy_serial/prints.jpg">
+        <img src="../../media/gameboy_serial/prints_1000.jpg" alt="A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality." />
+    </a>
+    
+    <figcaption>
+        <p>
+        A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality.
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+<p>To see the full source code of this project, check out the following repositories:</p>
+
+<ul>
+<li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
+<li><a href="https://github.com/Dhole/gb-link-host">gb-link-host: the code that runs on the computer</a></li>
+</ul>
+
+<p>The source code contains the three parts of the project joined into a single code base.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        Older article<br />
+                        <a href="https://dhole.github.io/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2018. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
