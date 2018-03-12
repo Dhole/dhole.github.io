@@ -1,21 +1,21 @@
 +++
 Categories = ["stm32f4", "gameboy", "rust"]
 date = "2018-02-23T16:33:57+01:00"
-title = "Virtual GameBoy Printer with an STM32F4"
+title = "Virtual Game Boy Printer with an STM32F4"
 
 +++
 
-In this second part of the project about interfacing the GameBoy serial communication with an embedded development board I will explain how I built a Virtual GameBoy Printer.  The embedded board will be simulating a real GameBoy Printer, replying to the GameBoy following the protocol used by the GameBoy Printer so that the GameBoy sends the entire data meant to be print.  This data will then be forwarded to my computer which will construct a png image out of it.
+In this second part of the project about interfacing the Game Boy serial communication with an embedded development board I will explain how I built a Virtual Game Boy Printer.  The embedded board will be simulating a real Game Boy Printer, replying to the Game Boy following the protocol used by the Game Boy Printer so that the Game Boy sends the entire data meant to be print.  This data will then be forwarded to my computer which will construct a PNG image out of it.
 
-# GameBoy Printer protocol
+# Game Boy Printer protocol
 
-The first step for this part of the project is understanding how the GameBoy Printer protocol works so that we can interpret the commands the GameBoy sends to it.  In the first part of the project I posted a [capture of the data transferred to the GameBoy Printer by the GameBoy Camera to print a photo](../../media/gameboy_serial/printer.txt).  This will be useful to verify that we understand how each command should look like.
+The first step for this part of the project is understanding how the Game Boy Printer protocol works so that we can interpret the commands the Game Boy sends to it.  In the first part of the project I posted a [capture of the data transferred to the Game Boy Printer by the Game Boy Camera to print a photo](../../media/gameboy_serial/printer.txt).  This will be useful to verify that we understand how each command should look like.
 
-Thankfully, we won't need to be reverse engineering the protocol (a task that should be doable with the sniffer we built in the first part) because it is well documented online.  My main sources of information were [Furrtek's website](http://furrtek.free.fr/?a=gbprinter&i=2) and the [GameBoy Printer entry at Wikipedia](https://en.wikipedia.org/wiki/Game_Boy_Printer).
+Thankfully, we won't need to be reverse engineering the protocol (a task that should be doable with the sniffer we built in the first part) because it is well documented online.  My main sources of information were [Furrtek's website](http://furrtek.free.fr/?a=gbprinter&i=2) and the [Game Boy Printer entry at Wikipedia](https://en.wikipedia.org/wiki/Game_Boy_Printer).
 
 I will summarize the protocol here, but bear in mind that I'm not adding new information, I'm just merging the information from Furrtek's website and the Wikipedia entry.
 
-In the GameBoy Printer protocol, the GameBoy will act as master and the Printer as slave.  All the communications start with a command sent from the GameBoy and end with a reply from the Printer (which consists of an acknowledgement and a status code).
+In the Game Boy Printer protocol, the Game Boy will act as master and the Printer as slave.  All the communications start with a command sent from the Game Boy and end with a reply from the Printer (which consists of an acknowledgment and a status code).
 
 ## Packet Format
 
@@ -24,7 +24,7 @@ The command format consists of a header, a variable length payload (`DATA` of le
 ```
 Byte    |  0   |  1   |  2  |  3   | 4 | 5 |  6   | 6+LEN | 6+LEN+1 | 6+LEN+2 | 6+LEN+3
 --------|------|------|-----|------|---|---|------|-------|---------|---------|---------
-GameBoy | MAGIC_BYTES | CMD | ARG0 |  LEN  | DATA |   CHECKSUM      |         |
+Game Boy | MAGIC_BYTES | CMD | ARG0 |  LEN  | DATA |   CHECKSUM      |         |
 Printer |      |      |     |      |   |   |      |       |         |   ACK   | STATUS
 
 MAGIC_BYTES := 0x88 0x33
@@ -37,7 +37,7 @@ The `CHECKSUM` is the 16 bit integer value that is obtained by summing all the p
 
 The following picture shows the beginning of a packet captured with an oscilloscope.
 
-{{% img1000 src="../../media/gameboy_serial/furrtek_printer_protocol.png" caption="GameBoy Printer serial communication capture by [Furrtek](http://furrtek.free.fr/?a=gbprinter&i=2)" %}}
+{{% img1000 src="../../media/gameboy_serial/furrtek_printer_protocol.png" caption="Game Boy Printer serial communication capture by [Furrtek](http://furrtek.free.fr/?a=gbprinter&i=2)" %}}
 
 ## Commands
 
@@ -47,7 +47,7 @@ This command is sent before sending data to be printed, it prepares the Printer 
 
 ### **Print** (`CMD = 0x02, LEN = 4, DATA = PRINT_OPTS`)
 
-This command is sent after some data has ben transmitted and starts the printing process of the previously transmited data.  `PRINT_OPTS` specifies some printing options:
+This command is sent after some data has been transmitted and starts the printing process of the previously transmitted data.  `PRINT_OPTS` specifies some printing options:
 
 ```
 Byte          |  0   |    1    |    2    |    3
@@ -56,7 +56,7 @@ typical value | 0x01 |  0x13   |  0xE4   |   0x40
 meaning       |   ?  | MARGINS | PALETTE | EXPOSURE
 
 MARGINS: High nibble is margin before printing, low nibble is margin after printing.
-PALETTE: Color palette following the GameBoy palette representation:
+PALETTE: Color palette following the Game Boy palette representation:
     
     Bit   |  0,1  |     2,3    |    4,5    |  6,7 
     ------|-------|------------|-----------|-------
@@ -67,7 +67,7 @@ EXPOSURE: Color exposure as a 7 bit value
 
 ### **Send data** (`CMD = 0x04, LEN = 640, DATA = GB_TILES`)
 
-This command is used to send the data to be printed in batches of two rows of 20 GameBoy tiles, which require 640 bytes.  Each tile is an 8x8 pixels image using 4 grayscale tones, and require 8x8x2 = 32 bits.  Since the GameBoy has a 160x144 pixels display, 20 tiles will create a row of (20x8)x8 = 160x8 pixels (320 bytes).
+This command is used to send the data to be printed in batches of two rows of 20 Game Boy tiles, which require 640 bytes.  Each tile is an 8x8 pixels image using 4 grayscale tones, and require 8x8x2 = 32 bits.  Since the Game Boy has a 160x144 pixels display, 20 tiles will create a row of (20x8)x8 = 160x8 pixels (320 bytes).
 
 The tile pixels are stored by rows, where each row is stored as 2 bytes.  For every row, the first byte represents the less significant bits of the 2-bit tone pixels and the second byte represents the most significant bits.  The following example shows how 2 bytes are decoded into a 2-bit tone pixel row:
 
@@ -76,7 +76,7 @@ The tile pixels are stored by rows, where each row is stored as 2 bytes.  For ev
 2nd byte: 00001111 --'
 ```
 
-In order to print an image corresponding to the GameBoy screen, 18 tile rows are required, which means that this command will be called 9 times.  This is the way the GameBoy Camera prints.  If you'd like to print images higher than 144 pixels, you can combine several images and print them independently leaving a 0-length margin in between.
+In order to print an image corresponding to the Game Boy screen, 18 tile rows are required, which means that this command will be called 9 times.  This is the way the Game Boy Camera prints.  If you'd like to print images higher than 144 pixels, you can combine several images and print them independently leaving a 0-length margin in between.
 
 ### **Query status** (`CMD = 0x0F, DATA = {}`)
 
@@ -109,16 +109,16 @@ A 160x144 pixels image is commonly printed issuing the following commands:
     - Query status for any error
 - Send data with empty payload
 - Print
-- Loop until the GameBoy printer is no longer busy:
+- Loop until the Game Boy printer is no longer busy:
     - Query status
 
-If a Send data with empty payload is not sent after the tile data has been sent and before the Print command, the GameBoy Printer will not print and instead return an error!
+If a Send data with empty payload is not sent after the tile data has been sent and before the Print command, the Game Boy Printer will not print and instead return an error!
 
 # Implementation
 
 ## NUCLEO-F411RE side
 
-The connection of the Game Link Cable to the NUCLEO will be the same as in the first part of the project.  The GPIO setup will be the same except for the `SIN` pin, which will be configured as output (so that we can reply to the GameBoy simulating a GameBoy Printer).  Unlike in the first part, we setup the interrupt to trigger both then the `SCK` signal goes low (to output the sending bit) and when the `SCK` signal goes high (to read the receiving bit).
+The connection of the Game Link Cable to the NUCLEO will be the same as in the first part of the project.  The GPIO setup will be the same except for the `SIN` pin, which will be configured as output (so that we can reply to the Game Boy simulating a Game Boy Printer).  Unlike in the first part, we setup the interrupt to trigger both then the `SCK` signal goes low (to output the sending bit) and when the `SCK` signal goes high (to read the receiving bit).
 
 {{< highlight C >}}
 static void
@@ -142,7 +142,7 @@ gblink_slave_gpio_setup(void)
 }
 {{< /highlight >}}
 
-Now that we have a way to receive and send serial bytes, we need to simulate a GameBoy Printer.  In order to do so I have implemented a state machine that simulates the GameBoy Printer on the NUCLEO, but it's a simplified one: it always replies with the same status where all bits are cleared.  The GameBoy will be fine with these replies, and will think that all the data is being received correctly and printed instantly.  While doing this, the NUCLEO will be sending all the bytes received from the GameBoy over USART to my computer.
+Now that we have a way to receive and send serial bytes, we need to simulate a Game Boy Printer.  In order to do so I have implemented a state machine that simulates the Game Boy Printer on the NUCLEO, but it's a simplified one: it always replies with the same status where all bits are cleared.  The Game Boy will be fine with these replies, and will think that all the data is being received correctly and printed instantly.  While doing this, the NUCLEO will be sending all the bytes received from the Game Boy over USART to my computer.
 
 The interrupt handler now looks like this:
 
@@ -192,7 +192,7 @@ exti0_isr(void)
 }
 {{< /highlight >}}
 
-The following snippet shows how the state machine is implemented and how the transitions work.  Implementing the state machine is required because the commands sent by the GameBoy have a variable length payload, and the GameBoy Printer is required to reply with an ACK at the precise end of the command packet.
+The following snippet shows how the state machine is implemented and how the transitions work.  Implementing the state machine is required because the commands sent by the Game Boy have a variable length payload, and the Game Boy Printer is required to reply with an ACK at the precise end of the command packet.
 
 {{< highlight C >}}
 const char printer_magic[] = {0x88, 0x33};
@@ -268,11 +268,11 @@ printer_state_reset(void)
 
 ## Computer side
 
-On the computer side, we will be receiving all the data the GameBoy is sending to the virtual printer.  We will need to parse the packets, extract the tile data and reconstruct the images so that we can visualize and store them.  As in the previous part, I'll be using Rust, reusing the same code to interface with the serial port as in part one.  To store the image as a PNG I will use the [Rust image crate from the Piston project](https://github.com/PistonDevelopers/image).
+On the computer side, we will be receiving all the data the Game Boy is sending to the virtual printer.  We will need to parse the packets, extract the tile data and reconstruct the images so that we can visualize and store them.  As in the previous part, I'll be using Rust, reusing the same code to interface with the serial port as in part one.  To store the image as a PNG I will use the [Rust image crate from the Piston project](https://github.com/PistonDevelopers/image).
 
-The code will run in a loop waiting for the magic bytes and parse the following bytes to make a packet.  If the packet is a Send data command, the tile rows will be appended to a vector called `tile_rows`.  If the packet is an Init command, the `tile_rows` vector will be cleared.  Finally, if the packet is a Print command, the `tile_rows` vector will be decoded into a matrix that will be stored as a PNG image.  This will allow us to send (or virtually print) multiple pictures from the GameBoy to the computer on the same run of the program.
+The code will run in a loop waiting for the magic bytes and parse the following bytes to make a packet.  If the packet is a Send data command, the tile rows will be appended to a vector called `tile_rows`.  If the packet is an Init command, the `tile_rows` vector will be cleared.  Finally, if the packet is a Print command, the `tile_rows` vector will be decoded into a matrix that will be stored as a PNG image.  This will allow us to send (or virtually print) multiple pictures from the Game Boy to the computer on the same run of the program.
 
-The following code shows this behaviour.  I've ommited some constants and enum declarations that encode the different protocol values:
+The following code shows this behavior.  I've omitted some constants and enum declarations that encode the different protocol values:
 
 {{< highlight rust >}}
 fn mode_printer<T: SerialPort>(mut port: &mut BufStream<T>) -> Result<(), io::Error> {
@@ -377,7 +377,7 @@ fn tile_row_to_pixel_rows(tile_row: &[u8]) -> Vec<Vec<u8>> {
 
 And finally, the result:
 
-{{% img1000 src="../../media/gameboy_serial/gb_printer_2017-09-02T165217.png" caption="Picture taken with a GameBoy Camera and transferred to my computer using the virtual printer" %}}
+{{% img1000 src="../../media/gameboy_serial/gb_printer_2017-09-02T165217.png" caption="Picture taken with a Game Boy Camera and transferred to my computer using the virtual printer" %}}
 
 To see the full source code of this project, check out the following repositories:
 
@@ -386,4 +386,4 @@ To see the full source code of this project, check out the following repositorie
 
 The source code contains the three parts of the project joined into a single code base.
 
-And this concludes the second part of the project.  Stay tunned for the third part, where I'll do the reverse of this part: print from my computer on a real GameBoy Printer.
+And this concludes the second part of the project.  Stay tunned for the third part, where I'll do the reverse of this part: print from my computer on a real Game Boy Printer.
