@@ -1,7 +1,7 @@
 +++
 Categories = ["stm32f4", "gameboy", "rust"]
 date = "2018-03-12T00:33:57+01:00"
-title = "Writing Game Boy Chinese cartridges with an STM32F4"
+title = "Programming Game Boy Chinese cartridges with an STM32F4"
 +++
 
 # Introduction
