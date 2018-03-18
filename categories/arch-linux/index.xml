@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Arch Linux on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/arch-linux/</link>
+    <link>https://lizard.kyasuka.com/blog/categories/arch-linux/</link>
     <description>Recent content in Arch Linux on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 01 May 2015 23:58:40 +0200</lastBuildDate>
     
-	<atom:link href="https://dhole.github.io/categories/arch-linux/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://lizard.kyasuka.com/blog/categories/arch-linux/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Full disk encryption on Samsung Chromebook with Arch Linux</title>
-      <link>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</link>
+      <link>https://lizard.kyasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</link>
       <pubDate>Fri, 01 May 2015 23:58:40 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</guid>
+      <guid>https://lizard.kyasuka.com/blog/post/full_disk_encryption_samsung_chromebook/</guid>
       <description>In this post I will explain the procedure I followed to have an Arch Linux install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption using kernel 3.8.
 Kernel compilation and preparing SD card Install dependencies Install the necessary depdendencies (In my case I was running ubuntu). Mainly you need the tools for crosscompiling the kernel, configure u-boot and partition the SD card with a GPT partition table.</description>
     </item>
