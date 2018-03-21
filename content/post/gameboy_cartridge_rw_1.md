@@ -54,7 +54,7 @@ So I found a candidate chip with available datasheet, the MX29LV320AT/B, which i
 
 And so we search the datasheet for the documentation on how to program the chip:
 
-{{% img1000 src="../../media/gameboy_rw/flash_datasheet.png" caption="Screen capture of MX29LV320AT/B flash memory showing available commands." %}}
+{{% img1000 src="../../media/gameboy_rw/flash_datasheet.png" caption="Screen capture of MX29LV320AT/B flash memory datasheet showing available commands." %}}
 
 We can see that all the commands start with the same pattern, by performing writes using constant addresses and data values.  By doing a web search using the terms "0xAAA 0xAA flash" we can see several results that seem to indicate that these commands could be common for flash chips.  For example, take a look at [this source code](https://github.com/KnightOS/kernel/blob/0.6.11/src/00/flash.asm#L43).
 
