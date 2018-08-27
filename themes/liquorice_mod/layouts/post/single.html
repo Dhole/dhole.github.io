@@ -9,7 +9,7 @@
                         <h1 class="li-article-title">{{ .Title }}</h1>  
 			
 			<time class="li-article-date">{{ .Date.Format "Monday, January 2, 2006" }}</time>
-			{{ template "theme/partials/categories.html" . }}
+			{{ partial "categories.html" . }}
                     </header>
                     <section class="li-article-body">
                         {{ .Content }}
@@ -21,7 +21,7 @@
         {{ partial "author.html" .}}
         <div class="container">
             &nbsp;
-            {{ template "theme/partials/_disqus.html" . }}
+            {{ partial "_disqus.html" . }}
         </div>
 
         <div class="row li-pagination">
