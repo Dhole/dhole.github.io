@@ -8,7 +8,7 @@
         <title>Raspberry Pi: git server (cgit with lighttpd) &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/git">git</a> </span>
+<span><a href="https://dhole.github.io/categories/git">git</a> </span>
 
 </div>
 
@@ -353,22 +353,22 @@ clone them all into my server.  This will make the transition easier :)</p>
 <span style="color:#f92672">import</span> os<span style="color:#f92672">,</span> sys<span style="color:#f92672">,</span> re<span style="color:#f92672">,</span> subprocess
 
 user <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>]
-content <span style="color:#f92672">=</span> urlopen(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;https://api.github.com/users/</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">/repos&#39;</span> <span style="color:#f92672">%</span> user)<span style="color:#f92672">.</span>read()
-content <span style="color:#f92672">=</span> content<span style="color:#f92672">.</span>decode(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;UTF-8&#39;</span>)
+content <span style="color:#f92672">=</span> urlopen(<span style="color:#e6db74">&#39;https://api.github.com/users/</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">/repos&#39;</span> <span style="color:#f92672">%</span> user)<span style="color:#f92672">.</span>read()
+content <span style="color:#f92672">=</span> content<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;UTF-8&#39;</span>)
 
 
-clone_urls <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;(?&lt;=&#34;clone_url&#34;:)&#34;[^&#34;]*&#34;,&#39;</span>, content)
-descriptions <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;(?&lt;=&#34;description&#34;:)(null|&#34;[^&#34;]*&#34;),&#39;</span>, content)
+clone_urls <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;clone_url&#34;:)&#34;[^&#34;]*&#34;,&#39;</span>, content)
+descriptions <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;description&#34;:)(null|&#34;[^&#34;]*&#34;),&#39;</span>, content)
 
-descriptions <span style="color:#f92672">=</span> [d<span style="color:#f92672">.</span>replace(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> descriptions]
-os<span style="color:#f92672">.</span>chdir(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;pub&#39;</span>)
+descriptions <span style="color:#f92672">=</span> [d<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> descriptions]
+os<span style="color:#f92672">.</span>chdir(<span style="color:#e6db74">&#39;pub&#39;</span>)
 <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(clone_urls)):
     clone_url <span style="color:#f92672">=</span> clone_urls[i]
     clone_url <span style="color:#f92672">=</span> clone_url[<span style="color:#ae81ff">1</span>:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
     print(clone_url)
-    subprocess<span style="color:#f92672">.</span>run([<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;git&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;clone&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;--bare&#39;</span>, clone_url])
-    <span style="color:#66d9ef">with</span> open(clone_url<span style="color:#f92672">.</span>split(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;/description&#39;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> desc_file:
-        desc_file<span style="color:#f92672">.</span>write(descriptions[i] <span style="color:#f92672">+</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)</code></pre></div>
+    subprocess<span style="color:#f92672">.</span>run([<span style="color:#e6db74">&#39;git&#39;</span>, <span style="color:#e6db74">&#39;clone&#39;</span>, <span style="color:#e6db74">&#39;--bare&#39;</span>, clone_url])
+    <span style="color:#66d9ef">with</span> open(clone_url<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/description&#39;</span>, <span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> desc_file:
+        desc_file<span style="color:#f92672">.</span>write(descriptions[i] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)</code></pre></div>
 
 <pre><code>EOF
 </code></pre>
@@ -413,7 +413,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
@@ -421,7 +421,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
                     
                 </div>
             </div>
