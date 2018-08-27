@@ -8,7 +8,7 @@
         <title>Virtual Game Boy Printer with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -402,7 +402,8 @@ uint16_t printer_data_len;
         <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
         try<span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
     }
-}</code></pre></div>
+}
+</code></pre></div>
 
 <p>The function <code>printer_save_image</code> will decode the tile rows into a matrix so that the image can be saved as a grayscale PNG.  The helper function <code>tile_row_to_pixel_rows</code> decodes a single tile row into &lsquo;pixel rows&rsquo;, that is 8 rows of 160 grayscale pixels each.</p>
 
@@ -455,7 +456,8 @@ uint16_t printer_data_len;
         }
     }
     <span style="color:#66d9ef">return</span> pixel_rows;
-}</code></pre></div>
+}
+</code></pre></div>
 
 <h1 id="result">Result</h1>
 
@@ -528,7 +530,7 @@ uint16_t printer_data_len;
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
                     
                 </div>
             </div>
@@ -536,7 +538,7 @@ uint16_t printer_data_len;
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_1/"> Sniffing Game Boy serial traffic with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_1/"> Sniffing Game Boy serial traffic with an STM32F4</a>
                     
                 </div>
             </div>

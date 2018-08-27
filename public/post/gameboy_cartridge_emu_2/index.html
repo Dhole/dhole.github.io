@@ -8,7 +8,7 @@
         <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -210,7 +210,7 @@ all this.</p>
 		<span style="color:#75715e">/* Do stuff on trigger */</span>
 
 		<span style="color:#75715e">/* Wait 10 NOPs, until the ADDR is ready in the bus */</span>
-		REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+		REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74">&#34;NOP&#34;</span>););
 		<span style="color:#75715e">/* Read ADDR from the bus */</span>
 		addr <span style="color:#f92672">=</span> ADDR_IN;
 
@@ -218,7 +218,7 @@ all this.</p>
 			<span style="color:#75715e">/* Write operation */</span>
 
 			<span style="color:#75715e">/* Wait 30 NOPs, until the DATA is ready in the bus */</span>
-			REP(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+			REP(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">0</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74">&#34;NOP&#34;</span>););
 			<span style="color:#75715e">/* Read DATA from the bus */</span>
 			data <span style="color:#f92672">=</span> DATA_IN <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
 			<span style="color:#75715e">/* Write data to cartridge at addr */</span>
@@ -232,7 +232,7 @@ all this.</p>
 			DATA_OUT <span style="color:#f92672">=</span> ((uint16_t)mbc1_read(addr)) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>;
 			<span style="color:#75715e">/* Wait 14 NOPs, until the gameboy has read the DATA
 </span><span style="color:#75715e">			 * in the bus */</span>
-			REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;NOP&#34;</span>););
+			REP(<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>,<span style="color:#66d9ef">asm</span>(<span style="color:#e6db74">&#34;NOP&#34;</span>););
 			<span style="color:#75715e">/* Set the GPIOE back to input mode */</span>
 			SET_DATA_MODE_IN;
 		}
@@ -481,7 +481,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
+                        <a href="https://dhole.github.io/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
                     
                 </div>
             </div>
@@ -489,7 +489,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
                     
                 </div>
             </div>

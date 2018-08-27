@@ -8,7 +8,7 @@
         <title>Programming Game Boy Chinese cartridges with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.kyasuka.com/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.kyasuka.com/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.kyasuka.com/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -240,12 +240,12 @@ end:</code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#f92672">import</span> serial<span style="color:#f92672">,</span> sys
 
-<span style="color:#66d9ef">with</span> serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;/dev/ttyACM0&#39;</span>, <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">as</span> ser:
+<span style="color:#66d9ef">with</span> serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74">&#39;/dev/ttyACM0&#39;</span>, <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">as</span> ser:
 
     data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
     a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
     v0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-    print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;                         R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a3, v0))
+    print(<span style="color:#e6db74">&#39;                         R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a3, v0))
 
     <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
         data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
@@ -264,9 +264,9 @@ end:</code></pre></div>
         a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
         v <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
 
-        print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;W: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a0, magic0, a1, magic1, a2, cmd, a3, v))
+        print(<span style="color:#e6db74">&#39;W: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a0, magic0, a1, magic1, a2, cmd, a3, v))
         <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> v0:
-            print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#39;MAGIC0: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, MAGIC1: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(magic0, magic1))
+            print(<span style="color:#e6db74">&#39;MAGIC0: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, MAGIC1: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(magic0, magic1))
             sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">0</span>)</code></pre></div>
 
 <h2 id="the-verdict">The verdict</h2>
@@ -366,7 +366,8 @@ MAGIC0: A9, MAGIC1: 56
             <div class="eight columns">
                 <div class="li-pagination-previous">
                     
-                        &nbsp;
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
                     
                 </div>
             </div>
@@ -374,7 +375,7 @@ MAGIC0: A9, MAGIC1: 56
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.kyasuka.com/blog/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
                     
                 </div>
             </div>
