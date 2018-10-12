@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/tags/</link>
+    <link>https://lizard.niobe.cc/blog/tags/</link>
     <description>Recent content in Tags on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 08 Nov 2014 17:04:11 +0100</lastBuildDate>
     
-	<atom:link href="https://dhole.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://lizard.niobe.cc/blog/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Hugo</title>
-      <link>https://dhole.github.io/tags/hugo/</link>
+      <link>https://lizard.niobe.cc/blog/tags/hugo/</link>
       <pubDate>Sat, 08 Nov 2014 17:04:11 +0100</pubDate>
       
-      <guid>https://dhole.github.io/tags/hugo/</guid>
+      <guid>https://lizard.niobe.cc/blog/tags/hugo/</guid>
       <description></description>
     </item>
     
