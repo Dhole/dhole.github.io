@@ -24,5 +24,5 @@ git subtree push --prefix=public git@github.com:Dhole/dhole.github.io.git master
 hugo -t liquorice_mod -b https://lizard.niobe.cc/blog/
 git add -A
 git commit -m "$msg"
-git push lizard hugo
-git subtree push --prefix=public lizard master
+git push lizard-local hugo
+git subtree push --prefix=public lizard-local master
