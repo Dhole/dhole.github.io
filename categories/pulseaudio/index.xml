@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Pulseaudio on Dhole&#39;s blog</title>
-    <link>https://lizard.niobe.cc/blog/categories/pulseaudio/</link>
+    <link>https://dhole.github.io/categories/pulseaudio/</link>
     <description>Recent content in Pulseaudio on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 27 Aug 2018 20:54:53 +0200</lastBuildDate>
     
-	<atom:link href="https://lizard.niobe.cc/blog/categories/pulseaudio/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://dhole.github.io/categories/pulseaudio/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Pulseaudio for multi-user Linux</title>
-      <link>https://lizard.niobe.cc/blog/post/pulseaudio_multiple_users/</link>
+      <link>https://dhole.github.io/post/pulseaudio_multiple_users/</link>
       <pubDate>Mon, 27 Aug 2018 20:54:53 +0200</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/pulseaudio_multiple_users/</guid>
+      <guid>https://dhole.github.io/post/pulseaudio_multiple_users/</guid>
       <description>My setup For some time I&amp;rsquo;ve been using several unix users for my daily work in my desktop computer. After trying out Qubes OS for some time (an OS that achieves security by compartmentalization: different kinds of activites are performed in a different VM, isolating the data of each activity from each other), I came back to GNU/Linux and realized that there&amp;rsquo;s already a security separation in Unix (albeit not as secure as virtualization as in Qubes): users.</description>
     </item>
     
