@@ -1,5 +1,5 @@
 +++
-Categories = ["debian"]
+Categories = ["debian", "linux"]
 date = "2016-06-04T00:13:28+02:00"
 title = "No more unencrypted emails to gpg contacts"
 

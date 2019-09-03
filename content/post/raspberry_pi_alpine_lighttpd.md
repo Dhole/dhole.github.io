@@ -1,5 +1,5 @@
 +++
-Categories = ["alpine", "raspberry pi", "lighttpd"]
+Categories = ["alpine", "raspberry pi", "lighttpd", "linux"]
 date = "2016-10-21T15:14:27-07:00"
 title = "Raspberry Pi: setting up alpine, lighttpd and letsencrypt"
 

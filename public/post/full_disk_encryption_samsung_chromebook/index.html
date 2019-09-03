@@ -8,7 +8,7 @@
         <title>Full disk encryption on Samsung Chromebook with Arch Linux &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,7 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/arch-linux">arch linux</a> </span>
+<span><a href="https://dhole.github.io/categories/arch-linux">arch linux</a> </span>
+
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -124,8 +126,8 @@ my case I enabled most of the cipher options to be able to use AES-XTS in LUKS.
 Be sure to disable &ldquo;Treat compiler warnings as errors&rdquo; in menuconfig</p>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- ARCH<span style="color:#f92672">=</span>arm make menuconfig
-<span style="color:#75715e"># or
-</span><span style="color:#75715e"></span>cp ../files/.config .</code></pre></div>
+<span style="color:#75715e"># or</span>
+cp ../files/.config .</code></pre></div>
 
 <p>Compile the kernel</p>
 
@@ -139,9 +141,9 @@ CROSS_COMPILE<span style="color:#f92672">=</span>arm-linux-gnueabihf- ARCH<span 
 
 <p>Take the kernel.its from my files and make a u-boot image</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># wget http://linux-exynos.org/dist/chromebook/snow/kernel.its \
-</span><span style="color:#75715e">#    -O arch/arm/boot/kernel.its
-</span><span style="color:#75715e"></span>cp ../files/kernel.its arch/arm/boot/.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># wget http://linux-exynos.org/dist/chromebook/snow/kernel.its \</span>
+<span style="color:#75715e">#    -O arch/arm/boot/kernel.its</span>
+cp ../files/kernel.its arch/arm/boot/.
 mkimage -f arch/arm/boot/kernel.its $TMP_PATH/vmlinux.uimg
 cd $TMP_PATH</code></pre></div>
 
@@ -244,8 +246,8 @@ umount /boot</code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mount <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>DISK<span style="color:#e6db74">}</span><span style="color:#e6db74">12&#34;</span> mnt
 mkdir -p mnt/u-boot
-<span style="color:#75715e">#wget http://archlinuxarm.org/os/exynos/boot.scr.uimg
-</span><span style="color:#75715e"></span>mkimage -A arm -T script -C none -n <span style="color:#e6db74">&#39;Chromebook Boot Script&#39;</span> <span style="color:#ae81ff">\
+<span style="color:#75715e">#wget http://archlinuxarm.org/os/exynos/boot.scr.uimg</span>
+mkimage -A arm -T script -C none -n <span style="color:#e6db74">&#39;Chromebook Boot Script&#39;</span> <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>    -d boot_custom2.scr boot.scr.uimg
 cp boot.scr.uimg mnt/u-boot</code></pre></div>
 
@@ -297,8 +299,8 @@ hostnamectl set-hostname $MYHOSTNAME</code></pre></div>
 pacman -S sudo
 useradd -m -G users -s /bin/bash $USERNAME
 passwd $USERNAME
-visudo <span style="color:#75715e"># uncomment the wheel group
-</span><span style="color:#75715e"></span>usermod -a -G wheel $USERNAME</code></pre></div>
+visudo <span style="color:#75715e"># uncomment the wheel group</span>
+usermod -a -G wheel $USERNAME</code></pre></div>
 
 <h1 id="post-install">Post install</h1>
 
@@ -473,7 +475,7 @@ can be found at [5].</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
+                        <a href="https://dhole.github.io/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
                     
                 </div>
             </div>
@@ -481,7 +483,7 @@ can be found at [5].</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
+                        <a href="https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/"> Reproducible builds on Debian for GSoC 2015</a>
                     
                 </div>
             </div>
@@ -493,7 +495,7 @@ can be found at [5].</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

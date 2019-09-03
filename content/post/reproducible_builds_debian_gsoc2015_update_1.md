@@ -1,5 +1,5 @@
 +++
-Categories = ["debian", "reproducible builds"]
+Categories = ["debian", "reproducible builds", "linux"]
 date = "2015-08-06T20:12:15+02:00"
 title = "Reproducible builds on Debian for GSoC 2015, 1st update"
 

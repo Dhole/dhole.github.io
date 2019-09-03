@@ -8,7 +8,7 @@
         <title>Raspberry Pi: git server (cgit with lighttpd) &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,13 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/git">git</a> </span>
+<span><a href="https://dhole.github.io/categories/git">git</a> </span>
+
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -127,7 +129,7 @@ vim /usr/lib/cgit/filters/syntax-highlighting3.sh</code></pre></div>
  # This is for version 3
 <span style="color:#f92672">-#exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
 </span><span style="color:#f92672"></span><span style="color:#a6e22e">+exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
-</span><span style="color:#a6e22e"></span></code></pre></div>
+</span></code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh</code></pre></div>
 
@@ -160,7 +162,7 @@ vim /usr/share/webapps/cgit/cgit-highlight.css</code></pre></div>
 </span><span style="color:#a6e22e">+.hl.kwb { color:#0057ae; }
 </span><span style="color:#a6e22e">+.hl.kwc { color:#000000; font-weight:bold; }
 </span><span style="color:#a6e22e">+.hl.kwd { color:#010181; }
-</span><span style="color:#a6e22e"></span></code></pre></div>
+</span></code></pre></div>
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/share/webapps/cgit/cgit-highlight.css</code></pre></div>
 
@@ -251,12 +253,12 @@ EOF
 
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">...
 ...
-<span style="color:#75715e"># {{{ includes
-</span><span style="color:#75715e"></span>...
+<span style="color:#75715e"># {{{ includes</span>
+...
 include <span style="color:#e6db74">&#34;cgit.conf&#34;</span>
 ...
-<span style="color:#75715e"># }}}
-</span><span style="color:#75715e"></span>...
+<span style="color:#75715e"># }}}</span>
+...
 ...</code></pre></div>
 
 <p>We commit every file to permanent storage and restart the lighttpd server.</p>
@@ -413,7 +415,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
                     
                 </div>
             </div>
@@ -421,7 +423,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
@@ -433,7 +435,7 @@ so I may write about it too :)</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

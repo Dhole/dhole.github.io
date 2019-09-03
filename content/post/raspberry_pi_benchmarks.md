@@ -1,5 +1,5 @@
 +++
-Categories = ["alpine", "raspberry pi"]
+Categories = ["alpine", "raspberry pi", "linux"]
 date = "2016-10-20T15:03:12-07:00"
 title = "Raspberry Pi 2 I/O benchmarks"
 

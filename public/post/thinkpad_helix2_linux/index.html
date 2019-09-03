@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Thinkpad Helix 2 with Linux &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Thinkpad Helix 2 with Linux</h1>  
+			
+			<time class="li-article-date">Tuesday, September 3, 2019</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/fedora">fedora</a> </span>
+
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        
+
+<h1 id="preface">Preface</h1>
+
+<p>Recently I&rsquo;ve bought a second hand Thinkpad Helix 2nd Gen with the intention of
+using it mainly as a tablet to read PDF documents and comics (although I may
+use it for Internet browsing and occasional development).  I like running free
+software on my computers and so I decided to use GNU/Linux with this
+tablet/laptop.  Here I will explain all the issues I encountered and how I
+solved them.</p>
+
+<h1 id="first-approach">First approach</h1>
+
+<p>Initally I installed Arch Linux as it&rsquo;s the distro I&rsquo;ve been most comfortable
+with during the past years.  I decided to go with GNOME desktop for its
+touchscreen integration.  Some things worked, some others didn&rsquo;t.  I managed to
+get everything working except for the sound on the tablet speakers mainly
+following the <a href="https://wiki.archlinux.org/index.php/Lenovo_ThinkPad_Helix_2nd_Gen">Arch wiki article about the
+laptop</a>,
+which was extremely helpful.  Appart from the sound there was the automatic
+screen rotation which I got to work but after some reboots stopped working and
+I didn&rsquo;t figure out why.</p>
+
+<h1 id="second-approach">Second approach</h1>
+
+<p>While annoyed with the tablet speakers not working, I decided to try another
+distro: Fedora.  I was happy to discover that on the Fedora 30 live the
+speakers were working!  I also told myself that maybe Arch Linux was not the
+best candidate for a device that I want to use mainly for media, for which I
+want the minimum amount of maintainence, so I decided to install Fedora.</p>
+
+<h1 id="fedora">Fedora</h1>
+
+<p>After installing Fedora most of the stuff worked, and I followed the same
+procedures I followed with Arch to get the rest of the system working the way I
+wanted.  Some of the fixes required more work.  Here&rsquo;s all that I did.</p>
+
+<h2 id="disabled-sysrq">Disabled sysrq</h2>
+
+<p>It seems that sysrq is disabled nowadays.  I like being able to do an emergency
+sync of the filesystem when the system hangs, so I added the following line to
+the <code>GRUB_CMDLINE_LINUX</code> in <code>/etc/default/grub</code>: <code>sysrq_always_enabled=1</code>.</p>
+
+<h2 id="suspend-not-working-properly">Suspend not working properly</h2>
+
+<p>As explained in the Arch wiki, it seems that the pro keyboard keeps sending
+ACPI interrupts to the tablet that makes it wake up immediately after
+suspension.  To ignore these ACPI wakeup interrupt I added the following line
+to the <code>GRUB_CMDLINE_LINUX</code> in <code>/etc/default/grub</code>: <code>acpi.ec_no_wakeup=1</code>.</p>
+
+<h2 id="rngd-process-consuming-a-lot-of-cpu">rngd process consuming a lot of CPU</h2>
+
+<p>After installation there was a daemon called <code>rngd</code> that was using several CPU
+cores making everything go slow.  It seems that this is a daemon that collects
+entropy and feeds the kernel and is specially useful during the boot proces,
+where randomness may be required but there&rsquo;s no much entropy because not many
+events have happened yet.  Since the system is already installed I guess it&rsquo;s
+safe to disable this service and rely on the normal kernel entropy gathering
+process: <code>sudo systemct stop rngd</code>, <code>sudo systemctl disable rngd</code>.</p>
+
+<h2 id="kworker-consuming-cpu">kworker consuming CPU</h2>
+
+<p>I observed in top that thre was a kworker process taking half of a core all the
+time while the system was idle.  This affected the battery consumtion (as
+reported by <code>powertop</code>).  After some searches in duckduckgo I found out that a
+possible culprit could be an ACPI event sending too many interrupts.  After an
+analysis I discovered it was the ACPI interrupt <code>gpe0B</code>.  I wanted to figure
+out if it was safe to disable the handling of this interrupt and found <a href="https://old.reddit.com/r/linux/comments/3lfxhf/a_linux_powersaving_tip_for_noobs_like_me/cv64849/">this
+excellent post in reddit explaining how to figure out what hardware module is
+related to that ACPI
+interrupt</a>.
+I followed the process described in the post and discovered that the interrupt
+was related to an NFC module.  I think think my laptop has NFC, so I proceeded
+to disable the interrupt: <code>echo mask &gt; /sys/firmware/acpi/interrupts/gpe0B</code>.
+And to make it permanently, I added the following line to the
+<code>GRUB_CMDLINE_LINUX</code> in <code>/etc/default/grub</code>: <code>acpi_mask_gpe=0x0b</code>.</p>
+
+<p>For the curious, here&rsquo;s the disassembly of the dsdt (the DLS that handles each
+ACPI interrupt) that takes care of the gpe0B event:</p>
+
+<pre><code>        Method (_L0B, 0, NotSerialized)  // _Lxx: Level-Triggered GPE, xx=0x00-0xFF
+        {
+            If ((GPFG &amp;&amp; \_SB.PCI0.LPC.NFCI))
+            {
+                GPFG = 0x00
+                Notify (\_SB.PCI0.SMBU.NFC, 0xC0) // Hardware-Specific
+            }
+        }
+</code></pre>
+
+<h2 id="lcd-flicker">LCD flicker</h2>
+
+<p>The brightness control of the display works via PWM.  On full brightness, the
+light is continuous.  When you start diminishing the brigtness, the light
+toggles very fast staying a percentage of time on.  By default I find the PWM
+frequency too low, so I can notice the light flickering causing discomfort.
+Luckily the frequency of the PWM can be increased!  To do this I installed the
+tool <code>intel-gpu-tools</code> which allows reading and writing to the gpu control
+registers.  The following command will set the PWM frequency to 500 Hz, which
+works for me: <code>sudo intel_reg write 0xC8254 0x1770177</code>.</p>
+
+<h2 id="tablet-speakers-not-working-wait-again">Tablet speakers not working (wait, again?)</h2>
+
+<p>Yes, after upgrading the kernel the tablet speakers stopped working.  Now I
+know why they didn&rsquo;t work in Arch Linux.  It&rsquo;s time to boot with the older
+kernel (choose it in the grub menu).</p>
+
+<h2 id="touchpad-not-working-after-keyboard-re-attach">Touchpad not working after keyboard re-attach</h2>
+
+<p>I already encountered this issue and had a solution for Arch: I would unload
+and load the mouse module and the touchpad would work again.  But things were
+not as easy in Fedora because the module is built-in the kernel!  So it&rsquo;s time
+to build the kernel by myself :D  Mainly I followed this <a href="https://fedoraproject.org/wiki/Building_a_custom_kernel">excellent guide
+provided by the Fedora
+wiki</a>.  Since I needed
+an older kernel I had to checkout an old commit of the <code>f30</code> branch.  <code>fedpkg
+local</code> gave me some isses related to the checkout not being the HEAD of the
+branch, so I just created a new branch from that checkout.  Also don&rsquo;t forget
+to run <code>sudo dnf builddep kernel.spec</code> after downloading the kernel package
+sources to install the build dependencies.  Now, the important part is to
+change the config so that the mouse module is built as a module and not
+built-in.  To do so, add this line to <code>kernel-local</code>:</p>
+
+<pre><code>CONFIG_MOUSE_PS2=m
+</code></pre>
+
+<p>This will create the <code>psmouse</code> module.
+Now, reloading the module manually everytime you re-attach the keyboard is a
+bit annoying right?  Let&rsquo;s use the <code>acpid</code> daemon to do it automatically for
+us!  Firs install the daemon and enable it: <code>sudo dnf install acpid</code>, <code>sudo
+systemctl start acpid</code>, <code>sudo systemctl enable acpid</code>.  Now let&rsquo;s add a handler
+for the attach ACPI event that will reload the mouse module.</p>
+
+<p><code>/etc/acpi/events/ibmhotkey</code>:</p>
+
+<pre><code>event=ibm/hotkey.*
+action=/etc/acpi/actions/ibmhotkey.sh %e
+</code></pre>
+
+<p><code>/etc/acpi/actions/ibmhotkey.sh</code></p>
+
+<pre><code>#!/usr/bin/sh
+
+set -e
+
+PATH=/usr/sbin:/usr/bin
+
+case &quot;$1&quot; in
+	ibm/hotkey)
+		case &quot;$4&quot; in
+			00004013)
+				logger &quot;Tablet detached&quot;
+				;;
+			00004012)
+				logger &quot;Tablet docked&quot;
+				modprobe -r psmouse
+				modprobe psmouse proto=auto
+				;;
+		esac
+		;;
+esac
+</code></pre>
+
+<p>And don&rsquo;t forget to give execution rights to the handler: <code>sudo chmod +x
+/etc/acpi/actions/ibmhotkey.sh</code>.</p>
+
+<h1 id="fin">FIN</h1>
+
+<p>And that&rsquo;s it!  Everything is working now and I feel happy with the results.  I
+may automate the display light PWM frequency so that it gets set at boot and
+maybe after every wakeup (as it seems it gets back to the default low frequency
+PWM).</p>
+
+<h1 id="acknowledgements">Acknowledgements</h1>
+
+<p>I would like to thank the people that maintain the fantastic Arch Linux wiki,
+which is a resource I usually use no matter which distro I&rsquo;m using (and also to
+Arch developers for maintaining this great distro).  Thanks to all the
+developers that make Fedora possible!  And thanks for the reddit user Nanosleep
+for the insight on debugging how the ACPI events are handled.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2019. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

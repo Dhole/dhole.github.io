@@ -1,5 +1,5 @@
 +++
-Categories = ["arch linux"]
+Categories = ["arch linux", "linux"]
 date = "2015-05-01T23:58:40+02:00"
 title = "Full disk encryption on Samsung Chromebook with Arch Linux"
 

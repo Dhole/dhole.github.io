@@ -1,5 +1,5 @@
 +++
-Categories = ["pulseaudio"]
+Categories = ["pulseaudio", "linux"]
 title = "Pulseaudio for multi-user Linux"
 date = "2018-08-27T20:54:53+02:00"
 +++

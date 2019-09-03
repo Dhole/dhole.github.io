@@ -1,5 +1,5 @@
 +++
-Categories = ["PocketCHIP", "kernel"]
+Categories = ["PocketCHIP", "kernel", "linux"]
 date = "2017-11-23T14:35:56-08:00"
 title = "Enabling LUKS on the PocketCHIP"
 +++

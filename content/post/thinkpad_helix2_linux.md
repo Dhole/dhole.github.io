@@ -1,5 +1,5 @@
 +++
-Categories = ["fedora" "linux"]
+Categories = ["fedora", "linux"]
 title = "Thinkpad Helix 2 with Linux"
 date = "2019-09-03T20:54:53+02:00"
 +++

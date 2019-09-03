@@ -1,5 +1,5 @@
 +++
-Categories = ["alpine", "raspberry pi", "git"]
+Categories = ["alpine", "raspberry pi", "git", "linux"]
 date = "2016-10-21T15:14:27-07:00"
 title = "Raspberry Pi: git server (cgit with lighttpd)"
 

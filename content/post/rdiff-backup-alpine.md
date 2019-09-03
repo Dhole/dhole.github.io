@@ -1,5 +1,5 @@
 +++
-Categories = ["alpine", "rdiff-backup"]
+Categories = ["alpine", "rdiff-backup", "linux"]
 date = "2016-11-01T01:17:17-07:00"
 title = "rdiff-backup-1.2.8 in Alpine"
 

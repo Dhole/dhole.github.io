@@ -8,7 +8,7 @@
         <title>Programming Game Boy Chinese cartridges with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -102,7 +102,6 @@ Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
 
 <p>My first idea was to take a look inside, figure out the flash chip model, find the datasheet and learn how such flash chip is reprogrammed.  Here&rsquo;s a picture of the cartridges:</p>
 
-
 <figure >
     <a href="../../media/gameboy_rw/carts.jpg">
         <img src="../../media/gameboy_rw/carts_1000.jpg" alt="Inside of Game Boy Chinese cartridges." />
@@ -118,9 +117,6 @@ Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
     </figcaption>
     
 </figure>
-
-
-
 
 <p>We can see that each PCB has two chips that can be seen, a blob and a battery.  Under the blob there&rsquo;s probably a chip that acts as a memory controller (MBC5), then one chip will be the flash and the other the SRAM, which keeps its memory after the Game Boy powers off thanks to the battery.  I couldn&rsquo;t find any datasheet on any of the chips, the most I could find are references to the SAMSUNG chips, which seem to be the flash chips.  How do we proceed from here?</p>
 
@@ -145,7 +141,6 @@ Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
 
 <p>And so we search the datasheet for the documentation on how to program the chip:</p>
 
-
 <figure >
     <a href="../../media/gameboy_rw/flash_datasheet.png">
         <img src="../../media/gameboy_rw/flash_datasheet_1000.png" alt="Screen capture of MX29LV320AT/B flash memory datasheet showing available commands." />
@@ -161,9 +156,6 @@ Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
     </figcaption>
     
 </figure>
-
-
-
 
 <p>We can see that all the commands start with the same pattern, by performing writes using constant addresses and data values.  By doing a web search using the terms &ldquo;0xAAA 0xAA flash&rdquo; we can see several results that seem to indicate that these commands could be common for flash chips.  For example, take a look at <a href="https://github.com/KnightOS/kernel/blob/0.6.11/src/00/flash.asm#L43">this source code</a>.</p>
 
@@ -290,7 +282,6 @@ MAGIC0: A9, MAGIC1: 56
 
 <p>Finally, here&rsquo;s a picture of my setup for the reader/writer.  I soldered jumpers to a Game Boy Color cartridge slot I bought on AliExpress, and then connected it to the NUCLEO-F411RE GPIOs.</p>
 
-
 <figure >
     <a href="../../media/gameboy_rw/setup.jpg">
         <img src="../../media/gameboy_rw/setup_1000.jpg" alt="Setup with the NUCLEO-F411RE wired to a Game Boy cartridge connector." />
@@ -306,9 +297,6 @@ MAGIC0: A9, MAGIC1: 56
     </figcaption>
     
 </figure>
-
-
-
 
 <p>You can find the full source code of this project on the following repositories:</p>
 
@@ -367,7 +355,7 @@ MAGIC0: A9, MAGIC1: 56
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
                     
                 </div>
             </div>
@@ -375,7 +363,7 @@ MAGIC0: A9, MAGIC1: 56
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
+                        <a href="https://dhole.github.io/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
                     
                 </div>
             </div>
@@ -387,7 +375,7 @@ MAGIC0: A9, MAGIC1: 56
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
