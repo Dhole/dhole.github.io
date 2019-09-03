@@ -8,7 +8,7 @@
         <title>Sniffing Game Boy serial traffic with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -102,7 +102,7 @@ Categories:
 
 <h1 id="game-boy-serial-protocol">Game Boy serial protocol</h1>
 
-<p>The Game Boy (and the Game Boy Color) have a serial communication port that was used for two player games as well as to interface with peripherals like the Game Boy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):
+<p>The Game Boy (and the Game Boy Color) have a serial communication port that was used for two player games as well as to interface with peripherals like the Game Boy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):</p>
 
 <figure >
     <a href="../../media/gameboy_serial/serial_connector.png">
@@ -119,9 +119,6 @@ Categories:
     </figcaption>
     
 </figure>
-
-
-</p>
 
 <p>For a serial communication two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the Game Boy Printer, and it&rsquo;s not clear if it&rsquo;s used in any way.  All signals work at 5V TTL.</p>
 
@@ -144,7 +141,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 <p>The following Oscilloscope capture of a serial communication shows the transfer of a few bytes.  Since the bits are shifted out from the most significant bit of the transfer byte, the order of bits will be from 7 to 0:</p>
 
-
 <figure >
     <a href="../../media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info.jpg">
         <img src="../../media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info_1000.jpg" alt="Oscilloscope capture by Sigint 112 posted at [www.microcontroller.net](http://www.mikrocontroller.net/topic/87532), with overlay information added by me" />
@@ -160,9 +156,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
     </figcaption>
     
 </figure>
-
-
-
 
 <p>As we can see from the oscilloscope capture, the bit value is put on the data line when the clock signal falls and is replaced by the next bit at the next clock signal fall.  This means that a good opportunity to read the bit value is when the clock signal rises.</p>
 
@@ -246,7 +239,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 <p>The hardware setup looks like this:</p>
 
-
 <figure >
     <a href="../../media/gameboy_serial/gameboys_tetris_link.jpg">
         <img src="../../media/gameboy_serial/gameboys_tetris_link_1000.jpg" alt="Sniffing setup with two player mode in Tetris" />
@@ -262,9 +254,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
     </figcaption>
     
 </figure>
-
-
-
 
 <p>The way the sniffer will work is by reading the SIN and SOUT signals at every SCK cycle, building up the transferred bytes and sending them in pairs of (SOUT, SIN) over the USART that is connected to the ST-LINK which is connected via USB to my computer exposing a virtual serial device.  On the computer side I will receive the data and present it nicely with a program written in Rust.</p>
 
@@ -353,7 +342,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
 
 <p>I&rsquo;ve also made a <a href="../../media/gameboy_serial/printer.txt">capture of the data transferred to the Game Boy Printer by the Game Boy Camera to print a photo</a>.  We will use this capture in the next part of these posts to understand how the Game Boy Printer protocol works.  And here&rsquo;s a picture of the setup:</p>
 
-
 <figure >
     <a href="../../media/gameboy_serial/gameboy_printer_link.jpg">
         <img src="../../media/gameboy_serial/gameboy_printer_link_1000.jpg" alt="Sniffing setup with Game Boy Camera connected to the Game Boy Printer" />
@@ -369,9 +357,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
     </figcaption>
     
 </figure>
-
-
-
 
 <p>To see the full source code of this project, check out the following repositories:</p>
 
@@ -420,7 +405,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
                     
                 </div>
             </div>
@@ -428,7 +413,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
                     
                 </div>
             </div>
@@ -440,7 +425,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

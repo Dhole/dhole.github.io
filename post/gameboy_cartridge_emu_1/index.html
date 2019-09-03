@@ -8,7 +8,7 @@
         <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -179,7 +179,6 @@ the SUMP protocol:</p>
 the cartridge, I soldered an FDD ribbon to the main board of the GameBoy,
 intercepting the cartridge pins as follows:</p>
 
-
 <figure >
     <a href="../../media/gameboy_stm32f4/gb_ribbon_1.jpg">
         <img src="../../media/gameboy_stm32f4/gb_ribbon_1_1000.jpg" alt="Back of the GameBoy PCB with the cartridge pins soldered to a FDD ribbon." />
@@ -196,9 +195,6 @@ intercepting the cartridge pins as follows:</p>
     
 </figure>
 
-
-
-
 <p>Since only 16 channels are available for the logicdiscovery I decided to monitor
 the CLK, RD, WR, CS, DATA {0-4} and ADDR {0-8}. (That is, the lower 4 bits of
 the data and the lower 8 bits of the address). With this we should be able to
@@ -206,7 +202,6 @@ get information about the timings of the different operations.</p>
 
 <p>The GameBoy cartridge pinout is well known, so it&rsquo;s easy to figure out what every
 pin on the PCB of the GameBoy does from a pinout picture:</p>
-
 
 <figure >
     <a href="../../media/gameboy_stm32f4/gb_cartridge_pins.jpg">
@@ -226,12 +221,9 @@ pin on the PCB of the GameBoy does from a pinout picture:</p>
     
 </figure>
 
-
-
 <h2 id="results">Results</h2>
 
 <p>Upon analyzing the bus with the BATMAN game (ROM Only cartridge), the following is obtained:</p>
-
 
 <figure >
     <a href="../../media/gameboy_stm32f4/screen_dump_overview.png">
@@ -251,8 +243,6 @@ pin on the PCB of the GameBoy does from a pinout picture:</p>
     
 </figure>
 
-
-
 <p>The first thing I noticed is that the CLK is at 1MHz, this is good news for us:
 we have more cycles for each operation. One oddity I found with the capture is
 that we can see that the WR goes low a few times (WR is active on low). The
@@ -268,7 +258,6 @@ read operation.</p>
 
 <p>Notice that we have a 20MHz sampling rate, this means that a sample is being
 taken every 50 ns, leading to an error of +/- 25 ns.</p>
-
 
 <figure >
     <a href="../../media/gameboy_stm32f4/screen_dump_read_timings.png">
@@ -288,9 +277,6 @@ taken every 50 ns, leading to an error of +/- 25 ns.</p>
     
 </figure>
 
-
-
-
 <figure >
     <a href="../../media/gameboy_stm32f4/screen_dump_write_timings.png">
     
@@ -309,8 +295,6 @@ taken every 50 ns, leading to an error of +/- 25 ns.</p>
     
 </figure>
 
-
-
 <p>We can see that for a read operation, the GameBoy leaves WR and CS unactivate
 (high) and the RD active (low). This is the default. The GameBoy sets the
 address 150ns after the CLK rise, and the data is available in the bus
@@ -328,7 +312,6 @@ when accessing RAM (this is not clear).</p>
 <p>The writing timing analysis are sound with the analysis found in the unnoficial
 <a href="http://marc.rawer.de/Gameboy/Docs/GBCPUman.pdf">GameBoy CPU Manual</a>:</p>
 
-
 <figure >
     <a href="../../media/gameboy_stm32f4/cpu_manual_timing_small.png">
         <img src="../../media/gameboy_stm32f4/cpu_manual_timing_small_1000.png" alt="RAM timings, taken from the Game Boy CPU Manual. Click for detailed timings." />
@@ -345,16 +328,12 @@ when accessing RAM (this is not clear).</p>
     
 </figure>
 
-
-
-
 <p>Now that we know that the information seen in the bus is not only the communication
 between the GameBoy and the cartridge but all the read/write operations of the
 GameBoy to its memory map, we can understand the following capture, which shows
 a DMA operation (The GameBoy has a DMA functionality to allow to fast copy contents
 from RAM or ROM to the OAM (Object Atribute Memory), used by the screen to draw
 sprites):</p>
-
 
 <figure >
     <a href="../../media/gameboy_stm32f4/screen_dump_DMA.png">
@@ -373,8 +352,6 @@ sprites):</p>
     </figcaption>
     
 </figure>
-
-
 
 <p>In the following post I will write about the implementation of the cartridge
 emulator. Stay tunned!</p>
@@ -417,7 +394,7 @@ emulator. Stay tunned!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_cartridge_emu_2/"> Emulating a GameBoy Cartridge with an STM32F4. Part 2</a>
+                        <a href="https://dhole.github.io/post/first/"> Welcome</a>
                     
                 </div>
             </div>
@@ -425,7 +402,7 @@ emulator. Stay tunned!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/first/"> Welcome</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_2/"> Emulating a GameBoy Cartridge with an STM32F4. Part 2</a>
                     
                 </div>
             </div>
@@ -437,7 +414,7 @@ emulator. Stay tunned!</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

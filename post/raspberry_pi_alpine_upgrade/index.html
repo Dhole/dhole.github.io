@@ -8,7 +8,7 @@
         <title>Alpine Linux: Upgrading on Raspberry Pi &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
+
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -140,8 +142,8 @@ cd ..</code></pre></div>
 <p>Commented is the line suggested in the wiki, which I&rsquo;m not sure does any
 verification.  We will install from the extracted release image:</p>
 
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA
-</span><span style="color:#75715e"></span>setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA</code></pre></div>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA</span>
+setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA</code></pre></div>
 
 <p>Now we clean what we downloaded, backup and reboot.  Hopefully everything works!</p>
 
@@ -186,7 +188,7 @@ reboot</code></pre></div>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
@@ -194,7 +196,7 @@ reboot</code></pre></div>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
+                        <a href="https://dhole.github.io/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
                     
                 </div>
             </div>
@@ -206,7 +208,7 @@ reboot</code></pre></div>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

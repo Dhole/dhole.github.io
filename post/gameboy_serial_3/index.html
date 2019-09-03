@@ -8,7 +8,7 @@
         <title>Printing on the Game Boy Printer using an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -417,7 +417,7 @@ Categories:
         };
         <span style="color:#66d9ef">let</span> (a, b) <span style="color:#f92672">=</span> (i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span>, cmp::min(i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">9</span>, tile_rows.len()));
         <span style="color:#66d9ef">if</span> k <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
-            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Printing part [{:?}/{:?}]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;\tPrinting part [{:?}/{:?}]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
         }
         print(port, <span style="color:#f92672">&amp;</span>tile_rows[a..b], margin)<span style="color:#f92672">?</span>;
         <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> (k<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
@@ -435,7 +435,6 @@ Categories:
 
 <p>Here are the results!</p>
 
-
 <figure >
     <a href="../../media/gameboy_serial/printing.jpg">
         <img src="../../media/gameboy_serial/printing_1000.jpg" alt="Printing from the PC via the NUCLEO-F411RE" />
@@ -452,10 +451,6 @@ Categories:
     
 </figure>
 
-
-
-
-
 <figure >
     <a href="../../media/gameboy_serial/prints.jpg">
         <img src="../../media/gameboy_serial/prints_1000.jpg" alt="A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality." />
@@ -471,9 +466,6 @@ Categories:
     </figcaption>
     
 </figure>
-
-
-
 
 <p>To see the full source code of this project, check out the following repositories:</p>
 
@@ -520,7 +512,7 @@ Categories:
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_cartridge_rw_1/"> Programming Game Boy Chinese cartridges with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
                     
                 </div>
             </div>
@@ -528,7 +520,7 @@ Categories:
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_rw_1/"> Programming Game Boy Chinese cartridges with an STM32F4</a>
                     
                 </div>
             </div>
@@ -540,7 +532,7 @@ Categories:
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2018. All rights reserved. 
+                    &copy; 2019. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
