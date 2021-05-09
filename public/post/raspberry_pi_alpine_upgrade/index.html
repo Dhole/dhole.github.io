@@ -8,7 +8,7 @@
         <title>Alpine Linux: Upgrading on Raspberry Pi &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,55 +66,40 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/linux">linux</a> </span>
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
                     </header>
                     <section class="li-article-body">
-                        
-
-<p>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi
+                        <p>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi
 Alpine Linux installation.  Alpine Linux on the Raspberry Pi runs from ramfs
 and thus the upgrading is not straightforward.  Most of the details are taken
 from the <a href="https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release">Alpine Linux
 Wiki</a>.
 I&rsquo;m not sure if Alpine Linux does any verification on the new downloaded
 release, so I&rsquo;m doing that manually on another computer.</p>
-
 <h1 id="upgrading">Upgrading</h1>
-
 <p>First of all, replace the repository confiration to point to the new version:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">setup-apkrepos</code></pre></div>
-
 <p>Press <code>e</code> then replace v3.5 by v3.6 (or whichever is the new release version).</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk update
 apk upgrade --update-cache --available</code></pre></div>
-
 <p>Make sure that <code>/etc/lbu/lbu.conf</code> has the following line:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">LBU_MEDIA<span style="color:#f92672">=</span>mmcblk0p1</code></pre></div>
-
 <p>Then load the environment variables from the file, and backup everything.</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">. /etc/lbu/lbu.conf
 lbu ci</code></pre></div>
-
 <p>Check that there is at least 400MB (maybe more?) free in the permament storage:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">df -h | grep <span style="color:#e6db74">&#34;Filesystem\|</span>$LBU_MEDIA<span style="color:#e6db74">&#34;</span></code></pre></div>
-
 <p>Now on another computer, which should have the Alpine Linux release GPG keys on
 the GPG keyring, download the new release image, verify it&rsquo;s hash and verify
 the hash signature:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>.6.2
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span>3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.asc
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz.sha256
@@ -122,31 +107,23 @@ wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-
 sha256sum *armhf.tar.gz
 cat *armhf.tar.gz.sha256
 gpg --verify *armhf.tar.gz.asc</code></pre></div>
-
 <p>Now we proceed with the upgrade on the Raspberry Pi:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mount -oremount,rw /media/$LBU_MEDIA
 cd /media/$LBU_MEDIA</code></pre></div>
-
 <p>Download the new release image (this time on the Raspberry Pi) and verify that
 the hash matches the one we verified on the other computer, then extract it:</p>
-
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>.6.2
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span>3.6.2
 wget http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz
 sha256sum *armhf.tar.gz
 mkdir new 
 cd new 
 tar xzf ../alpine-rpi-$VERSION-armhf.tar.gz
 cd ..</code></pre></div>
-
 <p>Commented is the line suggested in the wiki, which I&rsquo;m not sure does any
 verification.  We will install from the extracted release image:</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#setup-bootable -u http://dl-3.alpinelinux.org/alpine/latest-stable/releases/armhf/alpine-rpi-$VERSION-armhf.tar.gz /media/$LBU_MEDIA</span>
 setup-bootable -u /media/$LBU_MEDIA/new /media/$LBU_MEDIA</code></pre></div>
-
 <p>Now we clean what we downloaded, backup and reboot.  Hopefully everything works!</p>
-
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rm -r alpine-rpi-$VERSION-armhf.tar.gz new/
 lbu ci
 sync
@@ -188,7 +165,7 @@ reboot</code></pre></div>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
@@ -196,7 +173,7 @@ reboot</code></pre></div>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                        <a href="https://dhole.github.io/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
                     
                 </div>
             </div>
@@ -208,7 +185,7 @@ reboot</code></pre></div>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2019. All rights reserved. 
+                    &copy; 2021. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
