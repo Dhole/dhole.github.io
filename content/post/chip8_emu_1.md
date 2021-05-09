@@ -400,11 +400,11 @@ With this in mind, here's a description of the process of updating the display:
 
 # Conclusion
 
-In this first article I explained briefly what the CHIP-8 is, and I it's a good
-candidate for your first emulator.  Then I showed how I organized the emulator
-implementation into a backend and frontend, which is a pattern that can be
-applied to any emulator implementation and comes with the benefit of
-portability.
+In this first article I explained briefly what the CHIP-8 is, and I think it's
+a very good candidate for your first emulator.  Then I showed how I organized
+the emulator implementation into a backend and frontend, which is a pattern
+that can be applied to any emulator implementation and comes with the benefit
+of portability.
 
 The backend implementation contains the core parts of a simple emulator, making
 it easy to follow.
