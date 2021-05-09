@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>CHIP-8 emulator in Rust.  Part 1 &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">CHIP-8 emulator in Rust.  Part 1</h1>  
+			
+			<time class="li-article-date">Sunday, May 9, 2021</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/emulator">emulator</a> </span>
+
+<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>I have been interested in the topic of emulation for many years; in particular,
+game console emulation.  I started playing games under emulators when I was a
+teenager and I was fascinated by how a piece of software would let me play a
+game in a completely different architecture than the original one.</p>
+<p>I&rsquo;ve you&rsquo;ve ever been interested in learning about emulation, maybe you&rsquo;ve
+learned about the <a href="https://en.wikipedia.org/wiki/CHIP-8">CHIP-8</a>; a
+specification of a simple virtual machine designed to play 8bit 2D videogames
+in the mid 1970s.  The connection between the CHIP-8 and emulation development
+is that the specification of the CHIP-8 is very simple and makes the perfect
+target for writing your first emulator.  In fact, that&rsquo;s what I did in 2014: I
+wrote <a href="https://github.com/Dhole/Chip8-emu">my first emulator</a>, targeting the
+CHIP-8 in C++.  Please, don&rsquo;t take that C++ code too seriously!  I&rsquo;ve never
+been experienced in C++, and I wasn&rsquo;t very experienced in software development
+by then.</p>
+<p>A year ago a friend of mine was interested in both practicing bit and bytes
+manipulation and programming in Rust.  I believe I suggested him to write a
+CHIP-8 emulator, and I decided to join the fun as well, and write my second
+CHIP-8 emulator in Rust, as a weekend project.</p>
+<p>In this article I will explain some basic concepts of the CHIP-8 and how to
+design an emulator for it in Rust, following patterns common to simple
+emulators.  The emulator will run under a PC desktop OS (I use Linux with
+<code>x86_64</code>) using the SDL libraries.  In a future article I will explain how to
+port the emulator to a baremetal ARM embedded microcontroller.</p>
+<p>You can find the <a href="https://github.com/Dhole/chip8-rs">source code of the emulator in
+github</a></p>
+<h1 id="chip-8">CHIP-8</h1>
+<p>The CHIP-8 is a specification for a simple virtual machine for 2D games.  It&rsquo;s
+virtual because there was not a hardware implementation, and it was designed so
+that implementations of the virtual machine (emulators) could be written for
+different machines allowing the same games to be played in different
+environments.  Since it was designed in the 1970s, the specs of the VM are very
+low compared to current standards.</p>
+<p>Here are some features of the CHIP-8</p>
+<ul>
+<li>Monochrome 64x32 pixels display</li>
+<li>4KB of Memory
+<ul>
+<li>512B reserved</li>
+<li>3.5KB of RAM shared with the game program</li>
+</ul>
+</li>
+<li>16 x 8 bit registers</li>
+<li>16 key keypad input</li>
+<li>delay timer</li>
+<li>sound timer</li>
+<li>36 instructions</li>
+</ul>
+<p>If you&rsquo;re interested in building an emulator for the CHIP-8 I recommend you to
+read <a href="http://devernay.free.fr/hacks/chip8/C8TECH10.HTM">Cowgod&rsquo;s Chip-8 Technical Reference
+v1.0</a></p>
+<h1 id="emulator-architecture">Emulator architecture</h1>
+<p>The emulator will be split into two parts: frontend and backend.  The backend
+is developed as a Rust library; and the fronted imports the backend library to
+build an executable.  The reasoning behind this division is to keep the backend
+completely isolated from the input and output so that it has maximum
+portability, and leave the implementation details of input and output at the
+frontend.  This way if we want to port the emulator to a new system we only
+need to take care of making a new frontend and we can reuse the backend.</p>
+<p>To implement this division I made use of <a href="https://doc.rust-lang.org/cargo/reference/workspaces.html">Rust
+workspaces</a>.  The
+root of the repository contains a
+<a href="https://github.com/Dhole/chip8-rs/blob/master/Cargo.toml"><code>Cargo.toml</code></a> with
+the following contents:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">workspace</span>]
+
+<span style="color:#a6e22e">members</span> = [
+    <span style="color:#e6db74">&#34;chip8&#34;</span>,
+    <span style="color:#e6db74">&#34;sdl&#34;</span>,
+]
+</code></pre></div><p>Where <code>chip8</code> is the Rust project corresponding to the backend, and <code>sdl</code> is
+the Rust project corresponding to the desktop frontend.</p>
+<h1 id="backend">Backend</h1>
+<p>The backend is implemented in the <a href="https://github.com/Dhole/chip8-rs/tree/master/chip8"><code>chip8</code>
+folder</a> and contains the
+core implementation of the CHIP-8 Virtual Machine.</p>
+<h2 id="structure-of-the-emulator">Structure of the emulator</h2>
+<p>The CHIP-8 emulator is implemented via a struct:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Chip8</span><span style="color:#f92672">&lt;</span>R: <span style="color:#a6e22e">RngCore</span><span style="color:#f92672">&gt;</span> {
+    mem: [<span style="color:#66d9ef">u8</span>; MEM_SIZE],
+    v: <span style="color:#a6e22e">Regs</span>, <span style="color:#75715e">// Register Set
+</span><span style="color:#75715e"></span>    i: <span style="color:#66d9ef">u16</span>,  <span style="color:#75715e">// Index Register
+</span><span style="color:#75715e"></span>    pc: <span style="color:#66d9ef">u16</span>, <span style="color:#75715e">// Program Counter
+</span><span style="color:#75715e"></span>    stack: [<span style="color:#66d9ef">u16</span>; <span style="color:#ae81ff">0x10</span>],
+    sp: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Stack Pointer
+</span><span style="color:#75715e"></span>    dt: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Delay Timer
+</span><span style="color:#75715e"></span>    st: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Sound Timer
+</span><span style="color:#75715e"></span>    keypad: <span style="color:#66d9ef">u16</span>,                                <span style="color:#75715e">// Keypad
+</span><span style="color:#75715e"></span>    fb: [<span style="color:#66d9ef">u8</span>; SCREEN_WIDTH <span style="color:#f92672">*</span> SCREEN_HEIGTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>], <span style="color:#75715e">// Framebuffer
+</span><span style="color:#75715e"></span>    tone: <span style="color:#66d9ef">bool</span>,                                 <span style="color:#75715e">// Tone output enable
+</span><span style="color:#75715e"></span>    time: <span style="color:#66d9ef">isize</span>,                                <span style="color:#75715e">// Overtime in microseconds
+</span><span style="color:#75715e"></span>    rng: <span style="color:#a6e22e">R</span>,                                     <span style="color:#75715e">// Instance of a random number generator
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>which contains an abstraction of all the hardware components of the CHIP-8 as
+well as some auxiliary fields.  A part from the CPU and memory, the CHIP-8
+contains very simple hardware, so I implemented all the required methods on the
+<code>Chip8</code> struct.  For more complex hardware (like programmable timers, or a more
+complex display), I would have created abstractions via new structs (which
+would appear in the <code>Chip8</code> struct) with their own methods.</p>
+<p>From this point, there are basically three important parts: Instruction
+functions, Step function and Frame function, described below.  There are other
+useful functions that expose the internal state of the CHIP-8 (<code>tone</code> and
+<code>fb</code>), and a constructor (<code>new</code>) and a ROM loader (<code>load_rom</code>).</p>
+<p>If you want to understand in detail the code in the Instruction functions and
+the Step function, you&rsquo;ll need to take a look at <a href="http://devernay.free.fr/hacks/chip8/C8TECH10.HTM">the reference of the
+CHIP-8</a>.</p>
+<h3 id="instruction-functions">Instruction functions</h3>
+<p>The implementation of all the CPU instructions.</p>
+<p>All these functions return an integer which corresponds to the time taken to
+run the instruction.</p>
+<blockquote>
+<p>NOTE: Usually an emulator cares about cycles taken by
+instructions, but since the CHIP-8 is a Virtual Machine there&rsquo;s no such
+specification, so I&rsquo;m using the average time taken by one of the original
+implementations for each instruction.</p>
+</blockquote>
+<p>The instructions take different combinations of inputs made of registers and
+immediate values.</p>
+<p>Here&rsquo;s an example of one instruction: ADD</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Op: Set Vx = Vx + b.
+</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">op_add</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, x: <span style="color:#a6e22e">Reg</span>, b: <span style="color:#66d9ef">u8</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+        <span style="color:#66d9ef">let</span> (res, overflow) <span style="color:#f92672">=</span> self.v[x].overflowing_add(b);
+        self.v[x] <span style="color:#f92672">=</span> res;
+        self.v[Reg(<span style="color:#ae81ff">0xf</span>)] <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> overflow { <span style="color:#ae81ff">1</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
+        self.pc <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>;
+        <span style="color:#ae81ff">45</span>
+    }
+</code></pre></div><p>This instruction takes a register and an immediate value, and stores the result
+of adding the register value with the immediate value.  Also, an overflow flag
+is stored in register Vf.  You can also see that the program counter (<code>pc</code>) is
+incremented by 2 because this instruction is sequential and each CHIP-8
+instruction is 2 bytes.</p>
+<h3 id="step-function">Step function</h3>
+<p>A function that decodes and executes one instruction, and returns the elapsed time.</p>
+<p>The program of the CHIP-8 is encoded in bytes and we need to decode pairs of
+bytes to make instructions.  This is done with a match following <a href="http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#3.1">the
+specification</a>.  After
+the instruction is decoded, the corresponding instruction function is called.</p>
+<p>Snippet of the beginning of this function:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Execute the instruction defined by (w0, w1).  Returns the number of microseconds elapsed.
+</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">exec</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, w0: <span style="color:#66d9ef">u8</span>, w1: <span style="color:#66d9ef">u8</span>) -&gt; Result<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">usize</span>, Error<span style="color:#f92672">&gt;</span> {
+        Ok(<span style="color:#66d9ef">match</span> w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xf0</span> {
+            <span style="color:#ae81ff">0x00</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> w1 {
+                <span style="color:#ae81ff">0xe0</span> <span style="color:#f92672">=&gt;</span> self.op_cls(),
+                <span style="color:#ae81ff">0xee</span> <span style="color:#f92672">=&gt;</span> self.op_ret(),
+                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn<span style="color:#f92672">!</span>(w0, w1)),
+            },
+            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn<span style="color:#f92672">!</span>(w0, w1)),
+            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn<span style="color:#f92672">!</span>(w0, w1)),
+            <span style="color:#ae81ff">0x30</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], w1),
+            <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">=&gt;</span> self.op_sne(self.v[Reg(lo_nib(w0))], w1),
+            <span style="color:#ae81ff">0x50</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], self.v[Reg(hi_nib(w1))]),
+            <span style="color:#ae81ff">0x60</span> <span style="color:#f92672">=&gt;</span> self.op_ld(Reg(w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0f</span>), w1),
+            <span style="color:#75715e">// [...]
+</span></code></pre></div><h3 id="frame-function">Frame function</h3>
+<p>A function that executes instructions and simulates hardware for the duration
+of a frame.</p>
+<p>The simulation of hardware is really simple, it involves decrementing counters
+of the timers, and updating the tone enable flag.</p>
+<p>To execute the instructions, we add the time corresponding to a frame to the
+overtime of the last frame in order to compensate a longer frame with a shorter
+one.  Then, in a loop, we just fetch two consecutive bytes at the program
+counter, execute them, and subtract the elapsed time to the frame remaining
+time, until we&rsquo;ve used all the frame time.</p>
+<p>Implementation code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Emulates the execution of instructions continuously until the emulated instructions total
+</span><span style="color:#e6db74"></span>    <span style="color:#e6db74">/// elapsed time reaches the equivalent of a frame.
+</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">frame</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, keypad: <span style="color:#66d9ef">u16</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), Error<span style="color:#f92672">&gt;</span> {
+        self.keypad <span style="color:#f92672">=</span> keypad;
+        <span style="color:#66d9ef">if</span> self.dt <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+            self.dt <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
+        }
+        self.tone <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> self.st <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+            self.st <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
+            <span style="color:#66d9ef">true</span>
+        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#66d9ef">false</span>
+        };
+        self.time <span style="color:#f92672">+=</span> FRAME_TIME;
+
+        <span style="color:#66d9ef">while</span> self.time <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> {
+            <span style="color:#66d9ef">if</span> self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">&gt;</span> MEM_SIZE <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
+                <span style="color:#66d9ef">return</span> Err(Error::PcOutOfBounds(self.pc));
+            }
+            <span style="color:#66d9ef">let</span> w0 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+            <span style="color:#66d9ef">let</span> w1 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+            <span style="color:#66d9ef">let</span> adv <span style="color:#f92672">=</span> self.exec(w0, w1)<span style="color:#f92672">?</span>;
+            self.time <span style="color:#f92672">-=</span> adv <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">isize</span>;
+        }
+        Ok(())
+    }
+</code></pre></div><h1 id="sdl-frontend">SDL Frontend</h1>
+<p>Now that we have the emulator backend implemented as a library, we can create
+an instance of the <code>Chip8</code> struct and interact with it handling all inputs and
+outputs with an operating system dependent library:
+<a href="https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer">SDL</a>.  SDL stands for
+Simple DirectMedia Layer, and it&rsquo;s library with support for many platforms that
+allows handing input events (keyboard, joystick and mouse) and output events
+(display and sound) in a way abstracted from the platform native APIs.</p>
+<p>The SDL fronted is implemented in the <a href="https://github.com/Dhole/chip8-rs/tree/master/sdl"><code>sdl</code>
+folder</a>.</p>
+<p>The program will be started via CLI, so I&rsquo;m using an argument parsing library
+called <a href="https://github.com/clap-rs/clap">clap</a> to handle two arguments: the
+path to the ROM file, and the display scale.  (Since the original display is
+only 64x32 pixels, rendering it without scaling would make it too small in a
+desktop display):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">let</span> app <span style="color:#f92672">=</span> App::new(<span style="color:#e6db74">&#34;Chip8-rs&#34;</span>)
+        .version(<span style="color:#e6db74">&#34;0.0.1&#34;</span>)
+        .author(<span style="color:#e6db74">&#34;Dhole&#34;</span>)
+        .arg(
+            Arg::with_name(<span style="color:#e6db74">&#34;scale&#34;</span>)
+                .short(<span style="color:#e6db74">&#34;s&#34;</span>)
+                .long(<span style="color:#e6db74">&#34;scale&#34;</span>)
+                .value_name(<span style="color:#e6db74">&#34;N&#34;</span>)
+                .help(<span style="color:#e6db74">&#34;Sets the scaling factor&#34;</span>)
+                .takes_value(<span style="color:#66d9ef">true</span>)
+                .default_value(<span style="color:#e6db74">&#34;8&#34;</span>)
+                .validator(<span style="color:#f92672">|</span>scale<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> scale.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>() {
+                    Ok(_) <span style="color:#f92672">=&gt;</span> Ok(()),
+                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}&#34;</span>, e)),
+                }),
+        )
+        .arg(
+            Arg::with_name(<span style="color:#e6db74">&#34;path&#34;</span>)
+                .help(<span style="color:#e6db74">&#34;Path to the rom file&#34;</span>)
+                .index(<span style="color:#ae81ff">1</span>)
+                .required(<span style="color:#66d9ef">true</span>),
+        )
+        .get_matches();
+
+    <span style="color:#66d9ef">let</span> scale <span style="color:#f92672">=</span> app
+        .value_of(<span style="color:#e6db74">&#34;scale&#34;</span>)
+        .map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>().expect(<span style="color:#e6db74">&#34;scale flag can be parsed as u32&#34;</span>))
+        .expect(<span style="color:#e6db74">&#34;scale argument is defined&#34;</span>);
+    <span style="color:#66d9ef">let</span> path <span style="color:#f92672">=</span> app.value_of(<span style="color:#e6db74">&#34;path&#34;</span>).expect(<span style="color:#e6db74">&#34;path argument is defined&#34;</span>);
+</code></pre></div><p>Next I read the ROM contents from disk by the specified path, create an
+instance of the <code>Chip8</code> struct and load the ROM.  Notice that the <code>Chip8</code>
+constructor takes a random value as input to be used as a seed for the random
+number generation.  I intentionally left the seed generation to the frontend
+because it&rsquo;s platform dependent:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rom <span style="color:#f92672">=</span> Vec::new();
+    fs::OpenOptions::new()
+        .read(<span style="color:#66d9ef">true</span>)
+        .open(path)<span style="color:#f92672">?</span>
+        .read_to_end(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rom)<span style="color:#f92672">?</span>;
+
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chip8 <span style="color:#f92672">=</span> Chip8::new(rand::random());
+    chip8.load_rom(<span style="color:#f92672">&amp;</span>rom)<span style="color:#f92672">?</span>;
+</code></pre></div><p>Next I set up the SDL environment for audio and video, and then implement the
+main loop which does the following:</p>
+<ol>
+<li>Poll key events to detect keydown and keyup events to update the keypad
+bit-vector state.</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">for</span> event <span style="color:#66d9ef">in</span> event_pump.poll_iter() {
+            <span style="color:#66d9ef">match</span> event {
+                <span style="color:#75715e">// [...]
+</span><span style="color:#75715e"></span>                Event::KeyDown {
+                    keycode: Some(keycode),
+                    ..
+                } <span style="color:#f92672">=&gt;</span> {
+                    keypad <span style="color:#f92672">|=</span> <span style="color:#66d9ef">match</span> keycode {
+                        Keycode::Num1 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x1</span>,
+                        Keycode::Num2 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x2</span>,
+                        Keycode::Num3 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x3</span>,
+                        Keycode::Num4 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xC</span>,
+                        Keycode::Q <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x4</span>,
+                        Keycode::W <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x5</span>,
+                        <span style="color:#75715e">// [...]
+</span><span style="color:#75715e"></span>                        _ <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">0</span>,
+                    };
+                }
+                <span style="color:#75715e">// [...]
+</span></code></pre></div><ol start="2">
+<li>Simulate a Chip8 frame</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        chip8.frame(keypad)<span style="color:#f92672">?</span>;
+</code></pre></div><ol start="3">
+<li>Play a tone if the tone enable flag is set</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">if</span> chip8.tone() {
+            device.resume();
+        } <span style="color:#66d9ef">else</span> {
+            device.pause();
+        }
+</code></pre></div><ol start="4">
+<li>Update the display texture</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        tex_display.with_lock(None, <span style="color:#f92672">|</span>buffer: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [<span style="color:#66d9ef">u8</span>], pitch: <span style="color:#66d9ef">usize</span><span style="color:#f92672">|</span> {
+            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_HEIGTH {
+                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
+                    <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
+                    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+                        <span style="color:#66d9ef">let</span> offset <span style="color:#f92672">=</span> y <span style="color:#f92672">*</span> pitch <span style="color:#f92672">+</span> (x <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> i) <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>;
+                        <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> byte <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span> <span style="color:#f92672">-</span> i) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> { <span style="color:#ae81ff">255</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
+                        buffer[offset] <span style="color:#f92672">=</span> v;
+                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> v;
+                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> v;
+                    }
+                }
+            }
+        })<span style="color:#f92672">?</span>;
+</code></pre></div><ol start="5">
+<li>Copy the display texture to the window canvas, to be stretched to fill the canvas</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        canvas.clear();
+        canvas.copy(<span style="color:#f92672">&amp;</span>tex_display, None, None)<span style="color:#f92672">?</span>;
+</code></pre></div><ol start="6">
+<li>Present the window canvas</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        canvas.present();
+</code></pre></div><ol start="7">
+<li>Sleep the remaining frame time, so that the loop is run 60 times per second</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">let</span> now <span style="color:#f92672">=</span> Instant::now();
+        <span style="color:#66d9ef">let</span> sleep_dur <span style="color:#f92672">=</span> frame_duration
+            .checked_sub(now.saturating_duration_since(timestamp))
+            .unwrap_or(Duration::new(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>));
+        ::std::thread::sleep(sleep_dur);
+        timestamp <span style="color:#f92672">=</span> now;
+</code></pre></div><h2 id="about-sdl-video-nomenclature">About SDL video nomenclature</h2>
+<p>If you&rsquo;re not familiar with SDL, you may find it hard to follow the part
+related to displaying the framebuffer, so I&rsquo;ll explain some SDL concepts here.</p>
+<ul>
+<li>Window: a window is what you expect, a frame managed by the Window Manager of
+your operating system where you can draw things inside, and it is also
+associated with input events (keyboard and mouse).</li>
+<li>Canvas: an area that can be drawn and shown on screen.  In SDL, the Window
+contains a canvas.</li>
+<li>Texture: a 2D rectangular image loaded into memory (if we are using
+accelerated SDL, like in our case, the texture is loaded into GPU memory).</li>
+</ul>
+<p>With this in mind, here&rsquo;s a description of the process of updating the display:</p>
+<ul>
+<li>First a texture is created</li>
+<li>In the main loop:
+<ul>
+<li>Lock the texture to access it&rsquo;s buffer.  Locking is necessary because the
+texture is being managed by SDL, and it can&rsquo;t be read or written without
+coordination.</li>
+<li>Update the texture content.  Since the texture format is RGB24 that&rsquo;s 1
+byte for each color of the RGB (with 3 bytes being 24 bits), I need to
+update 3 bytes in the buffer.</li>
+<li>Then copy the texture to the canvas.  Notice that the canvas size can be
+bigger than the Chip8 screen, whereas the texture is the exact same size
+as the Chip8 screen.  This copying procedure allows the texture to be
+scaled by hardware into the canvas.</li>
+<li>Present the window canvas.</li>
+</ul>
+</li>
+</ul>
+<h1 id="conclusion">Conclusion</h1>
+<p>In this first article I explained briefly what the CHIP-8 is, and I it&rsquo;s a good
+candidate for your first emulator.  Then I showed how I organized the emulator
+implementation into a backend and frontend, which is a pattern that can be
+applied to any emulator implementation and comes with the benefit of
+portability.</p>
+<p>The backend implementation contains the core parts of a simple emulator, making
+it easy to follow.</p>
+<p>The frontend shown in this article is implemented in SDL, and the description
+gives all the details of how to use SDL for an emulator (except for the sound
+part which I didn&rsquo;t explain because the CHIP-8 only plays a single tone, which
+is not very interesting).</p>
+<p>I hope you enjoyed this article, and I encourage you to write a CHIP-8 emulator
+in your favorite language!</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/thinkpad_helix2_linux/"> Thinkpad Helix 2 with Linux</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2021. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

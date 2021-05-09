@@ -1,7 +1,6 @@
 +++
 title = "CHIP-8 emulator in Rust.  Part 1"
 date = 2021-05-09T17:23:20+02:00
-draft = true
 Categories = ["emulator", "chip8"]
 +++
 
@@ -45,7 +44,7 @@ environments.  Since it was designed in the 1970s, the specs of the VM are very
 low compared to current standards.
 
 Here are some features of the CHIP-8
-- Monocrome 64x32 pixels display
+- Monochrome 64x32 pixels display
 - 4KB of Memory
     - 512B reserved
     - 3.5KB of RAM shared with the game program
@@ -122,7 +121,7 @@ would appear in the `Chip8` struct) with their own methods.
 From this point, there are basically three important parts: Instruction
 functions, Step function and Frame function, described below.  There are other
 useful functions that expose the internal state of the CHIP-8 (`tone` and
-`fb`), and a constructor (`new`) and a rom loader (`load_rom`).
+`fb`), and a constructor (`new`) and a ROM loader (`load_rom`).
 
 If you want to understand in detail the code in the Instruction functions and
 the Step function, you'll need to take a look at [the reference of the
@@ -156,7 +155,7 @@ Here's an example of one instruction: ADD
 This instruction takes a register and an immediate value, and stores the result
 of adding the register value with the immediate value.  Also, an overflow flag
 is stored in register Vf.  You can also see that the program counter (`pc`) is
-incremented by 2 because this instruction is sequencial and each CHIP-8
+incremented by 2 because this instruction is sequential and each CHIP-8
 instruction is 2 bytes.
 
 ### Step function
@@ -192,13 +191,13 @@ Snippet of the beginning of this function:
 A function that executes instructions and simulates hardware for the duration
 of a frame.
 
-The simulation of harwdare is really simple, it involves decrementing counters
+The simulation of hardware is really simple, it involves decrementing counters
 of the timers, and updating the tone enable flag.
 
 To execute the instructions, we add the time corresponding to a frame to the
 overtime of the last frame in order to compensate a longer frame with a shorter
 one.  Then, in a loop, we just fetch two consecutive bytes at the program
-counter, execute them, and substract the elapsed time to the frame remaining
+counter, execute them, and subtract the elapsed time to the frame remaining
 time, until we've used all the frame time.
 
 Implementation code:
@@ -238,13 +237,13 @@ an instance of the `Chip8` struct and interact with it handling all inputs and
 outputs with an operating system dependent library:
 [SDL](https://en.wikipedia.org/wiki/Simple_DirectMedia_Layer).  SDL stands for
 Simple DirectMedia Layer, and it's library with support for many platforms that
-allows handing input events (keyboard, joeystick and mouse) and output events
+allows handing input events (keyboard, joystick and mouse) and output events
 (display and sound) in a way abstracted from the platform native APIs.
 
 The SDL fronted is implemented in the [`sdl`
 folder](https://github.com/Dhole/chip8-rs/tree/master/sdl).
 
-The program will be started via cli, so I'm using an argument parsing library
+The program will be started via CLI, so I'm using an argument parsing library
 called [clap](https://github.com/clap-rs/clap) to handle two arguments: the
 path to the ROM file, and the display scale.  (Since the original display is
 only 64x32 pixels, rendering it without scaling would make it too small in a
@@ -282,7 +281,7 @@ desktop display):
 ```
 
 Next I read the ROM contents from disk by the specified path, create an
-instance of the `Chip8` struct and load the rom.  Notice that the `Chip8`
+instance of the `Chip8` struct and load the ROM.  Notice that the `Chip8`
 constructor takes a random value as input to be used as a seed for the random
 number generation.  I intentionally left the seed generation to the frontend
 because it's platform dependent:
@@ -301,7 +300,7 @@ Next I set up the SDL environment for audio and video, and then implement the
 main loop which does the following:
 
 1. Poll key events to detect keydown and keyup events to update the keypad
-   bitvector state.
+   bit-vector state.
 ```rust
         for event in event_pump.poll_iter() {
             match event {
@@ -416,4 +415,4 @@ part which I didn't explain because the CHIP-8 only plays a single tone, which
 is not very interesting).
 
 I hope you enjoyed this article, and I encourage you to write a CHIP-8 emulator
-in your favourite language!
+in your favorite language!
