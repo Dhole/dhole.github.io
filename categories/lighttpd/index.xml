@@ -1,22 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>lighttpd on Dhole&#39;s blog</title>
-    <link>https://lizard.niobe.cc/blog/categories/lighttpd/</link>
+    <link>https://dhole.github.io/categories/lighttpd/</link>
     <description>Recent content in lighttpd on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate>
-    
-	<atom:link href="https://lizard.niobe.cc/blog/categories/lighttpd/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate><atom:link href="https://dhole.github.io/categories/lighttpd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
-      <link>https://lizard.niobe.cc/blog/post/raspberry_pi_alpine_lighttpd/</link>
+      <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/raspberry_pi_alpine_lighttpd/</guid>
+      <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
       <description>Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt.
 Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide.
 After instalation, we add a new user which we will use for logging in:</description>
