@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>kernel on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/kernel/</link>
+    <link>https://lizard.niobe.cc/blog/categories/kernel/</link>
     <description>Recent content in kernel on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Nov 2017 14:35:56 -0800</lastBuildDate><atom:link href="https://dhole.github.io/categories/kernel/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 23 Nov 2017 14:35:56 -0800</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/kernel/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Enabling LUKS on the PocketCHIP</title>
-      <link>https://dhole.github.io/post/luks_on_chip/</link>
+      <link>https://lizard.niobe.cc/blog/post/luks_on_chip/</link>
       <pubDate>Thu, 23 Nov 2017 14:35:56 -0800</pubDate>
       
-      <guid>https://dhole.github.io/post/luks_on_chip/</guid>
+      <guid>https://lizard.niobe.cc/blog/post/luks_on_chip/</guid>
       <description>Introduction I&amp;rsquo;ve recently acquired a handheld ARM computer with screen and keyboard called the PocketCHIP. The main board on the device is called the CHIP, which is a tiny ARM computer capable of running Linux that is sold for $9.
 After flashing it with the CHIP 4.4 GUI OS, a flavor of Debian released by Next Thing Co (the company that made the PocketCHIP) I noticed I wasn&amp;rsquo;t able to mount LUKS-encrypted partitions due to missing kernel modules.</description>
     </item>
