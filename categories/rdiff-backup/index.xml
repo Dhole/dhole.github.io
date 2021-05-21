@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rdiff-backup on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/rdiff-backup/</link>
+    <link>https://lizard.niobe.cc/blog/categories/rdiff-backup/</link>
     <description>Recent content in rdiff-backup on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Nov 2016 01:17:17 -0700</lastBuildDate><atom:link href="https://dhole.github.io/categories/rdiff-backup/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Nov 2016 01:17:17 -0700</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/rdiff-backup/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>rdiff-backup-1.2.8 in Alpine</title>
-      <link>https://dhole.github.io/post/rdiff-backup-alpine/</link>
+      <link>https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/</link>
       <pubDate>Tue, 01 Nov 2016 01:17:17 -0700</pubDate>
       
-      <guid>https://dhole.github.io/post/rdiff-backup-alpine/</guid>
+      <guid>https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/</guid>
       <description>Introduction A few days ago I wanted to start doing incremental backups from my laptop to my Raspberry Pi 2 running Alpine Linux. I&amp;rsquo;ve had used rdiff-backup for some years now and I&amp;rsquo;m really happy with it. rdiff-backup is similar to rsync, in the sense that lets you synchronize folders over the network, but it has two added nice features: when synchronizing, only the differences between the files that have changed are sent; and after every synchronization, the differences between the old version of the files and the new ones is kept.</description>
     </item>
     
