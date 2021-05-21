@@ -8,7 +8,7 @@
         <title>Virtual Game Boy Printer with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -94,17 +94,26 @@ ACK := 0x81
 </code></pre><p>16 bit values (<code>LEN</code> and <code>CHECKSUM</code>) are sent in little-endian format (low byte first, high byte second).</p>
 <p>The <code>CHECKSUM</code> is the 16 bit integer value that is obtained by summing all the packet bytes except for the <code>MAGIC_BYTES</code> and the <code>CHECKSUM</code> itself.</p>
 <p>The following picture shows the beginning of a packet captured with an oscilloscope.</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Game Boy Printer serial communication capture by &lt;a href=&quot;http://furrtek.free.fr/?a=gbprinter&amp;amp;i=2&quot;&gt;Furrtek&lt;/a&gt;
+
+
+<figure >
+    <a href="../../media/gameboy_serial/furrtek_printer_protocol.png">
+        <img src="../../media/gameboy_serial/furrtek_printer_protocol_1000.png" alt="Game Boy Printer serial communication capture by [Furrtek](http://furrtek.free.fr/?a=gbprinter&amp;i=2)" />
+    </a>
     
+    <figcaption>
+        <p>
+        Game Boy Printer serial communication capture by <a href="http://furrtek.free.fr/?a=gbprinter&amp;i=2">Furrtek</a>
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <h2 id="commands">Commands</h2>
 <h3 id="initialize-cmd--0x01-data--"><strong>Initialize</strong> (<code>CMD = 0x01, DATA = {}</code>)</h3>
 <p>This command is sent before sending data to be printed, it prepares the Printer to start receiving data.</p>
@@ -395,17 +404,26 @@ uint16_t printer_data_len;
 }</code></pre></div>
 <h1 id="result">Result</h1>
 <p>And finally, the result:</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Picture taken with a Game Boy Camera and transferred to my computer using the virtual printer
+
+
+<figure >
+    <a href="../../media/gameboy_serial/gb_printer_2017-09-02T165217.png">
+        <img src="../../media/gameboy_serial/gb_printer_2017-09-02T165217_1000.png" alt="Picture taken with a Game Boy Camera and transferred to my computer using the virtual printer" />
+    </a>
     
+    <figcaption>
+        <p>
+        Picture taken with a Game Boy Camera and transferred to my computer using the virtual printer
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <p>To see the full source code of this project, check out the following repositories:</p>
 <ul>
 <li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
@@ -450,7 +468,7 @@ uint16_t printer_data_len;
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_1/"> Sniffing Game Boy serial traffic with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_1/"> Sniffing Game Boy serial traffic with an STM32F4</a>
                     
                 </div>
             </div>
@@ -458,7 +476,7 @@ uint16_t printer_data_len;
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
                     
                 </div>
             </div>

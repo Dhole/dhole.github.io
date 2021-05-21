@@ -8,7 +8,7 @@
         <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -98,17 +98,26 @@ plenty of GPIOs on the STM32F4-Discovery, we just need to make sure we use the
 <li>DATA{0..7} -&gt; PE{8..15}</li>
 <li>ADDR{0..15} -&gt; PD{0..15}</li>
 </ul>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    My setup with the GameBoy connected to the STM32F4-Discovery
+
+
+<figure >
+    <a href="../../media/gameboy_stm32f4/gb_setup.jpg">
+        <img src="../../media/gameboy_stm32f4/gb_setup_1000.jpg" alt="My setup with the GameBoy connected to the STM32F4-Discovery" />
+    </a>
     
+    <figcaption>
+        <p>
+        My setup with the GameBoy connected to the STM32F4-Discovery
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <h1 id="coding">Coding</h1>
 <p>The code of this project can be found in my github page under an open source
 license: <a href="https://github.com/Dhole/stm32f_GBCart">github.com/Dhole</a></p>
@@ -306,33 +315,61 @@ purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:</p>
 off.</p>
 <h1 id="results">Results</h1>
 <h2 id="photos">Photos</h2>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)
+
+
+<figure >
+    <a href="../../media/gameboy_stm32f4/gb_zelda.jpg">
+        <img src="../../media/gameboy_stm32f4/gb_zelda_1000.jpg" alt="The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)" />
+    </a>
     
+    <figcaption>
+        <p>
+        The Legend of Zelda. MBC1 game. Showing the cart RAM usage (The name, EDU, is saved in the cartridge RAM)
         
-    
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Dr. Mario. ROM Only game
-    
+            
         
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
+
+
+<figure >
+    <a href="../../media/gameboy_stm32f4/gb_drmario.jpg">
+        <img src="../../media/gameboy_stm32f4/gb_drmario_1000.jpg" alt="Dr. Mario. ROM Only game" />
+    </a>
+    
+    <figcaption>
+        <p>
+        Dr. Mario. ROM Only game
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
 <h2 id="videos">Videos</h2>
-<!-- raw HTML omitted -->
+
+<div class="embed video-player">
+<iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/M7dIPUz1igs" allowfullscreen frameborder="0">
+</iframe>
+</div>
+
 <p>Running The Legend of Zelda, - Link&rsquo;s Awakening, showing that the
 cartridge RAM is working.</p>
-<!-- raw HTML omitted -->
+
+<div class="embed video-player">
+<iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/_hMnb0bsdyU" allowfullscreen frameborder="0">
+</iframe>
+</div>
+
 <p>Running the demo 20y by Snorpung.</p>
 <h1 id="conclusions">Conclusions</h1>
 <p>Being able to emulate a full cartridge with its RAM and memory banking with an
@@ -394,7 +431,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_1/"> Emulating a GameBoy Cartridge with an STM32F4. Part 1</a>
                     
                 </div>
             </div>
@@ -402,7 +439,7 @@ cartridge emulator. Stay tunned!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
+                        <a href="https://dhole.github.io/post/gameboy_custom_logo/"> Booting the GameBoy with a custom logo</a>
                     
                 </div>
             </div>

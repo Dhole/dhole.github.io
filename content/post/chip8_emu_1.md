@@ -370,6 +370,10 @@ main loop which does the following:
         timestamp = now;
 ```
 
+Here's a capture of the end result, running the INVADERS game:
+
+{{% img src="../../media/chip8/chip8-sdl.png" caption="chip8 SDL frontend running the INVADERS game" %}}
+
 ## About SDL video nomenclature
 
 If you're not familiar with SDL, you may find it hard to follow the part
