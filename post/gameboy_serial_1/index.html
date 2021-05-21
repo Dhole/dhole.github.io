@@ -8,7 +8,7 @@
         <title>Sniffing Game Boy serial traffic with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -90,18 +90,27 @@ Categories:
 <li>Dupont Wire Jumper cables with at least one Female tip, $1 (at <a href="https://www.aliexpress.com/item/40PCS-Dupont-Wire-Jumper-Cables-10cm-Female-To-Female-1P-1P/32728717383.html?spm=2114.search0104.3.22.759e2b471o9HLk&amp;ws_ab_test=searchweb0_0,searchweb201602_3_10152_10151_10065_10344_10068_10130_10342_10547_10325_10343_10546_10340_10548_10341_10084_10083_10618_10139_10307_10313_10059_10534_100031_10629_10103_10626_10625_10624_10623_10622_10621_10620_10142,searchweb201603_2,ppcSwitch_5&amp;algo_expid=21181d2f-89d5-446a-8e01-cb486451a6c7-3&amp;algo_pvid=21181d2f-89d5-446a-8e01-cb486451a6c7&amp;transAbTest=ae803_5&amp;priceBeautifyAB=0">AliExpress</a>)</li>
 </ul>
 <h1 id="game-boy-serial-protocol">Game Boy serial protocol</h1>
-<p>The Game Boy (and the Game Boy Color) have a serial communication port that was used for two player games as well as to interface with peripherals like the Game Boy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Game Link Cable connector pins
+<p>The Game Boy (and the Game Boy Color) have a serial communication port that was used for two player games as well as to interface with peripherals like the Game Boy Printer.  The serial protocol is quite simple.  In the following drawing you can see what each of the 6 pins on the port do (from the cable point of view):
+
+
+<figure >
+    <a href="../../media/gameboy_serial/serial_connector.png">
+        <img src="../../media/gameboy_serial/serial_connector_1000.png" alt="Game Link Cable connector pins" />
+    </a>
     
+    <figcaption>
+        <p>
+        Game Link Cable connector pins
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+</p>
 <p>For a serial communication two devices will be connected together: a master and a slave.  The master will control the clock (SCK) signal which indicates when bits start and stop.  The master will be sending data to the slave through the Serial Out (SOUT) line while the slave will be sending data to the master through the Serial In (SIN) line.  The SD line is not used in games nor the Game Boy Printer, and it&rsquo;s not clear if it&rsquo;s used in any way.  All signals work at 5V TTL.</p>
 <p>The original Game Boy dives the clock (SCK) at 8192 Hz, allowing a transfer rate of 1 KB/s.</p>
 <p>Data is sent and received in bytes, and the master decides when a byte is both sent (SOUT) and received (SIN), which happens at the same time (basically, the two devices will exchange a byte).</p>
@@ -116,17 +125,26 @@ o1 o0 i7 i6 i5 i4 i3 i2
 o0 i7 i6 i5 i4 i3 i2 i1
 i7 i6 i5 i4 i3 i2 i1 i0
 </code></pre><p>The following Oscilloscope capture of a serial communication shows the transfer of a few bytes.  Since the bits are shifted out from the most significant bit of the transfer byte, the order of bits will be from 7 to 0:</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Oscilloscope capture by Sigint 112 posted at &lt;a href=&quot;http://www.mikrocontroller.net/topic/87532&quot;&gt;www.microcontroller.net&lt;/a&gt;, with overlay information added by me
+
+
+<figure >
+    <a href="../../media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info.jpg">
+        <img src="../../media/gameboy_serial/Sigint_112_www.mikrocontroller.net_0_info_1000.jpg" alt="Oscilloscope capture by Sigint 112 posted at [www.microcontroller.net](http://www.mikrocontroller.net/topic/87532), with overlay information added by me" />
+    </a>
     
+    <figcaption>
+        <p>
+        Oscilloscope capture by Sigint 112 posted at <a href="http://www.mikrocontroller.net/topic/87532">www.microcontroller.net</a>, with overlay information added by me
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <p>As we can see from the oscilloscope capture, the bit value is put on the data line when the clock signal falls and is replaced by the next bit at the next clock signal fall.  This means that a good opportunity to read the bit value is when the clock signal rises.</p>
 <h1 id="working-with-libopencm3-and-the-nucleo-f411re">Working with libopencm3 and the NUCLEO-F411RE</h1>
 <p>The <a href="http://www.st.com/en/evaluation-tools/nucleo-f411re.html">NUCLEO-F411RE</a> is an ARM development board based the <a href="http://www.st.com/en/microcontrollers/stm32f411re.html">STM32F411RET6</a> microcontroller (based itself on the ARM Cortex-M4).  The CPU can run at 100 MHz and it has 512 KB of Flash and 128 KB of SRAM.  The board has an ST-LINK/V2 which allows programming and debugging the microcontroller via USB as well as offering a virtual serial port (connected to one of the USARTs).  You can learn about all the pins functionalities and the jumper configurations in the <a href="http://www.st.com/content/ccc/resource/technical/document/user_manual/98/2e/fa/4b/e0/82/43/b7/DM00105823.pdf/files/DM00105823.pdf/jcr:content/translations/en.DM00105823.pdf">NUCLEO-64 datasheet</a>.  To program the board you will want to take a look at the <a href="http://www.st.com/en/microcontrollers/stm32f411re.html#design-scroll">datasheets of the STM32F411RET6 and its periferals</a>.</p>
@@ -193,17 +211,26 @@ i7 i6 i5 i4 i3 i2 i1 i0
 <span style="color:#75715e">#define GPIOP_SD   GPIOC
 </span><span style="color:#75715e">#define GPION_SD   GPIO2</span></code></pre></div>
 <p>The hardware setup looks like this:</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Sniffing setup with two player mode in Tetris
+
+
+<figure >
+    <a href="../../media/gameboy_serial/gameboys_tetris_link.jpg">
+        <img src="../../media/gameboy_serial/gameboys_tetris_link_1000.jpg" alt="Sniffing setup with two player mode in Tetris" />
+    </a>
     
+    <figcaption>
+        <p>
+        Sniffing setup with two player mode in Tetris
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <p>The way the sniffer will work is by reading the SIN and SOUT signals at every SCK cycle, building up the transferred bytes and sending them in pairs of (SOUT, SIN) over the USART that is connected to the ST-LINK which is connected via USB to my computer exposing a virtual serial device.  On the computer side I will receive the data and present it nicely with a program written in Rust.</p>
 <p>The following snippet will be required to setup the GPIO pins that are connected to the ST-LINK to work as USART (which is the alternate function number 7).</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span>
@@ -279,17 +306,26 @@ i7 i6 i5 i4 i3 i2 i1 i0
 }</code></pre></div>
 <p>As a bonus, here you can find the <a href="../../media/gameboy_serial/tetris.txt">serial communication capture of playing Tetris in multiplayer mode</a>.  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn&rsquo;t seem too complicated.  For instance, during the playing part, each Game Boy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.</p>
 <p>I&rsquo;ve also made a <a href="../../media/gameboy_serial/printer.txt">capture of the data transferred to the Game Boy Printer by the Game Boy Camera to print a photo</a>.  We will use this capture in the next part of these posts to understand how the Game Boy Printer protocol works.  And here&rsquo;s a picture of the setup:</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Sniffing setup with Game Boy Camera connected to the Game Boy Printer
+
+
+<figure >
+    <a href="../../media/gameboy_serial/gameboy_printer_link.jpg">
+        <img src="../../media/gameboy_serial/gameboy_printer_link_1000.jpg" alt="Sniffing setup with Game Boy Camera connected to the Game Boy Printer" />
+    </a>
     
+    <figcaption>
+        <p>
+        Sniffing setup with Game Boy Camera connected to the Game Boy Printer
         
+            
+        
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
 <p>To see the full source code of this project, check out the following repositories:</p>
 <ul>
 <li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
@@ -334,7 +370,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
+                        <a href="https://dhole.github.io/post/luks_on_chip/"> Enabling LUKS on the PocketCHIP</a>
                     
                 </div>
             </div>
@@ -342,7 +378,7 @@ i7 i6 i5 i4 i3 i2 i1 i0
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
                     
                 </div>
             </div>

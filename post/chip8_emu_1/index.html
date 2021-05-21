@@ -8,7 +8,7 @@
         <title>CHIP-8 emulator in Rust.  Part 1 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/emulator">emulator</a> </span>
+<span><a href="https://dhole.github.io/categories/emulator">emulator</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/chip8">chip8</a> </span>
+<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
 
 </div>
 
@@ -393,7 +393,29 @@ bit-vector state.</li>
             .unwrap_or(Duration::new(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>));
         ::std::thread::sleep(sleep_dur);
         timestamp <span style="color:#f92672">=</span> now;
-</code></pre></div><h2 id="about-sdl-video-nomenclature">About SDL video nomenclature</h2>
+</code></pre></div><p>Here&rsquo;s a capture of the end result, running the INVADERS game:</p>
+
+
+<figure >
+    
+    
+        <img src="../../media/chip8/chip8-sdl.png" alt="chip8 SDL frontend running the INVADERS game" />
+    
+    
+    
+    <figcaption>
+        <p>
+        chip8 SDL frontend running the INVADERS game
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+<h2 id="about-sdl-video-nomenclature">About SDL video nomenclature</h2>
 <p>If you&rsquo;re not familiar with SDL, you may find it hard to follow the part
 related to displaying the framebuffer, so I&rsquo;ll explain some SDL concepts here.</p>
 <ul>
@@ -475,7 +497,7 @@ in your favorite language!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/thinkpad_helix2_linux/"> Thinkpad Helix 2 with Linux</a>
+                        <a href="https://dhole.github.io/post/thinkpad_helix2_linux/"> Thinkpad Helix 2 with Linux</a>
                     
                 </div>
             </div>
@@ -483,7 +505,7 @@ in your favorite language!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/nfs_wireguard/"> NFS server over WireGuard in Alpine</a>
+                        <a href="https://dhole.github.io/post/nfs_wireguard/"> NFS server over WireGuard in Alpine</a>
                     
                 </div>
             </div>

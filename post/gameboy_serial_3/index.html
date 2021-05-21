@@ -8,7 +8,7 @@
         <title>Printing on the Game Boy Printer using an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -400,28 +400,46 @@ Categories:
 <h1 id="result">Result</h1>
 <p>Finally, we can print using the Game Boy Printer.  The Game Boy printer uses thermal paper to print: there&rsquo;s no ink in the printer, the header just heats the paper, which turns dark on the heated spot.  Since thermal paper is used in shops and supermarkets to print receipts, I took a receipt, cut it to have 38mm width (the Game Boy Printer paper size), and printed on top of that.</p>
 <p>Here are the results!</p>
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    Printing from the PC via the NUCLEO-F411RE
+
+
+<figure >
+    <a href="../../media/gameboy_serial/printing.jpg">
+        <img src="../../media/gameboy_serial/printing_1000.jpg" alt="Printing from the PC via the NUCLEO-F411RE" />
+    </a>
     
+    <figcaption>
+        <p>
+        Printing from the PC via the NUCLEO-F411RE
         
-    
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<pre><code>&lt;figcaption&gt;
-    &lt;p&gt;
-    A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality.
-    
+            
         
+        </p> 
+    </figcaption>
     
-    &lt;/p&gt; 
-&lt;/figcaption&gt;
-</code></pre>
-<!-- raw HTML omitted -->
+</figure>
+
+
+
+
+
+<figure >
+    <a href="../../media/gameboy_serial/prints.jpg">
+        <img src="../../media/gameboy_serial/prints_1000.jpg" alt="A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality." />
+    </a>
+    
+    <figcaption>
+        <p>
+        A few pictures printed with the Game Boy Printer on supermarket receipts.  This photo is a close up, the pictures are quite small in reality.
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
 <p>To see the full source code of this project, check out the following repositories:</p>
 <ul>
 <li><a href="https://github.com/Dhole/gb-link-stm32f411">gb-link-stm32f411: the code that runs on the NUCLEO-F411RE</a></li>
@@ -465,7 +483,7 @@ Categories:
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_2/"> Virtual Game Boy Printer with an STM32F4</a>
                     
                 </div>
             </div>
@@ -473,7 +491,7 @@ Categories:
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_cartridge_rw_1/"> Programming Game Boy Chinese cartridges with an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_rw_1/"> Programming Game Boy Chinese cartridges with an STM32F4</a>
                     
                 </div>
             </div>
