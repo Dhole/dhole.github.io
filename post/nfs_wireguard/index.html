@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>NFS server over WireGuard in Alpine &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">NFS server over WireGuard in Alpine</h1>  
+			
+			<time class="li-article-date">Friday, May 21, 2021</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
+
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>I have recently built a new storage server at home consisting of 6x2TB hard
+drives configured as RAID-Z2 with ZFS.  For the operating system I have chosen
+Alpine Linux, which is a distribution that I really like for its
+lightweightness and its simplicity.</p>
+<p>Previously I had a storage server running Debian which I was sharing via sshfs.
+sshfs is really easy to set up, as you just need to be running an ssh server,
+nevertheless it has some disadvantages:</p>
+<ul>
+<li>On the client it runs via fuse, so all I/O operations go through userspace,
+adding overhead</li>
+<li>For each sshfs process, you can only access with a single user ID and group
+ID.  I use different users in my system so this is inconvenient.</li>
+</ul>
+<p>I know that in Linux the de facto protocol to share a filesystem is NFS, but in
+the past I decided not to use it because NFS doesn&rsquo;t run the protocol under an
+encrypted channel, which is something that I wanted.  But now we have
+WireGuard, which is a very performant and easy to set up VPN protocol, so I
+decided to set up NFS sharing over WireGuard for my new storage server.</p>
+<p>Here&rsquo;s my setup:</p>
+<ul>
+<li>server: Apline Linux (hostname: host.foo.bar)</li>
+<li>client: Arch Linux</li>
+</ul>
+<p>Here are some reference I used to accomplish this setup:</p>
+<ul>
+<li><a href="https://alexdelorenzo.dev/linux/2020/01/28/nfs-over-wireguard.html">https://alexdelorenzo.dev/linux/2020/01/28/nfs-over-wireguard.html</a></li>
+<li><a href="https://wiki.alpinelinux.org/wiki/Configure_a_Wireguard_interface_(wg)">https://wiki.alpinelinux.org/wiki/Configure_a_Wireguard_interface_(wg)</a></li>
+<li><a href="https://wiki.alpinelinux.org/wiki/Setting_up_a_nfs-server">https://wiki.alpinelinux.org/wiki/Setting_up_a_nfs-server</a></li>
+</ul>
+<h1 id="wireguard">Wireguard</h1>
+<p>We will setup a wireguard connection between the server and the client using the following parameters:</p>
+<ul>
+<li>server
+<ul>
+<li>interface: wg0</li>
+<li>IP: 10.8.0.1</li>
+</ul>
+</li>
+<li>client
+<ul>
+<li>interface: wgNFS</li>
+<li>IP: 10.8.0.2</li>
+</ul>
+</li>
+</ul>
+<h2 id="server">Server</h2>
+<p>First of all we install the wireguard tools required to generate keys and
+manage the wireguard interface.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apk add wireguard-tools-wg wireguard-tools-wg-quick wireguard-tools-doc wireguard-tools
+</code></pre></div><p>Then we load the wireguard module and configure our server to load it again on
+boot.  In Alpine wireguard is already available in the kernel.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">modprobe wireguard
+echo <span style="color:#e6db74">&#34;wireguard&#34;</span> &gt;&gt; /etc/modules
+</code></pre></div><p>Now we need to generate a key pair.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">umask <span style="color:#ae81ff">077</span> 
+wg genkey &gt; privatekey
+wg pubkey &lt; privatekey &gt; publickey
+</code></pre></div><p>We edit the wireguard configuration for the interface <code>wg0</code> by editing the file
+<code>/etc/wireguard/wg0.conf</code> with the following contents (where
+<code>SERVER_PRIVATE_KEY</code> are the contents of the server&rsquo;s <code>privatekey</code> and
+<code>CLIENT_PUBLIC_KEY</code> are the contents of the client&rsquo;s <code>publickey</code>, which is
+generated in the next section):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">Interface</span>]
+<span style="color:#a6e22e">ListenPort</span> = <span style="color:#ae81ff">51820</span>
+<span style="color:#a6e22e">PrivateKey</span> = <span style="color:#a6e22e">SERVER_PRIVATE_KEY</span>
+
+[<span style="color:#a6e22e">Peer</span>]
+<span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">CLIENT_PUBLIC_KEY</span>
+<span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">10.8</span>.<span style="color:#ae81ff">0.2</span><span style="color:#960050;background-color:#1e0010">/</span><span style="color:#ae81ff">32</span>
+</code></pre></div><p>Don&rsquo;t forget to delete the privatekey file once you&rsquo;ve copied it&rsquo;s contents in
+the wireguard configuration file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">rm privatekey
+</code></pre></div><p>Now we edit the network configuration file at <code>/etc/network/interfaces </code> and
+add the following, so that the wireguard interface is set up automatically
+(Notice that we didn&rsquo;t set an interface address in the wireguard configuration,
+but we are specifying it here):</p>
+<pre><code>auto wg0
+iface wg0 inet static
+        requires eth0
+        use wireguard
+        address 10.8.0.1
+</code></pre><p>Now we start the wireguard interface manually (in the next reboot, it will be
+started automatically):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ifup wg0
+</code></pre></div><h2 id="client">Client</h2>
+<p>Install wireguard tools:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo pacman -S wireguard-tools
+</code></pre></div><p>Like in the server, we create a pair of keys:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">umask <span style="color:#ae81ff">077</span> 
+wg genkey &gt; privatekey
+wg pubkey &lt; privatekey &gt; publickey
+</code></pre></div><p>I choose a different name for the client interface.  To configure wireguard we edit <code>/etc/wireguard/wgNFS.conf</code> (where
+<code>CLIENT_PRIVATE_KEY</code> are the contents of the client&rsquo;s <code>privatekey</code> and
+<code>SERVER_PRIVATE_KEY</code> are the contents of the servers&rsquo;s <code>publickey</code>, which is
+generated in the previous section):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">Interface</span>]
+<span style="color:#a6e22e">Address</span> = <span style="color:#ae81ff">10.8</span>.<span style="color:#ae81ff">0.2</span><span style="color:#960050;background-color:#1e0010">/</span><span style="color:#ae81ff">24</span>
+<span style="color:#a6e22e">PrivateKey</span> = <span style="color:#a6e22e">CLIENT_PRIVATE_KEY</span>
+
+[<span style="color:#a6e22e">Peer</span>]
+<span style="color:#a6e22e">PublicKey</span> = <span style="color:#a6e22e">SERVER_PUBLIC_KEY</span>
+<span style="color:#a6e22e">Endpoint</span> = <span style="color:#a6e22e">host</span>.<span style="color:#a6e22e">foo</span>.<span style="color:#a6e22e">bar</span><span style="color:#960050;background-color:#1e0010">:</span><span style="color:#ae81ff">51820</span>
+<span style="color:#a6e22e">AllowedIPs</span> = <span style="color:#ae81ff">10.8</span>.<span style="color:#ae81ff">0.0</span><span style="color:#960050;background-color:#1e0010">/</span><span style="color:#ae81ff">24</span>
+</code></pre></div><p>Don&rsquo;t forget to delete the privatekey file once you&rsquo;ve copied it&rsquo;s contents in
+the wireguard configuration file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">rm privatekey
+</code></pre></div><p>Finally we manage the set up of the interface with systemd, and start it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo systemctl enable wg-quick@wgNFS.service
+sudo systemctl daemon-reload
+sudo systemctl start wg-quick@wgNFS.service
+</code></pre></div><p>The wireguard setup should be working now.  You can verify that you have a wireguard communication between server and client by doing pings over the wireguard interface.</p>
+<p>From server:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ping 10.8.0.2
+</code></pre></div><p>From client:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ping 10.8.0.1
+</code></pre></div><p>Both ways should work if everything is working as expected.</p>
+<h1 id="nfs">NFS</h1>
+<h2 id="server-1">Server</h2>
+<p>Install nfs utilities:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apk add nfs-utils nfs-utils-openrc nfs-utils-doc
+</code></pre></div><p>We edit the nfs daemon configuration parameters in order to disable nfs version
+2 and 3 (leaving only version 4, which is the latest), and we also instruct nfs
+rpc to listen on the wireguard interface only.  To do this we edit the file
+<code>/etc/conf.d/nfs</code> and change the corresponding part:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+
+<span style="color:#75715e"># Options to pass to rpc.nfsd</span>
+OPTS_RPC_NFSD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--no-nfs-version 2 --no-nfs-version 3 --nfs-version 4 --host 10.8.0.1 8&#34;</span>
+
+<span style="color:#75715e"># Options to pass to rpc.mountd</span>
+<span style="color:#75715e"># ex. OPTS_RPC_MOUNTD=&#34;-p 32767&#34;</span>
+OPTS_RPC_MOUNTD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--no-nfs-version 2 --no-nfs-version 3 --nfs-version 4&#34;</span>
+
+<span style="color:#f92672">[</span>...<span style="color:#f92672">]</span>
+</code></pre></div><p>We also create and edit the file <code>/etc/nfs.conf</code> to make the nfsd process to only listen on the wireguard interface:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">nfsd</span>]
+<span style="color:#a6e22e">host</span>=<span style="color:#ae81ff">10.8</span>.<span style="color:#ae81ff">0.1</span>
+</code></pre></div><p>Finally, we add a line to <code>/etc/exports</code> to set the path we want to share over NFS:</p>
+<pre><code>/data          10.8.0.0/24(rw,sync,no_subtree_check,crossmnt,no_root_squash)
+</code></pre><p>We run the following command to load the recently updated exports file:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">exportfs -a
+</code></pre></div><p>And finally we add the nfs service to the default target in OpenRC and start it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">rc-update add nfs
+rc-service nfs start
+</code></pre></div><h2 id="client-1">Client</h2>
+<p>On the client side, we add an entry to fstab indicating the NFS mount.  Using
+systemd we specify the service requirements for this mount:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">echo <span style="color:#e6db74">&#34;10.8.0.1:/data   /data    nfs vers=4.2,_netdev,noauto,x-systemd.automount,x-systemd.requires=wg-quick@wgNFS.service&#34;</span> &gt;&gt; /etc/fstab
+</code></pre></div><p>And finally, we restart the remote-fs systemd target which will trigger the NFS
+mount by reading our fstab file.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">sudo systemctl daemon-reload 
+sudo systemctl restart remote-fs.target
+</code></pre></div><p>Now in our client we should be able to access the storage folder at <code>/data</code>.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/chip8_emu_1/"> CHIP-8 emulator in Rust.  Part 1</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2021. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

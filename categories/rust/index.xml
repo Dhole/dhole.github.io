@@ -2,45 +2,45 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rust on Dhole&#39;s blog</title>
-    <link>https://lizard.niobe.cc/blog/categories/rust/</link>
+    <link>https://dhole.github.io/categories/rust/</link>
     <description>Recent content in rust on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Mar 2018 00:33:57 +0100</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/rust/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 12 Mar 2018 00:33:57 +0100</lastBuildDate><atom:link href="https://dhole.github.io/categories/rust/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Programming Game Boy Chinese cartridges with an STM32F4</title>
-      <link>https://lizard.niobe.cc/blog/post/gameboy_cartridge_rw_1/</link>
+      <link>https://dhole.github.io/post/gameboy_cartridge_rw_1/</link>
       <pubDate>Mon, 12 Mar 2018 00:33:57 +0100</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/gameboy_cartridge_rw_1/</guid>
+      <guid>https://dhole.github.io/post/gameboy_cartridge_rw_1/</guid>
       <description>Introduction For the past few years I have been interested in the Game Boy: I&amp;rsquo;ve written an emulator in C (without sound), I developed a physical cartridge &amp;ldquo;emulator&amp;rdquo; using a microcontroller, and most recently I&amp;rsquo;ve built a project to interface my PC with the Game Link. I&amp;rsquo;ve also played a bit with Game Boy programming.
 In the past I considered buying a Game Boy flashcart so that I could run demos and other scene ROMs on real hardware comfortably, but the price of such carts is a bit high.</description>
     </item>
     
     <item>
       <title>Printing on the Game Boy Printer using an STM32F4</title>
-      <link>https://lizard.niobe.cc/blog/post/gameboy_serial_3/</link>
+      <link>https://dhole.github.io/post/gameboy_serial_3/</link>
       <pubDate>Sun, 25 Feb 2018 16:33:57 +0100</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/gameboy_serial_3/</guid>
+      <guid>https://dhole.github.io/post/gameboy_serial_3/</guid>
       <description>In this third and final part of the project about the Game Boy serial communication I will explain how I managed to print on the Game Boy Printer from my PC using an STM32F4 as the bridge between the two. The encoding of the image into Game Boy tiles will happen on the PC, which will send it to the STM32F4 following the packet format of the Game Boy Printer. The STM32F4 will only forward the data to the Game Boy Printer.</description>
     </item>
     
     <item>
       <title>Virtual Game Boy Printer with an STM32F4</title>
-      <link>https://lizard.niobe.cc/blog/post/gameboy_serial_2/</link>
+      <link>https://dhole.github.io/post/gameboy_serial_2/</link>
       <pubDate>Fri, 23 Feb 2018 16:33:57 +0100</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/gameboy_serial_2/</guid>
+      <guid>https://dhole.github.io/post/gameboy_serial_2/</guid>
       <description>In this second part of the project about interfacing the Game Boy serial communication with an embedded development board I will explain how I built a Virtual Game Boy Printer. The embedded board will be simulating a real Game Boy Printer, replying to the Game Boy following the protocol used by the Game Boy Printer so that the Game Boy sends the entire data meant to be print. This data will then be forwarded to my computer which will construct a PNG image out of it.</description>
     </item>
     
     <item>
       <title>Sniffing Game Boy serial traffic with an STM32F4</title>
-      <link>https://lizard.niobe.cc/blog/post/gameboy_serial_1/</link>
+      <link>https://dhole.github.io/post/gameboy_serial_1/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/gameboy_serial_1/</guid>
+      <guid>https://dhole.github.io/post/gameboy_serial_1/</guid>
       <description>In these series of blog posts I will write about the Game Boy serial communication protocol and how to interact with it by using an embedded development board. The code for the development board will be written in C, and the code running on the computer will be written in Rust.
 The first part will consist on understanding the Game Boy serial communication protocol, becoming familiar with embedded development using the libopencm3 free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</description>
     </item>
