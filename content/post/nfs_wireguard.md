@@ -1,7 +1,6 @@
 ---
 title: NFS server over WireGuard in Alpine
 date: 2021-05-21T13:27:31+02:00
-draft: true
 categories: 
 - alpine
 - linux

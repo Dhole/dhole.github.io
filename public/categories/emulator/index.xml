@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>emulator on Dhole&#39;s blog</title>
-    <link>https://lizard.niobe.cc/blog/categories/emulator/</link>
+    <link>https://dhole.github.io/categories/emulator/</link>
     <description>Recent content in emulator on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 May 2021 17:23:20 +0200</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 09 May 2021 17:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CHIP-8 emulator in Rust.  Part 1</title>
-      <link>https://lizard.niobe.cc/blog/post/chip8_emu_1/</link>
+      <link>https://dhole.github.io/post/chip8_emu_1/</link>
       <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/chip8_emu_1/</guid>
+      <guid>https://dhole.github.io/post/chip8_emu_1/</guid>
       <description>I have been interested in the topic of emulation for many years; in particular, game console emulation. I started playing games under emulators when I was a teenager and I was fascinated by how a piece of software would let me play a game in a completely different architecture than the original one.
 I&amp;rsquo;ve you&amp;rsquo;ve ever been interested in learning about emulation, maybe you&amp;rsquo;ve learned about the CHIP-8; a specification of a simple virtual machine designed to play 8bit 2D videogames in the mid 1970s.</description>
     </item>
