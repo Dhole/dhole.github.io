@@ -74,6 +74,17 @@ code {
     background-color: #272822;
 }
 
+table, th, td {
+    border: 0.1em solid;
+    border-collapse: collapse;
+}
+th, td{
+    padding: 0.5em;
+}
+table figure {
+  margin: 0em;
+}
+
 /** Screen furniture **/
 .li-page-header {
     background-color: #000;

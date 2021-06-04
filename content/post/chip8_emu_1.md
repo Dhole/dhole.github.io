@@ -1,7 +1,7 @@
 +++
 title = "CHIP-8 emulator in Rust.  Part 1"
 date = 2021-05-09T17:23:20+02:00
-Categories = ["emulator", "chip8"]
+Categories = ["emulator", "chip8", "rust"]
 +++
 
 I have been interested in the topic of emulation for many years; in particular,
