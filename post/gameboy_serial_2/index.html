@@ -350,7 +350,8 @@ uint16_t printer_data_len;
         <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
         <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
     }
-}</code></pre></div>
+}
+</code></pre></div>
 <p>The function <code>printer_save_image</code> will decode the tile rows into a matrix so that the image can be saved as a grayscale PNG.  The helper function <code>tile_row_to_pixel_rows</code> decodes a single tile row into &lsquo;pixel rows&rsquo;, that is 8 rows of 160 grayscale pixels each.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">printer_save_image</span>(
     tile_rows: <span style="color:#66d9ef">&amp;</span>Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span>,
@@ -401,7 +402,8 @@ uint16_t printer_data_len;
         }
     }
     <span style="color:#66d9ef">return</span> pixel_rows;
-}</code></pre></div>
+}
+</code></pre></div>
 <h1 id="result">Result</h1>
 <p>And finally, the result:</p>
 
