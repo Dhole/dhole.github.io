@@ -287,7 +287,8 @@ Categories:
     } <span style="color:#66d9ef">else</span> {
         <span style="color:#66d9ef">return</span> Ok(None);
     }
-}</code></pre></div>
+}
+</code></pre></div>
 <p>Next we will use the following function to print a single image, sending the proper packets to the Game Boy Printer and waiting for it to finish:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(
     port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>,
@@ -326,7 +327,8 @@ Categories:
         }
     }
     <span style="color:#66d9ef">return</span> Ok(());
-}</code></pre></div>
+}
+</code></pre></div>
 <p>To encode the image we want to print into tiles, we use the following function, which takes an image and returns a vector of tile rows (the exact same data representation that the Game Boy Printer uses).  This function will also convert the image color space from 8 to 2 bits by using the thresholds 0-63, 64-127, 128-191, 192-255.  I highly recommend converting the image to 2 bit grayscale color space using an external program that supports <a href="https://en.wikipedia.org/wiki/Dithering">dithering</a>, like <a href="https://www.gimp.org/">GIMP</a> for better results.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">img_to_tile_rows</span>(img: <span style="color:#a6e22e">image</span>::GrayImage) -&gt; Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> {
     <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span>..img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">16</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">640</span>]).collect();
@@ -355,7 +357,8 @@ Categories:
         }
     }
     <span style="color:#66d9ef">return</span> tile_rows;
-}</code></pre></div>
+}
+</code></pre></div>
 <p>Finally, the main function starts by taking an input image and transforming it into tile rows, which are then grouped into groups of 9 (which represent the biggest image that the Game Boy Printer can print at once) and sends them to the Game Boy Printer to be printed consecutively, leaving no margin in between:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_print</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>, filename: <span style="color:#66d9ef">&amp;</span><span style="color:#66d9ef">str</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
     <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span> image::open(<span style="color:#f92672">&amp;</span>Path::new(filename)) {
@@ -396,7 +399,8 @@ Categories:
     }
 
     <span style="color:#66d9ef">return</span> Ok(());
-}</code></pre></div>
+}
+</code></pre></div>
 <h1 id="result">Result</h1>
 <p>Finally, we can print using the Game Boy Printer.  The Game Boy printer uses thermal paper to print: there&rsquo;s no ink in the printer, the header just heats the paper, which turns dark on the heated spot.  Since thermal paper is used in shops and supermarkets to print receipts, I took a receipt, cut it to have 38mm width (the Game Boy Printer paper size), and printed on top of that.</p>
 <p>Here are the results!</p>

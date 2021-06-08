@@ -303,7 +303,8 @@ i7 i6 i5 i4 i3 i2 i1 i0
         print<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}:{} &#34;</span>, sdout_s, sdin_s);
         io::stdout().flush()<span style="color:#f92672">?</span>;
     }
-}</code></pre></div>
+}
+</code></pre></div>
 <p>As a bonus, here you can find the <a href="../../media/gameboy_serial/tetris.txt">serial communication capture of playing Tetris in multiplayer mode</a>.  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn&rsquo;t seem too complicated.  For instance, during the playing part, each Game Boy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.</p>
 <p>I&rsquo;ve also made a <a href="../../media/gameboy_serial/printer.txt">capture of the data transferred to the Game Boy Printer by the Game Boy Camera to print a photo</a>.  We will use this capture in the next part of these posts to understand how the Game Boy Printer protocol works.  And here&rsquo;s a picture of the setup:</p>
 

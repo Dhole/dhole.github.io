@@ -9,7 +9,12 @@ This post is the continuation of [CHIP-8 emulator in Rust.  Part
 1](../chip8_emu_1/), please check it if you haven't already!
 
 In this second part I will explain how I ported the CHIP-8 emulator I built in
-Rust to an embedded ARM microcontroller.
+Rust to an embedded ARM microcontroller.  I will explain the hardware I chose
+to build this portable CHIP-8 device, the Rust libraries I used and I'll give
+an overview of how the code is laid out.  I excluded details about hardware
+diagrams and explicit mention of how the hardware is connected to each pin
+because I'm sure the astute reader will be able to figure this out from the
+code itself.
 
 You can find the [source code of the emulator in
 github](https://github.com/Dhole/chip8-rs)
@@ -25,7 +30,7 @@ Pill](http://land-boards.com/blwiki/index.php?title=STM32_Blue_Pill).  I've used
 - flashing and debugging with open source tools
 - ARM 32bit based (much powerful than an AVR based Arduino, and a very well
   supported architecture in open source toolchains)
-- many peripherials
+- many peripherals
 
 You can find more [details about the Blue Pill in the land boards wiki](http://land-boards.com/blwiki/index.php?title=STM32_Blue_Pill).  Nevertheless, here are some technical specs:
 - Flash: 64 KB/128 KB
@@ -34,31 +39,31 @@ You can find more [details about the Blue Pill in the land boards wiki](http://l
 
 ## Display
 
-For the video output of the Chip8 I have chosen a Nokia 5110 LCD screen which has the following properties:
+For the video output of the CHIP-8 I have chosen a Nokia 5110 LCD screen which has the following properties:
 - pcd8544 driver
 - 84x48 pixels
 - backlight
 
 The reasoning behind this choice is that there's an already existing [Rust
 driver implementation for the pcd8544
-driver](https://github.com/dancek/pcd8544-hal), the Chip8 output (64x32 pixels)
+driver](https://github.com/dancek/pcd8544-hal), the CHIP-8 output (64x32 pixels)
 will fit in the screen (84x48 pixels), and finally there's the nostalgia factor
-of having played games on a nokia 3310 phone when I was young (which has a very
+of having played games on a Nokia 3310 phone when I was young (which has a very
 similar screen).
 
 ## Sound
 
-Since the Chip8 has a sound (via a single tone output), I added a spaker driven
+Since the CHIP-8 has a sound (via a single tone output), I added a speaker driven
 via PWM to control the audio frequency.
 
 ## Input
 
-The Chip8 is driven by a 16 keys arranged in a 4x4 matrix, and I conveniently found a 4x4 key matrix that will suit this project perfectly.
+The CHIP-8 is driven by a 16 keys arranged in a 4x4 matrix, and I conveniently found a 4x4 key matrix that will suit this project perfectly.
 
 ## Summary
 
 I bought the components via AliExpress, but you can find them in other places.
-I've included the price based on whant I see now (2021-06-03) in AliExpress for
+I've included the price based on what I see now (2021-06-03) in AliExpress for
 reference.
 
 |Component |Price  | Picture|
@@ -81,11 +86,12 @@ logic as a backend library independent of how the input and output is handled.
 In particular, the `chip8` library exposes a struct which maintains the state
 of the CHIP-8 virtual machine and a method that is supposed to be called 60
 times per second called `frame`, among other methods to query the state of the
-framebuffer and tone.
+frame buffer and tone.
 
 For this embedded port, I introduced a new frontend that will use the `chip8`
 library and handle the inputs and outputs via the hardware shown in the
-previous section.  To achieve this I extended the workspace with a new project (the embedded frontend), and now the root `Cargo.toml` looks like this:
+previous section.  To achieve this I extended the workspace with a new project
+(the embedded frontend), and now the root `Cargo.toml` looks like this:
 
 ```toml
 [workspace]
@@ -107,14 +113,14 @@ I have used mainly two hardware libraries:
   implementation for the STM32F1 microcontroller family based in the
   [embedded-hal](https://github.com/rust-embedded/embedded-hal) traits.  HAL
   stands for "Hardware Abstraction Library" and it offers a common API among
-  different microcontrolers to access the different peripherials (GPIOs,
+  different microcontrollers to access the different peripherals (GPIOs,
   timers, SPI, etc.).  The idea behind the `embedded-hal` crate is to define a
-  set of traits for each microcontroler peripherial so that particular
+  set of traits for each microcontroller peripheral so that particular
   libraries (like the `stm32f1xx-hal`) implement for specific hardware, to make
   it easy to reuse code when changing targets.
 - [cortex-m](https://github.com/rust-embedded/cortex-m) and
   [cortex-m-rt](https://github.com/rust-embedded/cortex-m-rt): two libraries to
-  access cortex-m funcionalities (that's the family of ARM CPU used in the
+  access cortex-m functionalities (that's the family of ARM CPU used in the
   STM32F1 microcontrollers).
 - [pcd8544-hal](https://github.com/dancek/pcd8544-hal): A PCD8544 (Nokia 5110)
   driver, which also uses the `embedded-hal` traits.
@@ -124,12 +130,12 @@ Software libraries:
   `embedded-hal` traits.  I'm using this library to block on asynchronous
   interrupts.
 - [panic-halt](https://github.com/korken89/panic-halt): used to set panic
-  behaviour to halt.  A rust project requires a definition of panic behaviour.
-  When using `std`, the panic behaviour is defined as a routine that unwinds
+  behavior to halt.  A rust project requires a definition of panic behavior.
+  When using `std`, the panic behavior is defined as a routine that unwinds
   the stack to show all the functions that were called until the panic was
   reached, and then terminate.  In the embedded world we don't have an
   operating system and thus we lose `std`, so we need to manually define the
-  panic behaviour.
+  panic behavior.
 - [arrayvec](https://github.com/bluss/arrayvec): This library provides
   `Vector`-like types that use fixed capacity arrays internally instead of
   memory from the heap.  We require this because we won't have a memory
@@ -160,7 +166,7 @@ figure out the state of the keys, we need to setup the rows as Output pins, and
 the columns as Input pins.  Then we set all rows to Low except for row y; and
 then we read the value of each column: for each column x that is high, we know
 that the key at (x, y) was pressed.  In this implementation I return as soon as
-I see a key press, so at most one bit will be set in the resut.
+I see a key press, so at most one bit will be set in the result.
 ```rust
 fn key_pressed<O: OutputPin, I: InputPin>(r: &mut [O; 4], c: &mut [I; 4]) -> u16 {
     for pin in r.iter_mut() {
@@ -229,8 +235,14 @@ fn key_map(k: u16) -> u16 {
 }
 ```
 
-TODO
-```
+Now we reach the main function.  In the first part we need to initialize the
+hardware and obtain handlers to the peripherals:  Embedded Rust libraries
+treat hardware resources like memory is treated in Rust: you can either have
+multiple read-only references, or a single read-write reference.  For more
+details about how the different hardware peripherals are initialized, I
+recommend checking out the [examples of the stm32f1xx_hal
+crate](https://github.com/stm32-rs/stm32f1xx-hal/tree/master/examples).
+```rust
 #[entry]
 fn main() -> ! {
     // Get access to the core peripherals from the cortex-m crate
@@ -266,14 +278,10 @@ fn main() -> ! {
     let sck = gpioa.pa5.into_alternate_push_pull(&mut gpioa.crl);
     let miso = gpioa.pa6.into_floating_input(&mut gpioa.crl);
     let mosi = gpioa.pa7.into_alternate_push_pull(&mut gpioa.crl);
-    // let sck = gpiob.pb13.into_alternate_push_pull(&mut gpiob.crh);
-    // let miso = gpiob.pb14.into_floating_input(&mut gpiob.crh);
-    // let mosi = gpiob.pb15.into_alternate_push_pull(&mut gpiob.crh);
     let spi_mode = spi::Mode {
         phase: spi::Phase::CaptureOnFirstTransition,
         polarity: spi::Polarity::IdleLow,
     };
-
     let spi = Spi::spi1(
         dp.SPI1,
         (sck, miso, mosi),
@@ -284,23 +292,15 @@ fn main() -> ! {
         clocks,
         &mut rcc.apb2,
     );
-    // let spi = Spi::spi2(
-    //     dp.SPI2,
-    //     (sck, miso, mosi),
-    //     spi_mode,
-    //     // 500.khz(),
-    //     4.mhz(),
-    //     clocks,
-    //     &mut rcc.apb1,
-    // );
 
     // other pins for PCD8544
     let dc = gpioa.pa4.into_push_pull_output(&mut gpioa.crl);
     let cs = gpioa.pa3.into_push_pull_output(&mut gpioa.crl);
     let mut rst = gpioa.pa1.into_push_pull_output(&mut gpioa.crl);
-
     let mut pcd8544 = Pcd8544Spi::new(spi, dc, cs, &mut rst, &mut delay);
 
+    // Collect all the GPIOs used for the keypad as rows (output) and columns
+    // (input).
     let mut keypad_r = [
         gpioa.pa11.into_push_pull_output(&mut gpioa.crh).downgrade(),
         gpioa.pa10.into_push_pull_output(&mut gpioa.crh).downgrade(),
@@ -314,7 +314,7 @@ fn main() -> ! {
         gpiob.pb12.into_pull_down_input(&mut gpiob.crh).downgrade(),
     ];
 
-    // TIM2 PWM
+    // Timer TIM2 PWM, used to generate the tone
     let c1 = gpioa.pa0.into_alternate_push_pull(&mut gpioa.crl);
     let mut pwm_tone = Timer::tim2(dp.TIM2, &clocks, &mut rcc.apb1).pwm::<Tim2NoRemap, _, _, _>(
         c1,
@@ -324,7 +324,7 @@ fn main() -> ! {
     let max = pwm_tone.get_max_duty();
     pwm_tone.set_duty(max / 2);
 
-    // TIM3 PWM
+    // Timer TIM3 PWM, used to control the screen backlight
     let c4 = gpiob.pb1.into_alternate_push_pull(&mut gpiob.crl);
     let mut pwm_light = Timer::tim3(dp.TIM3, &clocks, &mut rcc.apb1).pwm::<Tim3NoRemap, _, _, _>(
         c4,
@@ -336,17 +336,30 @@ fn main() -> ! {
     pwm_light.set_duty(max_light / LIGHT_LEVELS * LIGHT_LEVELS);
     pwm_light.enable();
 
+    // Set up a timer that generates an interrupt 60 times per second, which we
+    will use to synchronize the frame calculation.
     let syst = delay.free();
     let mut timer = Timer::syst(syst, &clocks).start_count_down(60.hz());
 
     led.set_high().unwrap();
 
+    // Create an array for all the ROMs that we have included before, with a description string.
     let roms = [
         ("PONG", ROM_PONG),
         ("INVADERS", ROM_INVADERS),
         // [...]
     ];
+```
 
+At this point everything is initialized.   Before we run the CHIP-8 emulation,
+we need to choose the ROM to load among the list we have embedded into the
+binary.  In order to do that I implemented a simple text based menu that runs
+in a loop at 60 Hz (by using the timer we configured before, blocking until the
+interrupt fires).  The menu contains a state that is drawn in the screen using
+strings, and is updated via key presses.  Notice that I use the ArrayString
+type in order to build a string dynamically with rust format via the `write!`
+macro.
+```rust
     // menu loop
     let mut msg = ArrayString::<[u8; 64]>::new();
     let mut light: i16 = 0;
@@ -387,16 +400,29 @@ fn main() -> ! {
         led.toggle().unwrap();
         key_prev = key;
     }
+```
 
+We create the `Chip8` struct, using a CPU cycles counter as a random seed.
+Since the previous menu requires user interaction to conclude, the number of
+cycles of the CPU at this point will not be deterministic.  Afterwards we load
+the selected CHIP-8 ROM.
+```rust
     let mut chip8 = Chip8::new(DWT::get_cycle_count() as u64);
     chip8.load_rom(roms[rom_n as usize].1).unwrap();
+```
 
+Finally we reach the emulation loop, which has a very similar shape to the SDL
+frontend seen in the previous article.  We run the loop 60 times per second
+(synchronizing it with the hardware timer like we did in the menu).  For each
+iteration, we query key presses, emulate a frame of the CHIP-8, play a tone by
+enabling the PWM output connected to the speaker if necessary, and update the
+display with the just calculated frame buffer.
+```rust
     // chip8 loop
 
     const DISP_WIDTH: usize = 84;
     const DISP_HEIGHT: usize = 48;
     let mut disp_fb = [0; DISP_WIDTH * DISP_HEIGHT / 8];
-    let mut fb_prev = [0; chip8::SCREEN_HEIGTH * chip8::SCREEN_WIDTH / 8];
     // let mut overtime: usize = 0;
     loop {
         block!(timer.wait()).unwrap();
@@ -407,40 +433,52 @@ fn main() -> ! {
         } else {
             pwm_tone.disable();
         }
-        // DBG
-        // disp_fb[0] = 0xff;
-        // disp_fb[2] = 0xff;
         for b in disp_fb.iter_mut() {
             *b = 0x00;
         }
         for y in 0..chip8::SCREEN_HEIGTH {
             for x in 0..chip8::SCREEN_WIDTH / 8 {
-                let byte = chip8.fb()[y * chip8::SCREEN_WIDTH / 8 + x]
-                    | fb_prev[y * chip8::SCREEN_WIDTH / 8 + x];
+                let byte = chip8.fb()[y * chip8::SCREEN_WIDTH / 8 + x];
                 for i in 0..8 {
                     let b = (byte & (1 << i)) >> i << (y % 8);
                     disp_fb[(10 + x * 8 + 7 - i) * DISP_HEIGHT / 8 + y / 8] |= b;
                 }
-                // disp_fb[y * DISP_WIDTH / 8 + 1 + x] = byte;
             }
         }
-        fb_prev.copy_from_slice(&chip8.fb());
         pcd8544.draw_buffer(&disp_fb);
         led.toggle().unwrap();
     }
 }
 ```
 
+And that's all!  There's no functionality to go back to the menu via software;
+but that's easily solved by pressing the reset button of the Blue Pill.
+
 # Flashing
 
 I will skip the details about how to flash the microcontroller because this
 information is [very well explained in the `stm32f1xx-hal`
 README](https://github.com/stm32-rs/stm32f1xx-hal#quick-start-guide).
-Neverthelss, if you have doubts feel free to contact me!
+Nevertheless, if you have doubts feel free to contact me!
 
-# TODO
-- photos and videos
-- code explanation
-- Intro (add more stuff)
+# Result
+
+## Photos
+
+{{% img1000 src="../../media/chip8/photo_a.jpg" caption="CHIP-8 with AIRPLANE ROM" %}}
+
+{{% img1000 src="../../media/chip8/photo_b.jpg" caption="CHIP-8 with INVADERS ROM intro screen" %}}
+
+## Video
+
+{{% youtube 1SExKlDYHlA %}}
 
 # Conclusion
+
+Porting the CHIP-8 emulator I wrote in Rust from SDL to STM32F1 was fairly easy
+(considering that I was already familiar with building Rust for this embedded
+platform).  The architectural split between frontend and backend was specially
+useful for this port.  This is kind of project is small enough that it can be
+done in a weekend, and I want to encourage anyone reading this to try doing it
+because the result of building a small piece of hardware programmed by you that
+can play games is very satisfying!
