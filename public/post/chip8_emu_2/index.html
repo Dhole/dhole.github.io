@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>CHIP-8 emulator in Rust: Embedded port.  Part 2 &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">CHIP-8 emulator in Rust: Embedded port.  Part 2</h1>  
+			
+			<time class="li-article-date">Thursday, June 3, 2021</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/emulator">emulator</a> </span>
+
+<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
+
+<span><a href="https://dhole.github.io/categories/stm32f1">stm32f1</a> </span>
+
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>This post is the continuation of <a href="../chip8_emu_1/">CHIP-8 emulator in Rust.  Part
+1</a>, please check it if you haven&rsquo;t already!</p>
+<p>In this second part I will explain how I ported the CHIP-8 emulator I built in
+Rust to an embedded ARM microcontroller.  I will explain the hardware I chose
+to build this portable CHIP-8 device, the Rust libraries I used and I&rsquo;ll give
+an overview of how the code is laid out.  I excluded details about hardware
+diagrams and explicit mention of how the hardware is connected to each pin
+because I&rsquo;m sure the astute reader will be able to figure this out from the
+code itself.</p>
+<p>You can find the <a href="https://github.com/Dhole/chip8-rs">source code of the emulator in
+github</a></p>
+<h1 id="hardware">Hardware</h1>
+<h2 id="microcontroller">Microcontroller</h2>
+<p>For the microcontroller I&rsquo;ve chosen the STM32F103C8 via an embedded board
+commonly called <a href="http://land-boards.com/blwiki/index.php?title=STM32_Blue_Pill">Blue
+Pill</a>.  I&rsquo;ve used this board in the past with C and Rust with very positive results.  Some of the reasons why I like this board a lot are:</p>
+<ul>
+<li>cheap price</li>
+<li>flashing and debugging with open source tools</li>
+<li>ARM 32bit based (much powerful than an AVR based Arduino, and a very well
+supported architecture in open source toolchains)</li>
+<li>many peripherals</li>
+</ul>
+<p>You can find more <a href="http://land-boards.com/blwiki/index.php?title=STM32_Blue_Pill">details about the Blue Pill in the land boards wiki</a>.  Nevertheless, here are some technical specs:</p>
+<ul>
+<li>Flash: 64 KB/128 KB</li>
+<li>RAM: 20 KB</li>
+<li>Clock Speed: 72 MHz</li>
+</ul>
+<h2 id="display">Display</h2>
+<p>For the video output of the CHIP-8 I have chosen a Nokia 5110 LCD screen which has the following properties:</p>
+<ul>
+<li>pcd8544 driver</li>
+<li>84x48 pixels</li>
+<li>backlight</li>
+</ul>
+<p>The reasoning behind this choice is that there&rsquo;s an already existing <a href="https://github.com/dancek/pcd8544-hal">Rust
+driver implementation for the pcd8544
+driver</a>, the CHIP-8 output (64x32 pixels)
+will fit in the screen (84x48 pixels), and finally there&rsquo;s the nostalgia factor
+of having played games on a Nokia 3310 phone when I was young (which has a very
+similar screen).</p>
+<h2 id="sound">Sound</h2>
+<p>Since the CHIP-8 has a sound (via a single tone output), I added a speaker driven
+via PWM to control the audio frequency.</p>
+<h2 id="input">Input</h2>
+<p>The CHIP-8 is driven by a 16 keys arranged in a 4x4 matrix, and I conveniently found a 4x4 key matrix that will suit this project perfectly.</p>
+<h2 id="summary">Summary</h2>
+<p>I bought the components via AliExpress, but you can find them in other places.
+I&rsquo;ve included the price based on what I see now (2021-06-03) in AliExpress for
+reference.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Component</th>
+<th style="text-align:left">Price</th>
+<th style="text-align:center">Picture</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Blue Pill</td>
+<td style="text-align:left">5 EUR</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/bluepill.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+<tr>
+<td style="text-align:left">ST LINK (required to flash the Blue Pill)</td>
+<td style="text-align:left">7 EUR</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/stlink.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+<tr>
+<td style="text-align:left">pcd8544 display</td>
+<td style="text-align:left">3.2 EUR</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/pcd8544.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+<tr>
+<td style="text-align:left">Speaker</td>
+<td style="text-align:left">1 EUR</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/speaker.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+<tr>
+<td style="text-align:left">4x4 key matrix</td>
+<td style="text-align:left">1 EUR</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/4x4_keyboard.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+<tr>
+<td style="text-align:left">4x6 cm PCB soldering board</td>
+<td style="text-align:left">3 EUR (10 pcs)</td>
+<td style="text-align:center">
+
+<figure >
+    
+    
+        <img src="../../media/chip8/pcb.jpg"  style="width:40%"/>
+    
+    
+    
+</figure>
+
+</td>
+</tr>
+</tbody>
+</table>
+<p>Everything assembled together:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">
+
+<figure >
+    <a href="../../media/chip8/c.jpg">
+        <img src="../../media/chip8/c_1000.jpg"  />
+    </a>
+    
+</figure>
+
+
+</th>
+<th style="text-align:center">
+
+<figure >
+    <a href="../../media/chip8/a.jpg">
+        <img src="../../media/chip8/a_1000.jpg"  />
+    </a>
+    
+</figure>
+
+
+</th>
+<th style="text-align:center">
+
+<figure >
+    <a href="../../media/chip8/b.jpg">
+        <img src="../../media/chip8/b_1000.jpg"  />
+    </a>
+    
+</figure>
+
+
+</th>
+</tr>
+</thead>
+</table>
+<h1 id="software">Software</h1>
+<p>As I explained in <a href="../chip8_emu_1/">Part 1</a>, I implemented the CHIP-8 emulation
+logic as a backend library independent of how the input and output is handled.
+In particular, the <code>chip8</code> library exposes a struct which maintains the state
+of the CHIP-8 virtual machine and a method that is supposed to be called 60
+times per second called <code>frame</code>, among other methods to query the state of the
+frame buffer and tone.</p>
+<p>For this embedded port, I introduced a new frontend that will use the <code>chip8</code>
+library and handle the inputs and outputs via the hardware shown in the
+previous section.  To achieve this I extended the workspace with a new project
+(the embedded frontend), and now the root <code>Cargo.toml</code> looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">workspace</span>]
+
+<span style="color:#a6e22e">members</span> = [
+    <span style="color:#e6db74">&#34;chip8&#34;</span>,
+    <span style="color:#e6db74">&#34;sdl&#34;</span>,
+    <span style="color:#e6db74">&#34;stm32&#34;</span>,
+]
+</code></pre></div><p>Where <code>stm32</code> is the new frontend targeting the Blue Pill with the display,
+keypad and speaker mentioned in the Hardware section.</p>
+<h2 id="external-libraries">External libraries</h2>
+<p>I have used mainly two hardware libraries:</p>
+<ul>
+<li><a href="https://github.com/stm32-rs/stm32f1xx-hal">stm32f1xx-hal</a>: A HAL
+implementation for the STM32F1 microcontroller family based in the
+<a href="https://github.com/rust-embedded/embedded-hal">embedded-hal</a> traits.  HAL
+stands for &ldquo;Hardware Abstraction Library&rdquo; and it offers a common API among
+different microcontrollers to access the different peripherals (GPIOs,
+timers, SPI, etc.).  The idea behind the <code>embedded-hal</code> crate is to define a
+set of traits for each microcontroller peripheral so that particular
+libraries (like the <code>stm32f1xx-hal</code>) implement for specific hardware, to make
+it easy to reuse code when changing targets.</li>
+<li><a href="https://github.com/rust-embedded/cortex-m">cortex-m</a> and
+<a href="https://github.com/rust-embedded/cortex-m-rt">cortex-m-rt</a>: two libraries to
+access cortex-m functionalities (that&rsquo;s the family of ARM CPU used in the
+STM32F1 microcontrollers).</li>
+<li><a href="https://github.com/dancek/pcd8544-hal">pcd8544-hal</a>: A PCD8544 (Nokia 5110)
+driver, which also uses the <code>embedded-hal</code> traits.</li>
+</ul>
+<p>Software libraries:</p>
+<ul>
+<li><a href="https://github.com/rust-embedded/nb">nb</a>: non-blocking IO library for
+<code>embedded-hal</code> traits.  I&rsquo;m using this library to block on asynchronous
+interrupts.</li>
+<li><a href="https://github.com/korken89/panic-halt">panic-halt</a>: used to set panic
+behavior to halt.  A rust project requires a definition of panic behavior.
+When using <code>std</code>, the panic behavior is defined as a routine that unwinds
+the stack to show all the functions that were called until the panic was
+reached, and then terminate.  In the embedded world we don&rsquo;t have an
+operating system and thus we lose <code>std</code>, so we need to manually define the
+panic behavior.</li>
+<li><a href="https://github.com/bluss/arrayvec">arrayvec</a>: This library provides
+<code>Vector</code>-like types that use fixed capacity arrays internally instead of
+memory from the heap.  We require this because we won&rsquo;t have a memory
+allocator.</li>
+</ul>
+<h2 id="code-overview">Code overview</h2>
+<p>Since we don&rsquo;t have an operating system, we also don&rsquo;t have access to a file
+system API, yet we need some way to access the CHIP-8 ROMs.  An easy way to
+achieve this is to embed the ROMs contents in the Rust binary with the
+<code>include_bytes</code> binary:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">static</span> ROM_PONG: <span style="color:#66d9ef">&amp;</span>[<span style="color:#66d9ef">u8</span>] <span style="color:#f92672">=</span> include_bytes<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;../../games/PONG&#34;</span>);
+<span style="color:#66d9ef">static</span> ROM_INVADERS: <span style="color:#66d9ef">&amp;</span>[<span style="color:#66d9ef">u8</span>] <span style="color:#f92672">=</span> include_bytes<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;../../games/INVADERS&#34;</span>);
+<span style="color:#75715e">// [...]
+</span></code></pre></div><p>The following function will query the state of the 4x4 keypad and return a
+<code>u16</code> where a bit is set when the corresponding key is pressed.  As you can
+see, I wrote this function using the <code>embedded-hal</code> <code>OutputPin</code> and <code>InputPin</code>
+traits so that it can be reused with other targets that implement the
+<code>embedded-hal</code> traits.</p>
+<p>The keypad is arranged as a 4x4 matrix, with 4 horizontal wires (rows) and 4 vertical
+wires (columns).  At each wire crossing a switch button is connected, and when
+pressed, a short-circuit is created between the crossed wires.  In order to
+figure out the state of the keys, we need to setup the rows as Output pins, and
+the columns as Input pins.  Then we set all rows to Low except for row y; and
+then we read the value of each column: for each column x that is high, we know
+that the key at (x, y) was pressed.  In this implementation I return as soon as
+I see a key press, so at most one bit will be set in the result.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">key_pressed</span><span style="color:#f92672">&lt;</span>O: <span style="color:#a6e22e">OutputPin</span>, I: <span style="color:#a6e22e">InputPin</span><span style="color:#f92672">&gt;</span>(r: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [O; <span style="color:#ae81ff">4</span>], c: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [I; <span style="color:#ae81ff">4</span>]) -&gt; <span style="color:#66d9ef">u16</span> {
+    <span style="color:#66d9ef">for</span> pin <span style="color:#66d9ef">in</span> r.iter_mut() {
+        pin.set_low().ok().unwrap();
+    }
+    <span style="color:#66d9ef">for</span> (y, ry) <span style="color:#66d9ef">in</span> r.iter_mut().enumerate() {
+        ry.set_high().ok().unwrap();
+        <span style="color:#66d9ef">let</span> is_high <span style="color:#f92672">=</span> [
+            c[<span style="color:#ae81ff">0</span>].is_high().ok().unwrap(),
+            c[<span style="color:#ae81ff">1</span>].is_high().ok().unwrap(),
+            c[<span style="color:#ae81ff">2</span>].is_high().ok().unwrap(),
+            c[<span style="color:#ae81ff">3</span>].is_high().ok().unwrap(),
+        ];
+        <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> (<span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">4</span>).rev() {
+            <span style="color:#66d9ef">if</span> is_high[x] {
+                <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (y <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">+</span> x);
+            }
+        }
+        ry.set_low().ok().unwrap();
+    }
+    <span style="color:#ae81ff">0</span>
+}
+</code></pre></div><p>The following code is used to map the values returned by the <code>key_pressed</code>
+function to the CHIP-8 keypad layout.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">const</span> KEY_0: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xD</span>;
+<span style="color:#66d9ef">const</span> KEY_1: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x0</span>;
+<span style="color:#66d9ef">const</span> KEY_2: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x1</span>;
+<span style="color:#66d9ef">const</span> KEY_3: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x2</span>;
+<span style="color:#66d9ef">const</span> KEY_4: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x4</span>;
+<span style="color:#66d9ef">const</span> KEY_5: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x5</span>;
+<span style="color:#66d9ef">const</span> KEY_6: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x6</span>;
+<span style="color:#66d9ef">const</span> KEY_7: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x8</span>;
+<span style="color:#66d9ef">const</span> KEY_8: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x9</span>;
+<span style="color:#66d9ef">const</span> KEY_9: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xA</span>;
+<span style="color:#66d9ef">const</span> KEY_A: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xC</span>;
+<span style="color:#66d9ef">const</span> KEY_B: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xE</span>;
+<span style="color:#66d9ef">const</span> KEY_C: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x3</span>;
+<span style="color:#66d9ef">const</span> KEY_D: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x7</span>;
+<span style="color:#66d9ef">const</span> KEY_E: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xB</span>;
+<span style="color:#66d9ef">const</span> KEY_F: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xF</span>;
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">key_map</span>(k: <span style="color:#66d9ef">u16</span>) -&gt; <span style="color:#66d9ef">u16</span> {
+    <span style="color:#66d9ef">match</span> k {
+        KEY_0 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x0</span>,
+        KEY_1 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x1</span>,
+        KEY_2 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x2</span>,
+        KEY_3 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x3</span>,
+        KEY_4 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x4</span>,
+        KEY_5 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x5</span>,
+        KEY_6 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x6</span>,
+        KEY_7 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x7</span>,
+        KEY_8 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x8</span>,
+        KEY_9 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x9</span>,
+        KEY_A <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xA</span>,
+        KEY_B <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xB</span>,
+        KEY_C <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xC</span>,
+        KEY_D <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xD</span>,
+        KEY_E <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xE</span>,
+        KEY_F <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xF</span>,
+        <span style="color:#ae81ff">0</span> <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">0</span>,
+        _ <span style="color:#f92672">=&gt;</span> unreachable<span style="color:#f92672">!</span>(),
+    }
+}
+</code></pre></div><p>Now we reach the main function.  In the first part we need to initialize the
+hardware and obtain handlers to the peripherals:  Embedded Rust libraries
+treat hardware resources like memory is treated in Rust: you can either have
+multiple read-only references, or a single read-write reference.  For more
+details about how the different hardware peripherals are initialized, I
+recommend checking out the <a href="https://github.com/stm32-rs/stm32f1xx-hal/tree/master/examples">examples of the stm32f1xx_hal
+crate</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[entry]</span>
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() -&gt; <span style="color:#f92672">!</span> {
+    <span style="color:#75715e">// Get access to the core peripherals from the cortex-m crate
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> cp <span style="color:#f92672">=</span> cortex_m::Peripherals::take().unwrap();
+    <span style="color:#75715e">// Get access to the device specific peripherals from the peripheral access crate
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> dp <span style="color:#f92672">=</span> stm32::Peripherals::take().unwrap();
+
+    <span style="color:#75715e">// Take ownership over the raw flash and rcc devices and convert them into the corresponding
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// HAL structs
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> flash <span style="color:#f92672">=</span> dp.FLASH.constrain();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rcc <span style="color:#f92672">=</span> dp.RCC.constrain();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> afio <span style="color:#f92672">=</span> dp.AFIO.constrain(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb2);
+
+    <span style="color:#66d9ef">let</span> clocks <span style="color:#f92672">=</span> rcc
+        .cfgr
+        .use_hse(<span style="color:#ae81ff">8.</span>mhz())
+        .sysclk(stm32f1xx_hal::time::Hertz(SYSCLK))
+        .pclk1(<span style="color:#ae81ff">36.</span>mhz())
+        .freeze(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> flash.acr);
+
+    <span style="color:#75715e">// Acquire the GPIOC peripheral
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> gpioa <span style="color:#f92672">=</span> dp.GPIOA.split(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb2);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> gpiob <span style="color:#f92672">=</span> dp.GPIOB.split(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb2);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> gpioc <span style="color:#f92672">=</span> dp.GPIOC.split(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb2);
+
+    <span style="color:#75715e">// Configure gpio C pin 13 as a push-pull output. The `crh` register is passed to the function
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// in order to configure the port. For pins 0-7, crl should be passed instead.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> led <span style="color:#f92672">=</span> gpioc.pc13.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioc.crh);
+
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> delay <span style="color:#f92672">=</span> Delay::new(cp.SYST, clocks);
+
+    <span style="color:#75715e">// setup SPI
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> sck <span style="color:#f92672">=</span> gpioa.pa5.into_alternate_push_pull(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> miso <span style="color:#f92672">=</span> gpioa.pa6.into_floating_input(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> mosi <span style="color:#f92672">=</span> gpioa.pa7.into_alternate_push_pull(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> spi_mode <span style="color:#f92672">=</span> spi::Mode {
+        phase: <span style="color:#a6e22e">spi</span>::Phase::CaptureOnFirstTransition,
+        polarity: <span style="color:#a6e22e">spi</span>::Polarity::IdleLow,
+    };
+    <span style="color:#66d9ef">let</span> spi <span style="color:#f92672">=</span> Spi::spi1(
+        dp.SPI1,
+        (sck, miso, mosi),
+        <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> afio.mapr,
+        spi_mode,
+        <span style="color:#75715e">// 500.khz(),
+</span><span style="color:#75715e"></span>        <span style="color:#ae81ff">4.</span>mhz(),
+        clocks,
+        <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb2,
+    );
+
+    <span style="color:#75715e">// other pins for PCD8544
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> dc <span style="color:#f92672">=</span> gpioa.pa4.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> cs <span style="color:#f92672">=</span> gpioa.pa3.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rst <span style="color:#f92672">=</span> gpioa.pa1.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pcd8544 <span style="color:#f92672">=</span> Pcd8544Spi::new(spi, dc, cs, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rst, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> delay);
+
+    <span style="color:#75715e">// Collect all the GPIOs used for the keypad as rows (output) and columns
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// (input).
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> keypad_r <span style="color:#f92672">=</span> [
+        gpioa.pa11.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crh).downgrade(),
+        gpioa.pa10.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crh).downgrade(),
+        gpioa.pa9.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crh).downgrade(),
+        gpioa.pa8.into_push_pull_output(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crh).downgrade(),
+    ];
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> keypad_c <span style="color:#f92672">=</span> [
+        gpiob.pb15.into_pull_down_input(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpiob.crh).downgrade(),
+        gpiob.pb14.into_pull_down_input(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpiob.crh).downgrade(),
+        gpiob.pb13.into_pull_down_input(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpiob.crh).downgrade(),
+        gpiob.pb12.into_pull_down_input(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpiob.crh).downgrade(),
+    ];
+
+    <span style="color:#75715e">// Timer TIM2 PWM, used to generate the tone
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> c1 <span style="color:#f92672">=</span> gpioa.pa0.into_alternate_push_pull(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpioa.crl);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pwm_tone <span style="color:#f92672">=</span> Timer::tim2(dp.TIM2, <span style="color:#f92672">&amp;</span>clocks, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb1).pwm::<span style="color:#f92672">&lt;</span>Tim2NoRemap, _, _, _<span style="color:#f92672">&gt;</span>(
+        c1,
+        <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> afio.mapr,
+        <span style="color:#ae81ff">440.</span>hz(),
+    );
+    <span style="color:#66d9ef">let</span> max <span style="color:#f92672">=</span> pwm_tone.get_max_duty();
+    pwm_tone.set_duty(max <span style="color:#f92672">/</span> <span style="color:#ae81ff">2</span>);
+
+    <span style="color:#75715e">// Timer TIM3 PWM, used to control the screen backlight
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> c4 <span style="color:#f92672">=</span> gpiob.pb1.into_alternate_push_pull(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> gpiob.crl);
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pwm_light <span style="color:#f92672">=</span> Timer::tim3(dp.TIM3, <span style="color:#f92672">&amp;</span>clocks, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rcc.apb1).pwm::<span style="color:#f92672">&lt;</span>Tim3NoRemap, _, _, _<span style="color:#f92672">&gt;</span>(
+        c4,
+        <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> afio.mapr,
+        <span style="color:#ae81ff">8.</span>khz(),
+    );
+    <span style="color:#66d9ef">let</span> max_light <span style="color:#f92672">=</span> pwm_light.get_max_duty();
+    <span style="color:#66d9ef">const</span> LIGHT_LEVELS: <span style="color:#66d9ef">u16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+    pwm_light.set_duty(max_light <span style="color:#f92672">/</span> LIGHT_LEVELS <span style="color:#f92672">*</span> LIGHT_LEVELS);
+    pwm_light.enable();
+
+    <span style="color:#75715e">// Set up a timer that generates an interrupt 60 times per second, which we
+</span><span style="color:#75715e"></span>    will <span style="color:#66d9ef">use</span> to synchronize the frame calculation.
+    <span style="color:#66d9ef">let</span> syst <span style="color:#f92672">=</span> delay.free();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> timer <span style="color:#f92672">=</span> Timer::syst(syst, <span style="color:#f92672">&amp;</span>clocks).start_count_down(<span style="color:#ae81ff">60.</span>hz());
+
+    led.set_high().unwrap();
+
+    <span style="color:#75715e">// Create an array for all the ROMs that we have included before, with a description string.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> roms <span style="color:#f92672">=</span> [
+        (<span style="color:#e6db74">&#34;PONG&#34;</span>, ROM_PONG),
+        (<span style="color:#e6db74">&#34;INVADERS&#34;</span>, ROM_INVADERS),
+        <span style="color:#75715e">// [...]
+</span><span style="color:#75715e"></span>    ];
+</code></pre></div><p>At this point everything is initialized.   Before we run the CHIP-8 emulation,
+we need to choose the ROM to load among the list we have embedded into the
+binary.  In order to do that I implemented a simple text based menu that runs
+in a loop at 60 Hz (by using the timer we configured before, blocking until the
+interrupt fires).  The menu contains a state that is drawn in the screen using
+strings, and is updated via key presses.  Notice that I use the ArrayString
+type in order to build a string dynamically with rust format via the <code>write!</code>
+macro.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#75715e">// menu loop
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> msg <span style="color:#f92672">=</span> ArrayString::<span style="color:#f92672">&lt;</span>[<span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">64</span>]<span style="color:#f92672">&gt;</span>::new();
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> light: <span style="color:#66d9ef">i16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rom_n: <span style="color:#66d9ef">i16</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> key_prev <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+    <span style="color:#66d9ef">loop</span> {
+        block<span style="color:#f92672">!</span>(timer.wait()).unwrap();
+        <span style="color:#66d9ef">let</span> key <span style="color:#f92672">=</span> key_pressed(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> keypad_r, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> keypad_c);
+        <span style="color:#66d9ef">if</span> key_prev <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+            <span style="color:#66d9ef">if</span> key <span style="color:#f92672">==</span> KEY_C {
+                light <span style="color:#f92672">=</span> core::cmp::min(LIGHT_LEVELS <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">i16</span>, light <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>);
+            } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> key <span style="color:#f92672">==</span> KEY_D {
+                light <span style="color:#f92672">=</span> core::cmp::max(<span style="color:#ae81ff">0</span>, light <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>);
+            } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> key <span style="color:#f92672">==</span> KEY_8 {
+                rom_n <span style="color:#f92672">=</span> (rom_n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">%</span> roms.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">i16</span>;
+            } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> key <span style="color:#f92672">==</span> KEY_2 {
+                rom_n <span style="color:#f92672">-=</span> rom_n;
+                <span style="color:#66d9ef">if</span> rom_n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> {
+                    rom_n <span style="color:#f92672">=</span> roms.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">i16</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+                }
+            } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> key <span style="color:#f92672">==</span> KEY_5 {
+                <span style="color:#66d9ef">break</span>;
+            }
+        }
+
+        pwm_light.set_duty(max_light <span style="color:#f92672">/</span> LIGHT_LEVELS <span style="color:#f92672">*</span> (LIGHT_LEVELS <span style="color:#f92672">-</span> light <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>));
+
+        pcd8544.clear();
+        msg.clear();
+        write<span style="color:#f92672">!</span>(msg, <span style="color:#e6db74">&#34;light: {}&#34;</span>, light).unwrap();
+        pcd8544.set_position(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>);
+        pcd8544.print(<span style="color:#f92672">&amp;</span>msg);
+        msg.clear();
+        write<span style="color:#f92672">!</span>(msg, <span style="color:#e6db74">&#34;{:02}: {}&#34;</span>, rom_n, roms[rom_n <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>].<span style="color:#ae81ff">0</span>).unwrap();
+        pcd8544.set_position(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">2</span>);
+        pcd8544.print(<span style="color:#f92672">&amp;</span>msg);
+
+        led.toggle().unwrap();
+        key_prev <span style="color:#f92672">=</span> key;
+    }
+</code></pre></div><p>We create the <code>Chip8</code> struct, using a CPU cycles counter as a random seed.
+Since the previous menu requires user interaction to conclude, the number of
+cycles of the CPU at this point will not be deterministic.  Afterwards we load
+the selected CHIP-8 ROM.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chip8 <span style="color:#f92672">=</span> Chip8::new(DWT::get_cycle_count() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u64</span>);
+    chip8.load_rom(roms[rom_n <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>].<span style="color:#ae81ff">1</span>).unwrap();
+</code></pre></div><p>Finally we reach the emulation loop, which has a very similar shape to the SDL
+frontend seen in the previous article.  We run the loop 60 times per second
+(synchronizing it with the hardware timer like we did in the menu).  For each
+iteration, we query key presses, emulate a frame of the CHIP-8, play a tone by
+enabling the PWM output connected to the speaker if necessary, and update the
+display with the just calculated frame buffer.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#75715e">// chip8 loop
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">const</span> DISP_WIDTH: <span style="color:#66d9ef">usize</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">84</span>;
+    <span style="color:#66d9ef">const</span> DISP_HEIGHT: <span style="color:#66d9ef">usize</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">48</span>;
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> disp_fb <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>; DISP_WIDTH <span style="color:#f92672">*</span> DISP_HEIGHT <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>];
+    <span style="color:#75715e">// let mut overtime: usize = 0;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">loop</span> {
+        block<span style="color:#f92672">!</span>(timer.wait()).unwrap();
+        <span style="color:#66d9ef">let</span> key <span style="color:#f92672">=</span> key_map(key_pressed(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> keypad_r, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> keypad_c));
+        chip8.frame(key).unwrap();
+        <span style="color:#66d9ef">if</span> chip8.tone() {
+            pwm_tone.enable();
+        } <span style="color:#66d9ef">else</span> {
+            pwm_tone.disable();
+        }
+        <span style="color:#66d9ef">for</span> b <span style="color:#66d9ef">in</span> disp_fb.iter_mut() {
+            <span style="color:#f92672">*</span>b <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
+        }
+        <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_HEIGTH {
+            <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
+                <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
+                <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
+                    <span style="color:#66d9ef">let</span> b <span style="color:#f92672">=</span> (byte <span style="color:#f92672">&amp;</span> (<span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> i)) <span style="color:#f92672">&gt;&gt;</span> i <span style="color:#f92672">&lt;&lt;</span> (y <span style="color:#f92672">%</span> <span style="color:#ae81ff">8</span>);
+                    disp_fb[(<span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> x <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">-</span> i) <span style="color:#f92672">*</span> DISP_HEIGHT <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> y <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>] <span style="color:#f92672">|=</span> b;
+                }
+            }
+        }
+        pcd8544.draw_buffer(<span style="color:#f92672">&amp;</span>disp_fb);
+        led.toggle().unwrap();
+    }
+}
+</code></pre></div><p>And that&rsquo;s all!  There&rsquo;s no functionality to go back to the menu via software;
+but that&rsquo;s easily solved by pressing the reset button of the Blue Pill.</p>
+<h1 id="flashing">Flashing</h1>
+<p>I will skip the details about how to flash the microcontroller because this
+information is <a href="https://github.com/stm32-rs/stm32f1xx-hal#quick-start-guide">very well explained in the <code>stm32f1xx-hal</code>
+README</a>.
+Nevertheless, if you have doubts feel free to contact me!</p>
+<h1 id="result">Result</h1>
+<h2 id="photos">Photos</h2>
+
+
+<figure >
+    <a href="../../media/chip8/photo_a.jpg">
+        <img src="../../media/chip8/photo_a_1000.jpg" alt="CHIP-8 with AIRPLANE ROM" />
+    </a>
+    
+    <figcaption>
+        <p>
+        CHIP-8 with AIRPLANE ROM
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+
+
+<figure >
+    <a href="../../media/chip8/photo_b.jpg">
+        <img src="../../media/chip8/photo_b_1000.jpg" alt="CHIP-8 with INVADERS ROM intro screen" />
+    </a>
+    
+    <figcaption>
+        <p>
+        CHIP-8 with INVADERS ROM intro screen
+        
+            
+        
+        </p> 
+    </figcaption>
+    
+</figure>
+
+
+
+<h2 id="video">Video</h2>
+
+<div class="embed video-player">
+<iframe class="youtube-player" type="text/html" width="640" height="385" src="https://www.youtube.com/embed/1SExKlDYHlA" allowfullscreen frameborder="0">
+</iframe>
+</div>
+
+<h1 id="conclusion">Conclusion</h1>
+<p>Porting the CHIP-8 emulator I wrote in Rust from SDL to STM32F1 was fairly easy
+(considering that I was already familiar with building Rust for this embedded
+platform).  The architectural split between frontend and backend was specially
+useful for this port.  This is kind of project is small enough that it can be
+done in a weekend, and I want to encourage anyone reading this to try doing it
+because the result of building a small piece of hardware programmed by you that
+can play games is very satisfying!</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/nfs_wireguard/"> NFS server over WireGuard in Alpine</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2021. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

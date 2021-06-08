@@ -2,7 +2,6 @@
 title = "CHIP-8 emulator in Rust: Embedded port.  Part 2"
 date = 2021-06-03T10:23:20+02:00
 Categories = ["emulator", "chip8", "stm32f1", "rust"]
-draft = true
 +++
 
 This post is the continuation of [CHIP-8 emulator in Rust.  Part
