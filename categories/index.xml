@@ -6,10 +6,25 @@
     <description>Recent content in Categories on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-<<<<<<< HEAD
     <lastBuildDate>Mon, 13 Feb 2023 12:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-=======
-    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>bsd</title>
+      <link>https://dhole.github.io/categories/bsd/</link>
+      <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/categories/bsd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>linux</title>
+      <link>https://dhole.github.io/categories/linux/</link>
+      <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/categories/linux/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>chip8</title>
       <link>https://dhole.github.io/categories/chip8/</link>
@@ -46,27 +61,7 @@
       <description></description>
     </item>
     
->>>>>>> 1a42ea2c8776e3e67f269287b33a232cc949ef63
     <item>
-      <title>bsd</title>
-      <link>https://dhole.github.io/categories/bsd/</link>
-      <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
-      
-      <guid>https://dhole.github.io/categories/bsd/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>https://dhole.github.io/categories/linux/</link>
-      <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
-      
-      <guid>https://dhole.github.io/categories/linux/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-<<<<<<< HEAD
       <title>alpine</title>
       <link>https://dhole.github.io/categories/alpine/</link>
       <pubDate>Fri, 21 May 2021 13:27:31 +0200</pubDate>
@@ -76,35 +71,6 @@
     </item>
     
     <item>
-      <title>chip8</title>
-      <link>https://dhole.github.io/categories/chip8/</link>
-      <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
-      
-      <guid>https://dhole.github.io/categories/chip8/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>emulator</title>
-      <link>https://dhole.github.io/categories/emulator/</link>
-      <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
-      
-      <guid>https://dhole.github.io/categories/emulator/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>rust</title>
-      <link>https://dhole.github.io/categories/rust/</link>
-      <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
-      
-      <guid>https://dhole.github.io/categories/rust/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-=======
->>>>>>> 1a42ea2c8776e3e67f269287b33a232cc949ef63
       <title>fedora</title>
       <link>https://dhole.github.io/categories/fedora/</link>
       <pubDate>Tue, 03 Sep 2019 20:54:53 +0200</pubDate>
