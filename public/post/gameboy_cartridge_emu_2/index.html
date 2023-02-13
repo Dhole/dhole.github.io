@@ -309,12 +309,8 @@ with the file contents:</p>
 </span></span><span style="display:flex;"><span>  ...</span></span></code></pre></div>
 <p>For games that use RAM, an array must be allocated on the SMT32F4. For this
 purpose, an array of 32KB (Maximum RAM size for MBC1) will be declared:</p>
-<<<<<<< HEAD
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">uint8_t</span> ram[<span style="color:#ae81ff">0x8000</span>]; <span style="color:#75715e">// 32K
 </span></span></span></code></pre></div>
-=======
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">uint8_t ram[<span style="color:#ae81ff">0x8000</span>]; <span style="color:#f92672">//</span> <span style="color:#ae81ff">32</span>K</code></pre></div>
->>>>>>> 1a42ea2c8776e3e67f269287b33a232cc949ef63
 <p>Notice that the saved game will only remain as long as the STM32F4 is not powered
 off.</p>
 <h1 id="results">Results</h1>

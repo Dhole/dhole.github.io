@@ -292,7 +292,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
 </span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
 <p>Finally, on the computer side, we read the serial data over USB by using the <a href="https://github.com/dcuddeback/serial-rs">Rust serial port crate</a>.  Considering that in the Game Boy serial protocol, every time the master sends a byte it also requests a byte from the slave, which may have nothing to send, I expect that often transferred bytes will be just <code>0x00</code>, so I decided to hide those values from the output to make it easy to focus on the important parts.  The output format for every byte pair is <code>{SOUT}:{SIN}</code>.</p>
-<<<<<<< HEAD
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_sniff</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>];
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">loop</span> {
@@ -305,21 +304,6 @@ i7 i6 i5 i4 i3 i2 i1 i0
 </span></span><span style="display:flex;"><span>        io::stdout().flush()<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
-=======
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">mode_sniff</span><span style="color:#f92672">&lt;</span>T: <span style="color:#a6e22e">SerialPort</span><span style="color:#f92672">&gt;</span>(port: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> BufStream<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
-    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec<span style="color:#f92672">!</span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>];
-    <span style="color:#66d9ef">loop</span> {
-        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf));
-        <span style="color:#66d9ef">let</span> sdout <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">0</span>];
-        <span style="color:#66d9ef">let</span> sdin  <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">1</span>];
-        <span style="color:#66d9ef">let</span> sdout_s <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> sdout <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;&#34;</span>) } <span style="color:#66d9ef">else</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:02x}&#34;</span>, sdout) };
-        <span style="color:#66d9ef">let</span> sdin_s  <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> sdin  <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;&#34;</span>) } <span style="color:#66d9ef">else</span> { format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:02x}&#34;</span>,  sdin) };
-        print<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}:{} &#34;</span>, sdout_s, sdin_s);
-        io::stdout().flush()<span style="color:#f92672">?</span>;
-    }
-}
-</code></pre></div>
->>>>>>> 1a42ea2c8776e3e67f269287b33a232cc949ef63
 <p>As a bonus, here you can find the <a href="../../media/gameboy_serial/tetris.txt">serial communication capture of playing Tetris in multiplayer mode</a>.  It would be easier to reverse engineer the protocol used in Tetris if you are able to experiment with the game yourself, but at first sight it doesn&rsquo;t seem too complicated.  For instance, during the playing part, each Game Boy sends to each other the height of their accumulated blocks using the lowest nibble of the transferred byte.</p>
 <p>I&rsquo;ve also made a <a href="../../media/gameboy_serial/printer.txt">capture of the data transferred to the Game Boy Printer by the Game Boy Camera to print a photo</a>.  We will use this capture in the next part of these posts to understand how the Game Boy Printer protocol works.  And here&rsquo;s a picture of the setup:</p>
 
