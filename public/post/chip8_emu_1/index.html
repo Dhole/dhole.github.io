@@ -8,7 +8,7 @@
         <title>CHIP-8 emulator in Rust.  Part 1 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/emulator">emulator</a> </span>
+<span><a href="https://dhole.github.io/categories/emulator">emulator</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/chip8">chip8</a> </span>
+<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -139,13 +139,13 @@ workspaces</a>.  The
 root of the repository contains a
 <a href="https://github.com/Dhole/chip8-rs/blob/master/Cargo.toml"><code>Cargo.toml</code></a> with
 the following contents:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">workspace</span>]
-
-<span style="color:#a6e22e">members</span> = [
-    <span style="color:#e6db74">&#34;chip8&#34;</span>,
-    <span style="color:#e6db74">&#34;sdl&#34;</span>,
-]
-</code></pre></div><p>Where <code>chip8</code> is the Rust project corresponding to the backend, and <code>sdl</code> is
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span>[<span style="color:#a6e22e">workspace</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">members</span> = [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;chip8&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;sdl&#34;</span>,
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><p>Where <code>chip8</code> is the Rust project corresponding to the backend, and <code>sdl</code> is
 the Rust project corresponding to the desktop frontend.</p>
 <h1 id="backend">Backend</h1>
 <p>The backend is implemented in the <a href="https://github.com/Dhole/chip8-rs/tree/master/chip8"><code>chip8</code>
@@ -153,22 +153,22 @@ folder</a> and contains the
 core implementation of the CHIP-8 Virtual Machine.</p>
 <h2 id="structure-of-the-emulator">Structure of the emulator</h2>
 <p>The CHIP-8 emulator is implemented via a struct:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Chip8</span><span style="color:#f92672">&lt;</span>R: <span style="color:#a6e22e">RngCore</span><span style="color:#f92672">&gt;</span> {
-    mem: [<span style="color:#66d9ef">u8</span>; MEM_SIZE],
-    v: <span style="color:#a6e22e">Regs</span>, <span style="color:#75715e">// Register Set
-</span><span style="color:#75715e"></span>    i: <span style="color:#66d9ef">u16</span>,  <span style="color:#75715e">// Index Register
-</span><span style="color:#75715e"></span>    pc: <span style="color:#66d9ef">u16</span>, <span style="color:#75715e">// Program Counter
-</span><span style="color:#75715e"></span>    stack: [<span style="color:#66d9ef">u16</span>; <span style="color:#ae81ff">0x10</span>],
-    sp: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Stack Pointer
-</span><span style="color:#75715e"></span>    dt: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Delay Timer
-</span><span style="color:#75715e"></span>    st: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Sound Timer
-</span><span style="color:#75715e"></span>    keypad: <span style="color:#66d9ef">u16</span>,                                <span style="color:#75715e">// Keypad
-</span><span style="color:#75715e"></span>    fb: [<span style="color:#66d9ef">u8</span>; SCREEN_WIDTH <span style="color:#f92672">*</span> SCREEN_HEIGTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>], <span style="color:#75715e">// Framebuffer
-</span><span style="color:#75715e"></span>    tone: <span style="color:#66d9ef">bool</span>,                                 <span style="color:#75715e">// Tone output enable
-</span><span style="color:#75715e"></span>    time: <span style="color:#66d9ef">isize</span>,                                <span style="color:#75715e">// Overtime in microseconds
-</span><span style="color:#75715e"></span>    rng: <span style="color:#a6e22e">R</span>,                                     <span style="color:#75715e">// Instance of a random number generator
-</span><span style="color:#75715e"></span>}
-</code></pre></div><p>which contains an abstraction of all the hardware components of the CHIP-8 as
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Chip8</span><span style="color:#f92672">&lt;</span>R: <span style="color:#a6e22e">RngCore</span><span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    mem: [<span style="color:#66d9ef">u8</span>; MEM_SIZE],
+</span></span><span style="display:flex;"><span>    v: <span style="color:#a6e22e">Regs</span>, <span style="color:#75715e">// Register Set
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    i: <span style="color:#66d9ef">u16</span>,  <span style="color:#75715e">// Index Register
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    pc: <span style="color:#66d9ef">u16</span>, <span style="color:#75715e">// Program Counter
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack: [<span style="color:#66d9ef">u16</span>; <span style="color:#ae81ff">0x10</span>],
+</span></span><span style="display:flex;"><span>    sp: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Stack Pointer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    dt: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Delay Timer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    st: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Sound Timer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    keypad: <span style="color:#66d9ef">u16</span>,                                <span style="color:#75715e">// Keypad
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fb: [<span style="color:#66d9ef">u8</span>; SCREEN_WIDTH <span style="color:#f92672">*</span> SCREEN_HEIGTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>], <span style="color:#75715e">// Framebuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    tone: <span style="color:#66d9ef">bool</span>,                                 <span style="color:#75715e">// Tone output enable
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    time: <span style="color:#66d9ef">isize</span>,                                <span style="color:#75715e">// Overtime in microseconds
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    rng: <span style="color:#a6e22e">R</span>,                                     <span style="color:#75715e">// Instance of a random number generator
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span></code></pre></div><p>which contains an abstraction of all the hardware components of the CHIP-8 as
 well as some auxiliary fields.  A part from the CPU and memory, the CHIP-8
 contains very simple hardware, so I implemented all the required methods on the
 <code>Chip8</code> struct.  For more complex hardware (like programmable timers, or a more
@@ -194,15 +194,15 @@ implementations for each instruction.</p>
 <p>The instructions take different combinations of inputs made of registers and
 immediate values.</p>
 <p>Here&rsquo;s an example of one instruction: ADD</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Op: Set Vx = Vx + b.
-</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">op_add</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, x: <span style="color:#a6e22e">Reg</span>, b: <span style="color:#66d9ef">u8</span>) -&gt; <span style="color:#66d9ef">usize</span> {
-        <span style="color:#66d9ef">let</span> (res, overflow) <span style="color:#f92672">=</span> self.v[x].overflowing_add(b);
-        self.v[x] <span style="color:#f92672">=</span> res;
-        self.v[Reg(<span style="color:#ae81ff">0xf</span>)] <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> overflow { <span style="color:#ae81ff">1</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
-        self.pc <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>;
-        <span style="color:#ae81ff">45</span>
-    }
-</code></pre></div><p>This instruction takes a register and an immediate value, and stores the result
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#e6db74">/// Op: Set Vx = Vx + b.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">op_add</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, x: <span style="color:#a6e22e">Reg</span>, b: <span style="color:#66d9ef">u8</span>) -&gt; <span style="color:#66d9ef">usize</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> (res, overflow) <span style="color:#f92672">=</span> self.v[x].overflowing_add(b);
+</span></span><span style="display:flex;"><span>        self.v[x] <span style="color:#f92672">=</span> res;
+</span></span><span style="display:flex;"><span>        self.v[Reg(<span style="color:#ae81ff">0xf</span>)] <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> overflow { <span style="color:#ae81ff">1</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
+</span></span><span style="display:flex;"><span>        self.pc <span style="color:#f92672">+=</span> <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">45</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>This instruction takes a register and an immediate value, and stores the result
 of adding the register value with the immediate value.  Also, an overflow flag
 is stored in register Vf.  You can also see that the program counter (<code>pc</code>) is
 incremented by 2 because this instruction is sequential and each CHIP-8
@@ -214,22 +214,22 @@ bytes to make instructions.  This is done with a match following <a href="http:/
 specification</a>.  After
 the instruction is decoded, the corresponding instruction function is called.</p>
 <p>Snippet of the beginning of this function:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Execute the instruction defined by (w0, w1).  Returns the number of microseconds elapsed.
-</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">exec</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, w0: <span style="color:#66d9ef">u8</span>, w1: <span style="color:#66d9ef">u8</span>) -&gt; Result<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">usize</span>, Error<span style="color:#f92672">&gt;</span> {
-        Ok(<span style="color:#66d9ef">match</span> w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xf0</span> {
-            <span style="color:#ae81ff">0x00</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> w1 {
-                <span style="color:#ae81ff">0xe0</span> <span style="color:#f92672">=&gt;</span> self.op_cls(),
-                <span style="color:#ae81ff">0xee</span> <span style="color:#f92672">=&gt;</span> self.op_ret(),
-                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn<span style="color:#f92672">!</span>(w0, w1)),
-            },
-            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn<span style="color:#f92672">!</span>(w0, w1)),
-            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn<span style="color:#f92672">!</span>(w0, w1)),
-            <span style="color:#ae81ff">0x30</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], w1),
-            <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">=&gt;</span> self.op_sne(self.v[Reg(lo_nib(w0))], w1),
-            <span style="color:#ae81ff">0x50</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], self.v[Reg(hi_nib(w1))]),
-            <span style="color:#ae81ff">0x60</span> <span style="color:#f92672">=&gt;</span> self.op_ld(Reg(w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0f</span>), w1),
-            <span style="color:#75715e">// [...]
-</span></code></pre></div><h3 id="frame-function">Frame function</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#e6db74">/// Execute the instruction defined by (w0, w1).  Returns the number of microseconds elapsed.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">exec</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, w0: <span style="color:#66d9ef">u8</span>, w1: <span style="color:#66d9ef">u8</span>) -&gt; Result<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">usize</span>, Error<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>        Ok(<span style="color:#66d9ef">match</span> w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xf0</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x00</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> w1 {
+</span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xe0</span> <span style="color:#f92672">=&gt;</span> self.op_cls(),
+</span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xee</span> <span style="color:#f92672">=&gt;</span> self.op_ret(),
+</span></span><span style="display:flex;"><span>                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn<span style="color:#f92672">!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn<span style="color:#f92672">!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn<span style="color:#f92672">!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x30</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], w1),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">=&gt;</span> self.op_sne(self.v[Reg(lo_nib(w0))], w1),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x50</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], self.v[Reg(hi_nib(w1))]),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x60</span> <span style="color:#f92672">=&gt;</span> self.op_ld(Reg(w0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0x0f</span>), w1),
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// [...]
+</span></span></span></code></pre></div><h3 id="frame-function">Frame function</h3>
 <p>A function that executes instructions and simulates hardware for the duration
 of a frame.</p>
 <p>The simulation of hardware is really simple, it involves decrementing counters
@@ -240,33 +240,33 @@ one.  Then, in a loop, we just fetch two consecutive bytes at the program
 counter, execute them, and subtract the elapsed time to the frame remaining
 time, until we&rsquo;ve used all the frame time.</p>
 <p>Implementation code:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#e6db74">/// Emulates the execution of instructions continuously until the emulated instructions total
-</span><span style="color:#e6db74"></span>    <span style="color:#e6db74">/// elapsed time reaches the equivalent of a frame.
-</span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">frame</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, keypad: <span style="color:#66d9ef">u16</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), Error<span style="color:#f92672">&gt;</span> {
-        self.keypad <span style="color:#f92672">=</span> keypad;
-        <span style="color:#66d9ef">if</span> self.dt <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
-            self.dt <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
-        }
-        self.tone <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> self.st <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
-            self.st <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
-            <span style="color:#66d9ef">true</span>
-        } <span style="color:#66d9ef">else</span> {
-            <span style="color:#66d9ef">false</span>
-        };
-        self.time <span style="color:#f92672">+=</span> FRAME_TIME;
-
-        <span style="color:#66d9ef">while</span> self.time <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> {
-            <span style="color:#66d9ef">if</span> self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">&gt;</span> MEM_SIZE <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
-                <span style="color:#66d9ef">return</span> Err(Error::PcOutOfBounds(self.pc));
-            }
-            <span style="color:#66d9ef">let</span> w0 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
-            <span style="color:#66d9ef">let</span> w1 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
-            <span style="color:#66d9ef">let</span> adv <span style="color:#f92672">=</span> self.exec(w0, w1)<span style="color:#f92672">?</span>;
-            self.time <span style="color:#f92672">-=</span> adv <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">isize</span>;
-        }
-        Ok(())
-    }
-</code></pre></div><h1 id="sdl-frontend">SDL Frontend</h1>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#e6db74">/// Emulates the execution of instructions continuously until the emulated instructions total
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#e6db74">/// elapsed time reaches the equivalent of a frame.
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74"></span>    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">frame</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, keypad: <span style="color:#66d9ef">u16</span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), Error<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>        self.keypad <span style="color:#f92672">=</span> keypad;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self.dt <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>            self.dt <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        self.tone <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> self.st <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>            self.st <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>        };
+</span></span><span style="display:flex;"><span>        self.time <span style="color:#f92672">+=</span> FRAME_TIME;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> self.time <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">&gt;</span> MEM_SIZE <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> Err(Error::PcOutOfBounds(self.pc));
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> w0 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> w1 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> adv <span style="color:#f92672">=</span> self.exec(w0, w1)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>            self.time <span style="color:#f92672">-=</span> adv <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">isize</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        Ok(())
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><h1 id="sdl-frontend">SDL Frontend</h1>
 <p>Now that we have the emulator backend implemented as a library, we can create
 an instance of the <code>Chip8</code> struct and interact with it handling all inputs and
 outputs with an operating system dependent library:
@@ -281,121 +281,121 @@ called <a href="https://github.com/clap-rs/clap">clap</a> to handle two argument
 path to the ROM file, and the display scale.  (Since the original display is
 only 64x32 pixels, rendering it without scaling would make it too small in a
 desktop display):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">let</span> app <span style="color:#f92672">=</span> App::new(<span style="color:#e6db74">&#34;Chip8-rs&#34;</span>)
-        .version(<span style="color:#e6db74">&#34;0.0.1&#34;</span>)
-        .author(<span style="color:#e6db74">&#34;Dhole&#34;</span>)
-        .arg(
-            Arg::with_name(<span style="color:#e6db74">&#34;scale&#34;</span>)
-                .short(<span style="color:#e6db74">&#34;s&#34;</span>)
-                .long(<span style="color:#e6db74">&#34;scale&#34;</span>)
-                .value_name(<span style="color:#e6db74">&#34;N&#34;</span>)
-                .help(<span style="color:#e6db74">&#34;Sets the scaling factor&#34;</span>)
-                .takes_value(<span style="color:#66d9ef">true</span>)
-                .default_value(<span style="color:#e6db74">&#34;8&#34;</span>)
-                .validator(<span style="color:#f92672">|</span>scale<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> scale.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>() {
-                    Ok(_) <span style="color:#f92672">=&gt;</span> Ok(()),
-                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}&#34;</span>, e)),
-                }),
-        )
-        .arg(
-            Arg::with_name(<span style="color:#e6db74">&#34;path&#34;</span>)
-                .help(<span style="color:#e6db74">&#34;Path to the rom file&#34;</span>)
-                .index(<span style="color:#ae81ff">1</span>)
-                .required(<span style="color:#66d9ef">true</span>),
-        )
-        .get_matches();
-
-    <span style="color:#66d9ef">let</span> scale <span style="color:#f92672">=</span> app
-        .value_of(<span style="color:#e6db74">&#34;scale&#34;</span>)
-        .map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>().expect(<span style="color:#e6db74">&#34;scale flag can be parsed as u32&#34;</span>))
-        .expect(<span style="color:#e6db74">&#34;scale argument is defined&#34;</span>);
-    <span style="color:#66d9ef">let</span> path <span style="color:#f92672">=</span> app.value_of(<span style="color:#e6db74">&#34;path&#34;</span>).expect(<span style="color:#e6db74">&#34;path argument is defined&#34;</span>);
-</code></pre></div><p>Next I read the ROM contents from disk by the specified path, create an
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> app <span style="color:#f92672">=</span> App::new(<span style="color:#e6db74">&#34;Chip8-rs&#34;</span>)
+</span></span><span style="display:flex;"><span>        .version(<span style="color:#e6db74">&#34;0.0.1&#34;</span>)
+</span></span><span style="display:flex;"><span>        .author(<span style="color:#e6db74">&#34;Dhole&#34;</span>)
+</span></span><span style="display:flex;"><span>        .arg(
+</span></span><span style="display:flex;"><span>            Arg::with_name(<span style="color:#e6db74">&#34;scale&#34;</span>)
+</span></span><span style="display:flex;"><span>                .short(<span style="color:#e6db74">&#34;s&#34;</span>)
+</span></span><span style="display:flex;"><span>                .long(<span style="color:#e6db74">&#34;scale&#34;</span>)
+</span></span><span style="display:flex;"><span>                .value_name(<span style="color:#e6db74">&#34;N&#34;</span>)
+</span></span><span style="display:flex;"><span>                .help(<span style="color:#e6db74">&#34;Sets the scaling factor&#34;</span>)
+</span></span><span style="display:flex;"><span>                .takes_value(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>                .default_value(<span style="color:#e6db74">&#34;8&#34;</span>)
+</span></span><span style="display:flex;"><span>                .validator(<span style="color:#f92672">|</span>scale<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> scale.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>() {
+</span></span><span style="display:flex;"><span>                    Ok(_) <span style="color:#f92672">=&gt;</span> Ok(()),
+</span></span><span style="display:flex;"><span>                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format!(<span style="color:#e6db74">&#34;{}&#34;</span>, e)),
+</span></span><span style="display:flex;"><span>                }),
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        .arg(
+</span></span><span style="display:flex;"><span>            Arg::with_name(<span style="color:#e6db74">&#34;path&#34;</span>)
+</span></span><span style="display:flex;"><span>                .help(<span style="color:#e6db74">&#34;Path to the rom file&#34;</span>)
+</span></span><span style="display:flex;"><span>                .index(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>                .required(<span style="color:#66d9ef">true</span>),
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        .get_matches();
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> scale <span style="color:#f92672">=</span> app
+</span></span><span style="display:flex;"><span>        .value_of(<span style="color:#e6db74">&#34;scale&#34;</span>)
+</span></span><span style="display:flex;"><span>        .map(<span style="color:#f92672">|</span>s<span style="color:#f92672">|</span> s.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>().expect(<span style="color:#e6db74">&#34;scale flag can be parsed as u32&#34;</span>))
+</span></span><span style="display:flex;"><span>        .expect(<span style="color:#e6db74">&#34;scale argument is defined&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> path <span style="color:#f92672">=</span> app.value_of(<span style="color:#e6db74">&#34;path&#34;</span>).expect(<span style="color:#e6db74">&#34;path argument is defined&#34;</span>);
+</span></span></code></pre></div><p>Next I read the ROM contents from disk by the specified path, create an
 instance of the <code>Chip8</code> struct and load the ROM.  Notice that the <code>Chip8</code>
 constructor takes a random value as input to be used as a seed for the random
 number generation.  I intentionally left the seed generation to the frontend
 because it&rsquo;s platform dependent:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rom <span style="color:#f92672">=</span> Vec::new();
-    fs::OpenOptions::new()
-        .read(<span style="color:#66d9ef">true</span>)
-        .open(path)<span style="color:#f92672">?</span>
-        .read_to_end(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rom)<span style="color:#f92672">?</span>;
-
-    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chip8 <span style="color:#f92672">=</span> Chip8::new(rand::random());
-    chip8.load_rom(<span style="color:#f92672">&amp;</span>rom)<span style="color:#f92672">?</span>;
-</code></pre></div><p>Next I set up the SDL environment for audio and video, and then implement the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> rom <span style="color:#f92672">=</span> Vec::new();
+</span></span><span style="display:flex;"><span>    fs::OpenOptions::new()
+</span></span><span style="display:flex;"><span>        .read(<span style="color:#66d9ef">true</span>)
+</span></span><span style="display:flex;"><span>        .open(path)<span style="color:#f92672">?</span>
+</span></span><span style="display:flex;"><span>        .read_to_end(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> rom)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> chip8 <span style="color:#f92672">=</span> Chip8::new(rand::random());
+</span></span><span style="display:flex;"><span>    chip8.load_rom(<span style="color:#f92672">&amp;</span>rom)<span style="color:#f92672">?</span>;
+</span></span></code></pre></div><p>Next I set up the SDL environment for audio and video, and then implement the
 main loop which does the following:</p>
 <ol>
 <li>Poll key events to detect keydown and keyup events to update the keypad
 bit-vector state.</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">for</span> event <span style="color:#66d9ef">in</span> event_pump.poll_iter() {
-            <span style="color:#66d9ef">match</span> event {
-                <span style="color:#75715e">// [...]
-</span><span style="color:#75715e"></span>                Event::KeyDown {
-                    keycode: Some(keycode),
-                    ..
-                } <span style="color:#f92672">=&gt;</span> {
-                    keypad <span style="color:#f92672">|=</span> <span style="color:#66d9ef">match</span> keycode {
-                        Keycode::Num1 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x1</span>,
-                        Keycode::Num2 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x2</span>,
-                        Keycode::Num3 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x3</span>,
-                        Keycode::Num4 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xC</span>,
-                        Keycode::Q <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x4</span>,
-                        Keycode::W <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x5</span>,
-                        <span style="color:#75715e">// [...]
-</span><span style="color:#75715e"></span>                        _ <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">0</span>,
-                    };
-                }
-                <span style="color:#75715e">// [...]
-</span></code></pre></div><ol start="2">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> event <span style="color:#66d9ef">in</span> event_pump.poll_iter() {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">match</span> event {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// [...]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                Event::KeyDown {
+</span></span><span style="display:flex;"><span>                    keycode: Some(keycode),
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">..</span>
+</span></span><span style="display:flex;"><span>                } <span style="color:#f92672">=&gt;</span> {
+</span></span><span style="display:flex;"><span>                    keypad <span style="color:#f92672">|=</span> <span style="color:#66d9ef">match</span> keycode {
+</span></span><span style="display:flex;"><span>                        Keycode::Num1 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x1</span>,
+</span></span><span style="display:flex;"><span>                        Keycode::Num2 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x2</span>,
+</span></span><span style="display:flex;"><span>                        Keycode::Num3 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x3</span>,
+</span></span><span style="display:flex;"><span>                        Keycode::Num4 <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0xC</span>,
+</span></span><span style="display:flex;"><span>                        Keycode::Q <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x4</span>,
+</span></span><span style="display:flex;"><span>                        Keycode::W <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">0x5</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// [...]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        _ <span style="color:#f92672">=&gt;</span> <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>                    };
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// [...]
+</span></span></span></code></pre></div><ol start="2">
 <li>Simulate a Chip8 frame</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        chip8.frame(keypad)<span style="color:#f92672">?</span>;
-</code></pre></div><ol start="3">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        chip8.frame(keypad)<span style="color:#f92672">?</span>;
+</span></span></code></pre></div><ol start="3">
 <li>Play a tone if the tone enable flag is set</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">if</span> chip8.tone() {
-            device.resume();
-        } <span style="color:#66d9ef">else</span> {
-            device.pause();
-        }
-</code></pre></div><ol start="4">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> chip8.tone() {
+</span></span><span style="display:flex;"><span>            device.resume();
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            device.pause();
+</span></span><span style="display:flex;"><span>        }
+</span></span></code></pre></div><ol start="4">
 <li>Update the display texture</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        tex_display.with_lock(None, <span style="color:#f92672">|</span>buffer: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [<span style="color:#66d9ef">u8</span>], pitch: <span style="color:#66d9ef">usize</span><span style="color:#f92672">|</span> {
-            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_HEIGTH {
-                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
-                    <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
-                    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span>..<span style="color:#ae81ff">8</span> {
-                        <span style="color:#66d9ef">let</span> offset <span style="color:#f92672">=</span> y <span style="color:#f92672">*</span> pitch <span style="color:#f92672">+</span> (x <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> i) <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>;
-                        <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> byte <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span> <span style="color:#f92672">-</span> i) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> { <span style="color:#ae81ff">255</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
-                        buffer[offset] <span style="color:#f92672">=</span> v;
-                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> v;
-                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> v;
-                    }
-                }
-            }
-        })<span style="color:#f92672">?</span>;
-</code></pre></div><ol start="5">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        tex_display.with_lock(None, <span style="color:#f92672">|</span>buffer: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [<span style="color:#66d9ef">u8</span>], pitch: <span style="color:#66d9ef">usize</span><span style="color:#f92672">|</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::SCREEN_HEIGTH {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span> {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">let</span> offset <span style="color:#f92672">=</span> y <span style="color:#f92672">*</span> pitch <span style="color:#f92672">+</span> (x <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> i) <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> byte <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span> <span style="color:#f92672">-</span> i) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> { <span style="color:#ae81ff">255</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };
+</span></span><span style="display:flex;"><span>                        buffer[offset] <span style="color:#f92672">=</span> v;
+</span></span><span style="display:flex;"><span>                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> v;
+</span></span><span style="display:flex;"><span>                        buffer[offset <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> v;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        })<span style="color:#f92672">?</span>;
+</span></span></code></pre></div><ol start="5">
 <li>Copy the display texture to the window canvas, to be stretched to fill the canvas</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        canvas.clear();
-        canvas.copy(<span style="color:#f92672">&amp;</span>tex_display, None, None)<span style="color:#f92672">?</span>;
-</code></pre></div><ol start="6">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        canvas.clear();
+</span></span><span style="display:flex;"><span>        canvas.copy(<span style="color:#f92672">&amp;</span>tex_display, None, None)<span style="color:#f92672">?</span>;
+</span></span></code></pre></div><ol start="6">
 <li>Present the window canvas</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        canvas.present();
-</code></pre></div><ol start="7">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        canvas.present();
+</span></span></code></pre></div><ol start="7">
 <li>Sleep the remaining frame time, so that the loop is run 60 times per second</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">        <span style="color:#66d9ef">let</span> now <span style="color:#f92672">=</span> Instant::now();
-        <span style="color:#66d9ef">let</span> sleep_dur <span style="color:#f92672">=</span> frame_duration
-            .checked_sub(now.saturating_duration_since(timestamp))
-            .unwrap_or(Duration::new(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>));
-        ::std::thread::sleep(sleep_dur);
-        timestamp <span style="color:#f92672">=</span> now;
-</code></pre></div><p>Here&rsquo;s a capture of the end result, running the INVADERS game:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> now <span style="color:#f92672">=</span> Instant::now();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> sleep_dur <span style="color:#f92672">=</span> frame_duration
+</span></span><span style="display:flex;"><span>            .checked_sub(now.saturating_duration_since(timestamp))
+</span></span><span style="display:flex;"><span>            .unwrap_or(Duration::new(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>));
+</span></span><span style="display:flex;"><span>        ::std::thread::sleep(sleep_dur);
+</span></span><span style="display:flex;"><span>        timestamp <span style="color:#f92672">=</span> now;
+</span></span></code></pre></div><p>Here&rsquo;s a capture of the end result, running the INVADERS game:</p>
 
 
 <figure >
@@ -499,7 +499,7 @@ in your favorite language!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/thinkpad_helix2_linux/"> Thinkpad Helix 2 with Linux</a>
+                        <a href="https://dhole.github.io/post/thinkpad_helix2_linux/"> Thinkpad Helix 2 with Linux</a>
                     
                 </div>
             </div>
@@ -507,7 +507,7 @@ in your favorite language!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/nfs_wireguard/"> NFS server over WireGuard in Alpine</a>
+                        <a href="https://dhole.github.io/post/nfs_wireguard/"> NFS server over WireGuard in Alpine</a>
                     
                 </div>
             </div>
@@ -519,7 +519,7 @@ in your favorite language!</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

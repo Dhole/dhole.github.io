@@ -8,7 +8,7 @@
         <title>Booting the GameBoy with a custom logo &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,9 +66,9 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
 </div>
 
@@ -95,29 +95,29 @@ to the following:</p>
 in the ROM from 0x104 to 0x133) to be done on a custom array. Once the last byte
 has been read, the flag is set to true so that the following reads are performed
 to the real ROM.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#75715e">/* Read cartridge operation for MBC1 */</span>
-<span style="color:#66d9ef">inline</span> uint8_t <span style="color:#a6e22e">mbc1_read</span>(uint16_t addr) {
-	<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x4000</span>) {
-		<span style="color:#75715e">/* 16KB ROM bank 00 */</span>
-		<span style="color:#66d9ef">if</span> (no_show_logo) {
-			<span style="color:#75715e">/* Custom logo disabled */</span>
-			<span style="color:#66d9ef">return</span> rom_gb[addr];
-		} <span style="color:#66d9ef">else</span> {
-			<span style="color:#75715e">/* Custom logo enabled, only during first read at boot */</span>
-			<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x133</span>) {
-				no_show_logo <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-			}
-			<span style="color:#66d9ef">return</span> logo_bin[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x104</span>];
-		}
-	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x8000</span>) {
-		<span style="color:#75715e">/* 16KB ROM Bank 01-7F */</span>
-		<span style="color:#66d9ef">return</span> rom_gb[addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x4000</span> <span style="color:#f92672">*</span> (rom_bank <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)];
-	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0xC000</span>) {
-		<span style="color:#75715e">/* 8KB RAM Bank 00-03, if any */</span>
-		<span style="color:#66d9ef">return</span> ram[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">*</span> ram_bank];
-	}
-	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0x00</span>;
-}</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#75715e">/* Read cartridge operation for MBC1 */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">uint8_t</span> <span style="color:#a6e22e">mbc1_read</span>(<span style="color:#66d9ef">uint16_t</span> addr) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x4000</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* 16KB ROM bank 00 */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (no_show_logo) {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">/* Custom logo disabled */</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> rom_gb[addr];
+</span></span><span style="display:flex;"><span>		} <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">/* Custom logo enabled, only during first read at boot */</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">==</span> <span style="color:#ae81ff">0x133</span>) {
+</span></span><span style="display:flex;"><span>				no_show_logo <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> logo_bin[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0x104</span>];
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0x8000</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* 16KB ROM Bank 01-7F */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> rom_gb[addr <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x4000</span> <span style="color:#f92672">*</span> (rom_bank <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)];
+</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (addr <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">&amp;&amp;</span> addr <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0xC000</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">/* 8KB RAM Bank 00-03, if any */</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> ram[addr <span style="color:#f92672">-</span> <span style="color:#ae81ff">0xA000</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">0x2000</span> <span style="color:#f92672">*</span> ram_bank];
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0x00</span>;
+</span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
 <h2 id="custom-logo-creation">Custom logo creation</h2>
 <p>In order to create custom logos I wrote two python scripts:</p>
 <ul>
@@ -205,7 +205,7 @@ binary logo to be used by the cart emulator</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_cartridge_emu_2/"> Emulating a GameBoy Cartridge with an STM32F4. Part 2</a>
+                        <a href="https://dhole.github.io/post/gameboy_cartridge_emu_2/"> Emulating a GameBoy Cartridge with an STM32F4. Part 2</a>
                     
                 </div>
             </div>
@@ -213,7 +213,7 @@ binary logo to be used by the cart emulator</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/full_disk_encryption_samsung_chromebook/"> Full disk encryption on Samsung Chromebook with Arch Linux</a>
+                        <a href="https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/"> Full disk encryption on Samsung Chromebook with Arch Linux</a>
                     
                 </div>
             </div>
@@ -225,7 +225,7 @@ binary logo to be used by the cart emulator</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

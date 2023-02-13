@@ -8,7 +8,7 @@
         <title>Raspberry Pi: git server (cgit with lighttpd) &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,13 +66,13 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/git">git</a> </span>
+<span><a href="https://dhole.github.io/categories/git">git</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/linux">linux</a> </span>
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -88,74 +88,74 @@ and pushing.</p>
 <p>First of all, we&rsquo;ll create a <em>git</em> user and move it&rsquo;s home to the encrypted
 partition.  For convenience we&rsquo;ll also link that home directory to <code>/git</code>.  This
 will be useful to have nice paths for our repositories.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">adduser git
-lbu add /home/git/
-
-rmdir /home/git
-ln -sf /mnt/disk/git /home/
-cp -R /home/green/.ssh /home/git/.ssh
-chown -R git:git /home/git/
-ln -s /home/git/ /git</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adduser git
+</span></span><span style="display:flex;"><span>lbu add /home/git/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rmdir /home/git
+</span></span><span style="display:flex;"><span>ln -sf /mnt/disk/git /home/
+</span></span><span style="display:flex;"><span>cp -R /home/green/.ssh /home/git/.ssh
+</span></span><span style="display:flex;"><span>chown -R git:git /home/git/
+</span></span><span style="display:flex;"><span>ln -s /home/git/ /git</span></span></code></pre></div>
 <p>Finally we install git, cgit and highlight (to provide code highlighting in
 cgit).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk add highlight git cgit</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apk add highlight git cgit</span></span></code></pre></div>
 <p>cgit comes with a default script that will call highlight, but unfortunately
 it&rsquo;s expecting version 2 of highlight.  We&rsquo;ll copy the script and change it to
 use the argument format of version 3 of highlight (the line is already there, we
 just comment the version 2 and uncomment the version 3).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
-vim /usr/lib/cgit/filters/syntax-highlighting3.sh</code></pre></div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f92672">--- /usr/lib/cgit/filters/syntax-highlighting.sh
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ /usr/lib/cgit/filters/syntax-highlighting3.sh
-</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -115,7 +115,7 @@
-</span><span style="color:#75715e"></span> # found (for example) on EPEL 6.
- #
- # This is for version 2
-<span style="color:#f92672">-exec highlight --force -f -I -X -S &#34;$EXTENSION&#34; 2&gt;/dev/null
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+#exec highlight --force -f -I -X -S &#34;$EXTENSION&#34; 2&gt;/dev/null
-</span><span style="color:#a6e22e"></span>
- # This is for version 3
-<span style="color:#f92672">-#exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
-</span></code></pre></div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp /usr/lib/cgit/filters/syntax-highlighting.sh /usr/lib/cgit/filters/syntax-highlighting3.sh
+</span></span><span style="display:flex;"><span>vim /usr/lib/cgit/filters/syntax-highlighting3.sh</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span><span style="color:#f92672">--- /usr/lib/cgit/filters/syntax-highlighting.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ /usr/lib/cgit/filters/syntax-highlighting3.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -115,7 +115,7 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> # found (for example) on EPEL 6.
+</span></span><span style="display:flex;"><span> #
+</span></span><span style="display:flex;"><span> # This is for version 2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-exec highlight --force -f -I -X -S &#34;$EXTENSION&#34; 2&gt;/dev/null
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+#exec highlight --force -f -I -X -S &#34;$EXTENSION&#34; 2&gt;/dev/null
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span>
+</span></span><span style="display:flex;"><span> # This is for version 3
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-#exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+exec highlight --force -f -I -O xhtml -S &#34;$EXTENSION&#34; 2&gt;/dev/null
+</span></span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lbu add /usr/lib/cgit/filters/syntax-highlighting3.sh</span></span></code></pre></div>
 <p>Highlight uses css to color the code, so we need to add some lines specifying
 the colors we want to the css file cgit uses.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
-vim /usr/share/webapps/cgit/cgit-highlight.css</code></pre></div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-diff" data-lang="diff"><span style="color:#f92672">--- /usr/share/webapps/cgit/cgit.css
-</span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ /usr/share/webapps/cgit/cgit-highlight.css
-</span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -809,3 +809,20 @@
-</span><span style="color:#75715e"></span> div#cgit table.ssdiff td.space div {
-        min-height: 3em;
- }
-<span style="color:#a6e22e">+
-</span><span style="color:#a6e22e">+body.hl { background-color:#e0eaee; }
-</span><span style="color:#a6e22e">+pre.hl  { color:#000000; background-color:#e0eaee; font-size:10pt; font-family:&#39;Courier New&#39;,monospace;}
-</span><span style="color:#a6e22e">+.hl.num { color:#b07e00; }
-</span><span style="color:#a6e22e">+.hl.esc { color:#ff00ff; }
-</span><span style="color:#a6e22e">+.hl.str { color:#bf0303; }
-</span><span style="color:#a6e22e">+.hl.pps { color:#818100; }
-</span><span style="color:#a6e22e">+.hl.slc { color:#838183; font-style:italic; }
-</span><span style="color:#a6e22e">+.hl.com { color:#838183; font-style:italic; }
-</span><span style="color:#a6e22e">+.hl.ppc { color:#008200; }
-</span><span style="color:#a6e22e">+.hl.opt { color:#000000; }
-</span><span style="color:#a6e22e">+.hl.ipl { color:#0057ae; }
-</span><span style="color:#a6e22e">+.hl.lin { color:#555555; }
-</span><span style="color:#a6e22e">+.hl.kwa { color:#000000; font-weight:bold; }
-</span><span style="color:#a6e22e">+.hl.kwb { color:#0057ae; }
-</span><span style="color:#a6e22e">+.hl.kwc { color:#000000; font-weight:bold; }
-</span><span style="color:#a6e22e">+.hl.kwd { color:#010181; }
-</span></code></pre></div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /usr/share/webapps/cgit/cgit-highlight.css</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp /usr/share/webapps/cgit/cgit.css /usr/share/webapps/cgit/cgit-highlight.css
+</span></span><span style="display:flex;"><span>vim /usr/share/webapps/cgit/cgit-highlight.css</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-diff" data-lang="diff"><span style="display:flex;"><span><span style="color:#f92672">--- /usr/share/webapps/cgit/cgit.css
+</span></span></span><span style="display:flex;"><span><span style="color:#f92672"></span><span style="color:#a6e22e">+++ /usr/share/webapps/cgit/cgit-highlight.css
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e"></span><span style="color:#75715e">@@ -809,3 +809,20 @@
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> div#cgit table.ssdiff td.space div {
+</span></span><span style="display:flex;"><span>        min-height: 3em;
+</span></span><span style="display:flex;"><span> }
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">+
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+body.hl { background-color:#e0eaee; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+pre.hl  { color:#000000; background-color:#e0eaee; font-size:10pt; font-family:&#39;Courier New&#39;,monospace;}
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.num { color:#b07e00; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.esc { color:#ff00ff; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.str { color:#bf0303; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.pps { color:#818100; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.slc { color:#838183; font-style:italic; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.com { color:#838183; font-style:italic; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.ppc { color:#008200; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.opt { color:#000000; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.ipl { color:#0057ae; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.lin { color:#555555; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.kwa { color:#000000; font-weight:bold; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.kwb { color:#0057ae; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.kwc { color:#000000; font-weight:bold; }
+</span></span></span><span style="display:flex;"><span><span style="color:#a6e22e">+.hl.kwd { color:#010181; }
+</span></span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lbu add /usr/share/webapps/cgit/cgit-highlight.css</span></span></code></pre></div>
 <p>As mentioned in the introduction, we will setup two folders, one for private repositories and the other one for public ones.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd /mnt/disk
-mkdir -p git/pub
-mkdir -p git/priv</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd /mnt/disk
+</span></span><span style="display:flex;"><span>mkdir -p git/pub
+</span></span><span style="display:flex;"><span>mkdir -p git/priv</span></span></code></pre></div>
 <p>For our setup we will use a general cgit configuration files, and two
 specialized ones for the public and private folders.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir /etc/cgit</code></pre></div>
-<pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /etc/cgit</span></span></code></pre></div>
+<pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc
 css=/cgit/cgit-highlight.css
 logo=/cgit/cgit.png
 source-filter=/usr/lib/cgit/filters/syntax-highlighting3.sh
@@ -167,18 +167,18 @@ enable-log-linecount=1
 enable-log-filecount=1
 #cache-size=512
 robots=noindex, nofollow
-root-title=Dhole's git repositories
+root-title=Dhole&#39;s git repositories
 root-desc=my personal repositories
 remove-suffix=1
 clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git@lizard.kyasuka.com:
 EOF
-</code></pre><pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.public
+</code></pre><pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.public
 include=/etc/cgit/cgitrc
 clone-prefix=https://lizard.kyasuka.com/cgit/cgit.cgi ssh://git-kyasuka/git/pub
 section=Public
 scan-path=/mnt/distk/git/pub/
 EOF
-</code></pre><pre><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.private
+</code></pre><pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /etc/cgit/cgitrc.private
 include=/etc/cgit/cgitrc
 clone-prefix=https://lizard.kyasuka.com/private/cgit/cgit.cgi ssh://git-kyasuka/git/priv
 section=Private
@@ -189,140 +189,140 @@ cgit via the cgi interface.  We are using the public and private configurations
 by setting the <code>CGIT_CONFIG</code> environment variable depending on the url path.
 Remember to follow the previous post to add http auth to the urls that start
 with <code>/private</code>.</p>
-<pre><code>cat &lt;&lt; EOF &gt; /etc/lighttpd/cgit.conf
-server.modules += (&quot;mod_redirect&quot;,
-                   &quot;mod_alias&quot;,
-                   &quot;mod_cgi&quot;,
-                   &quot;mod_fastcgi&quot;,
-                   &quot;mod_rewrite&quot;,
-                   &quot;mod_alias&quot;,)
+<pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /etc/lighttpd/cgit.conf
+server.modules += (&#34;mod_redirect&#34;,
+                   &#34;mod_alias&#34;,
+                   &#34;mod_cgi&#34;,
+                   &#34;mod_fastcgi&#34;,
+                   &#34;mod_rewrite&#34;,
+                   &#34;mod_alias&#34;,)
 
-var.webapps = &quot;/usr/share/webapps/&quot;
-$HTTP[&quot;url&quot;] =~ &quot;^/cgit&quot; {
-        setenv.add-environment += ( &quot;CGIT_CONFIG&quot; =&gt; &quot;/etc/cgit/cgitrc.public&quot; )
+var.webapps = &#34;/usr/share/webapps/&#34;
+$HTTP[&#34;url&#34;] =~ &#34;^/cgit&#34; {
+        setenv.add-environment += ( &#34;CGIT_CONFIG&#34; =&gt; &#34;/etc/cgit/cgitrc.public&#34; )
         server.document-root = webapps
-        server.indexfiles = (&quot;cgit.cgi&quot;)
-        cgi.assign = (&quot;cgit.cgi&quot; =&gt; &quot;&quot;)
-        mimetype.assign = ( &quot;.css&quot; =&gt; &quot;text/css&quot; )
+        server.indexfiles = (&#34;cgit.cgi&#34;)
+        cgi.assign = (&#34;cgit.cgi&#34; =&gt; &#34;&#34;)
+        mimetype.assign = ( &#34;.css&#34; =&gt; &#34;text/css&#34; )
 }
 url.redirect = (
-        &quot;^/git/(.*)$&quot; =&gt; &quot;/cgit/cgit.cgi/$1&quot;,
+        &#34;^/git/(.*)$&#34; =&gt; &#34;/cgit/cgit.cgi/$1&#34;,
 )
-$HTTP[&quot;url&quot;] =~ &quot;^/private/cgit&quot; {
-        #url.rewrite-once = ( &quot;^/private/cgit/(.*)&quot; =&gt; &quot;/cgit/$1&quot; )
-        alias.url = ( &quot;/private/&quot; =&gt; &quot;/usr/share/webapps/&quot; )
-        setenv.add-environment += ( &quot;CGIT_CONFIG&quot; =&gt; &quot;/etc/cgit/cgitrc.private&quot; )
+$HTTP[&#34;url&#34;] =~ &#34;^/private/cgit&#34; {
+        #url.rewrite-once = ( &#34;^/private/cgit/(.*)&#34; =&gt; &#34;/cgit/$1&#34; )
+        alias.url = ( &#34;/private/&#34; =&gt; &#34;/usr/share/webapps/&#34; )
+        setenv.add-environment += ( &#34;CGIT_CONFIG&#34; =&gt; &#34;/etc/cgit/cgitrc.private&#34; )
         server.document-root = webapps
-        server.indexfiles = (&quot;cgit.cgi&quot;)
-        cgi.assign = (&quot;cgit.cgi&quot; =&gt; &quot;&quot;)
-        mimetype.assign = ( &quot;.css&quot; =&gt; &quot;text/css&quot; )
+        server.indexfiles = (&#34;cgit.cgi&#34;)
+        cgi.assign = (&#34;cgit.cgi&#34; =&gt; &#34;&#34;)
+        mimetype.assign = ( &#34;.css&#34; =&gt; &#34;text/css&#34; )
 }
 EOF
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/lighttpd/lighttpd.conf</code></pre></div>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">...
-...
-<span style="color:#75715e"># {{{ includes</span>
-...
-include <span style="color:#e6db74">&#34;cgit.conf&#34;</span>
-...
-<span style="color:#75715e"># }}}</span>
-...
-...</code></pre></div>
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim /etc/lighttpd/lighttpd.conf</span></span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># {{{ includes</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>include <span style="color:#e6db74">&#34;cgit.conf&#34;</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># }}}</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>...</span></span></code></pre></div>
 <p>We commit every file to permanent storage and restart the lighttpd server.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu commit
-rc-service lighttpd start</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lbu commit
+</span></span><span style="display:flex;"><span>rc-service lighttpd start</span></span></code></pre></div>
 <p>We should be able to visit the cgit interface from a browser now.</p>
 <h1 id="git-usage">Git usage</h1>
 <p>To automate making new repositories I wrote the following simple script:</p>
-<pre><code>cat &lt;&lt; EOF &gt; /home/git/new-repo.sh
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#! /bin/sh
-</span><span style="color:#75715e"></span>
-folder<span style="color:#f92672">=</span>$1
-name<span style="color:#f92672">=</span>$2
-desc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$#<span style="color:#e6db74">&#34;</span> -ne <span style="color:#ae81ff">3</span> <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">then</span>
-        echo <span style="color:#e6db74">&#34;Usage: </span>$0<span style="color:#e6db74"> {pub|priv} name description&#34;</span>
-        exit <span style="color:#ae81ff">1</span>
-<span style="color:#66d9ef">fi</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> ! -d <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">then</span>
-        echo <span style="color:#e6db74">&#34;Group </span>$folder<span style="color:#e6db74"> doesn&#39;t exist.  use pub/priv.&#34;</span>
-        exit <span style="color:#ae81ff">2</span>
-<span style="color:#66d9ef">fi</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -d <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">&#34;</span>.git <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">then</span>
-        echo <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74"> already exists&#34;</span>
-        exit <span style="color:#ae81ff">3</span>
-<span style="color:#66d9ef">fi</span>
-
-<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$desc<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>
-<span style="color:#66d9ef">then</span>
-        echo <span style="color:#e6db74">&#34;Please, provide a description in the 3rd argument.&#34;</span>
-        exit <span style="color:#ae81ff">4</span>
-<span style="color:#66d9ef">fi</span>
-
-cd <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">&#34;</span>
-mkdir <span style="color:#e6db74">&#34;</span>$name<span style="color:#e6db74">&#34;</span>.git
-cd <span style="color:#e6db74">&#34;</span>$name<span style="color:#e6db74">&#34;</span>.git
-git init --bare
-echo <span style="color:#e6db74">&#34;</span>$desc<span style="color:#e6db74">&#34;</span> &gt; description
-
-echo <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74"> is ready.&#34;</span>
-echo <span style="color:#e6db74">&#34;&#34;</span>
-echo <span style="color:#e6db74">&#34;  Create a new repository&#34;</span>
-echo <span style="color:#e6db74">&#34;&#34;</span>
-echo <span style="color:#e6db74">&#34;git clone ssh://git-kyasuka/git/</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">.git&#34;</span>
-echo <span style="color:#e6db74">&#34;cd </span>$name<span style="color:#e6db74">&#34;</span>
-echo <span style="color:#e6db74">&#34;touch README.md&#34;</span>
-echo <span style="color:#e6db74">&#34;git add README.md&#34;</span>
-echo <span style="color:#e6db74">&#34;git commit -m \&#34;add README\&#34;&#34;</span>
-echo <span style="color:#e6db74">&#34;git push -u origin master&#34;</span>
-echo <span style="color:#e6db74">&#34;&#34;</span>
-echo <span style="color:#e6db74">&#34;  Existing folder or Git repository&#34;</span>
-echo <span style="color:#e6db74">&#34;&#34;</span>
-echo <span style="color:#e6db74">&#34;cd existing_folder&#34;</span>
-echo <span style="color:#e6db74">&#34;git init&#34;</span>
-echo <span style="color:#e6db74">&#34;git remote add origin ssh://git-kyasuka/git/</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">.git&#34;</span>
-echo <span style="color:#e6db74">&#34;git add .&#34;</span>
-echo <span style="color:#e6db74">&#34;git commit&#34;</span>
-echo <span style="color:#e6db74">&#34;git push -u origin master&#34;</span></code></pre></div>
-<pre><code>EOF
+<pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /home/git/new-repo.sh
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#! /bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>folder<span style="color:#f92672">=</span>$1
+</span></span><span style="display:flex;"><span>name<span style="color:#f92672">=</span>$2
+</span></span><span style="display:flex;"><span>desc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$3<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$#<span style="color:#e6db74">&#34;</span> -ne <span style="color:#ae81ff">3</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;Usage: </span>$0<span style="color:#e6db74"> {pub|priv} name description&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> ! -d <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;Group </span>$folder<span style="color:#e6db74"> doesn&#39;t exist.  use pub/priv.&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -d <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">&#34;</span>.git <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74"> already exists&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span>$desc<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span> <span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        echo <span style="color:#e6db74">&#34;Please, provide a description in the 3rd argument.&#34;</span>
+</span></span><span style="display:flex;"><span>        exit <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>mkdir <span style="color:#e6db74">&#34;</span>$name<span style="color:#e6db74">&#34;</span>.git
+</span></span><span style="display:flex;"><span>cd <span style="color:#e6db74">&#34;</span>$name<span style="color:#e6db74">&#34;</span>.git
+</span></span><span style="display:flex;"><span>git init --bare
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span>$desc<span style="color:#e6db74">&#34;</span> &gt; description
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74"> is ready.&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;  Create a new repository&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git clone ssh://git-kyasuka/git/</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">.git&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;cd </span>$name<span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;touch README.md&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git add README.md&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git commit -m \&#34;add README\&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git push -u origin master&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;  Existing folder or Git repository&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;cd existing_folder&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git init&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git remote add origin ssh://git-kyasuka/git/</span>$folder<span style="color:#e6db74">/</span>$name<span style="color:#e6db74">.git&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git add .&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git commit&#34;</span>
+</span></span><span style="display:flex;"><span>echo <span style="color:#e6db74">&#34;git push -u origin master&#34;</span></span></span></code></pre></div>
+<pre tabindex="0"><code>EOF
 </code></pre><p>Now, to create a new git repository I just do the following from my local
 machine:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ssh git@lizard.kyasuka.com
-./new-repo.sh pub test <span style="color:#e6db74">&#34;This is a test repository&#34;</span>
-exit</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>ssh git@lizard.kyasuka.com
+</span></span><span style="display:flex;"><span>./new-repo.sh pub test <span style="color:#e6db74">&#34;This is a test repository&#34;</span>
+</span></span><span style="display:flex;"><span>exit</span></span></code></pre></div>
 <h1 id="bonus">Bonus</h1>
 <p>I had a few repositories in github, so I wrote the following python script to
 clone them all into my server.  This will make the transition easier :)</p>
-<pre><code>cat &lt;&lt; EOF &gt; /mnt/disk/git/import-github.py
-</code></pre><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#75715e">#! /usr/bin/env python3</span>
-
-<span style="color:#f92672">from</span> urllib.request <span style="color:#66d9ef">import</span> urlopen, urlretrieve
-<span style="color:#f92672">import</span> os<span style="color:#f92672">,</span> sys<span style="color:#f92672">,</span> re<span style="color:#f92672">,</span> subprocess
-
-user <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>]
-content <span style="color:#f92672">=</span> urlopen(<span style="color:#e6db74">&#39;https://api.github.com/users/</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">/repos&#39;</span> <span style="color:#f92672">%</span> user)<span style="color:#f92672">.</span>read()
-content <span style="color:#f92672">=</span> content<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;UTF-8&#39;</span>)
-
-
-clone_urls <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;clone_url&#34;:)&#34;[^&#34;]*&#34;,&#39;</span>, content)
-descriptions <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;description&#34;:)(null|&#34;[^&#34;]*&#34;),&#39;</span>, content)
-
-descriptions <span style="color:#f92672">=</span> [d<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> descriptions]
-os<span style="color:#f92672">.</span>chdir(<span style="color:#e6db74">&#39;pub&#39;</span>)
-<span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(clone_urls)):
-    clone_url <span style="color:#f92672">=</span> clone_urls[i]
-    clone_url <span style="color:#f92672">=</span> clone_url[<span style="color:#ae81ff">1</span>:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
-    print(clone_url)
-    subprocess<span style="color:#f92672">.</span>run([<span style="color:#e6db74">&#39;git&#39;</span>, <span style="color:#e6db74">&#39;clone&#39;</span>, <span style="color:#e6db74">&#39;--bare&#39;</span>, clone_url])
-    <span style="color:#66d9ef">with</span> open(clone_url<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/description&#39;</span>, <span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> desc_file:
-        desc_file<span style="color:#f92672">.</span>write(descriptions[i] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)</code></pre></div>
-<pre><code>EOF
+<pre tabindex="0"><code>cat &lt;&lt; EOF &gt; /mnt/disk/git/import-github.py
+</code></pre><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#75715e">#! /usr/bin/env python3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> urllib.request <span style="color:#f92672">import</span> urlopen, urlretrieve
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os<span style="color:#f92672">,</span> sys<span style="color:#f92672">,</span> re<span style="color:#f92672">,</span> subprocess
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>user <span style="color:#f92672">=</span> sys<span style="color:#f92672">.</span>argv[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>content <span style="color:#f92672">=</span> urlopen(<span style="color:#e6db74">&#39;https://api.github.com/users/</span><span style="color:#e6db74">%s</span><span style="color:#e6db74">/repos&#39;</span> <span style="color:#f92672">%</span> user)<span style="color:#f92672">.</span>read()
+</span></span><span style="display:flex;"><span>content <span style="color:#f92672">=</span> content<span style="color:#f92672">.</span>decode(<span style="color:#e6db74">&#39;UTF-8&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>clone_urls <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;clone_url&#34;:)&#34;[^&#34;]*&#34;,&#39;</span>, content)
+</span></span><span style="display:flex;"><span>descriptions <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>findall(<span style="color:#e6db74">&#39;(?&lt;=&#34;description&#34;:)(null|&#34;[^&#34;]*&#34;),&#39;</span>, content)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>descriptions <span style="color:#f92672">=</span> [d<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#39;&#34;&#39;</span>, <span style="color:#e6db74">&#39;&#39;</span>) <span style="color:#66d9ef">for</span> d <span style="color:#f92672">in</span> descriptions]
+</span></span><span style="display:flex;"><span>os<span style="color:#f92672">.</span>chdir(<span style="color:#e6db74">&#39;pub&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, len(clone_urls)):
+</span></span><span style="display:flex;"><span>    clone_url <span style="color:#f92672">=</span> clone_urls[i]
+</span></span><span style="display:flex;"><span>    clone_url <span style="color:#f92672">=</span> clone_url[<span style="color:#ae81ff">1</span>:<span style="color:#f92672">-</span><span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>    print(clone_url)
+</span></span><span style="display:flex;"><span>    subprocess<span style="color:#f92672">.</span>run([<span style="color:#e6db74">&#39;git&#39;</span>, <span style="color:#e6db74">&#39;clone&#39;</span>, <span style="color:#e6db74">&#39;--bare&#39;</span>, clone_url])
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> open(clone_url<span style="color:#f92672">.</span>split(<span style="color:#e6db74">&#39;/&#39;</span>)[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/description&#39;</span>, <span style="color:#e6db74">&#39;w&#39;</span>) <span style="color:#66d9ef">as</span> desc_file:
+</span></span><span style="display:flex;"><span>        desc_file<span style="color:#f92672">.</span>write(descriptions[i] <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#39;</span>)</span></span></code></pre></div>
+<pre tabindex="0"><code>EOF
 </code></pre><p>And that concludes my initial series of posts on setting up my Raspberry Pi 2 to
 act as a git server.  I&rsquo;m planning on setting up a backup system in the future,
 so I may write about it too :)</p>
@@ -363,7 +363,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
                     
                 </div>
             </div>
@@ -371,7 +371,7 @@ so I may write about it too :)</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
+                        <a href="https://dhole.github.io/post/rdiff-backup-alpine/"> rdiff-backup-1.2.8 in Alpine</a>
                     
                 </div>
             </div>
@@ -383,7 +383,7 @@ so I may write about it too :)</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

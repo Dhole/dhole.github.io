@@ -8,7 +8,7 @@
         <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,13 +66,13 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/lighttpd">lighttpd</a> </span>
+<span><a href="https://dhole.github.io/categories/lighttpd">lighttpd</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/linux">linux</a> </span>
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -87,19 +87,19 @@ automatic renewal of TLS certificates with lestencrypt.</p>
 <p>Alpine Linux can be installed on te RPi following the <a href="https://wiki.alpinelinux.org/wiki/Raspberry_Pi">wiki
 guide</a>.</p>
 <p>After instalation, we add a new user which we will use for logging in:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">adduser green</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>adduser green</span></span></code></pre></div>
 <p>After logging in with our new user (using password) we&rsquo;ll add some ssh public
 keys for future logins:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vi /home/green/.ssh/authorized_keys</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vi /home/green/.ssh/authorized_keys</span></span></code></pre></div>
 <p>I will also download some configurations files for Vim and tmux:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl https://gitlab.com/dhole/dot_files/raw/master/.tmux.conf -o ~/.tmux.conf
-curl https://gitlab.com/dhole/dot_files/raw/master/.airline_tmux -o ~/.airline_tmux
-curl https://gitlab.com/dhole/dot_files/raw/master/.vimrc_basic -o ~/.vimrc</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl https://gitlab.com/dhole/dot_files/raw/master/.tmux.conf -o ~/.tmux.conf
+</span></span><span style="display:flex;"><span>curl https://gitlab.com/dhole/dot_files/raw/master/.airline_tmux -o ~/.airline_tmux
+</span></span><span style="display:flex;"><span>curl https://gitlab.com/dhole/dot_files/raw/master/.vimrc_basic -o ~/.vimrc</span></span></code></pre></div>
 <p>Now we will log in as root and store the files persistently:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu add /home/green/.ssh/authorized_keys
-lbu add /home/green/.vimrc
-lbu add /home/green/.tmux.conf
-lbu add /home/green/.airline_tmux</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lbu add /home/green/.ssh/authorized_keys
+</span></span><span style="display:flex;"><span>lbu add /home/green/.vimrc
+</span></span><span style="display:flex;"><span>lbu add /home/green/.tmux.conf
+</span></span><span style="display:flex;"><span>lbu add /home/green/.airline_tmux</span></span></code></pre></div>
 <p>From now on everything will be done as root.  For convenience I open a tmux
 session after logging in as my regular user, and get a root shell in one tmux
 window.</p>
@@ -107,65 +107,65 @@ window.</p>
 to offer the maximum power allowed, otherwise the external hard drive will not
 work properly.  We are also assigning the minimum amount of RAM to the GPU
 because we&rsquo;ll be using the RPI as a headless server.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># remount sd-card writeable</span>
-mount -o remount,rw /media/mmcblk0p1
-
-<span style="color:#75715e"># create rpi2/3 config</span>
-cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /media/mmcblk0p1/usercfg.txt
-</span><span style="color:#e6db74">disable_splash=1
-</span><span style="color:#e6db74">boot_delay=0
-</span><span style="color:#e6db74">start_x=0
-</span><span style="color:#e6db74">max_usb_current=1
-</span><span style="color:#e6db74">gpu_mem=16
-</span><span style="color:#e6db74">EOF</span>
-
-sync
-reboot</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># remount sd-card writeable</span>
+</span></span><span style="display:flex;"><span>mount -o remount,rw /media/mmcblk0p1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># create rpi2/3 config</span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /media/mmcblk0p1/usercfg.txt
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">disable_splash=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">boot_delay=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">start_x=0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">max_usb_current=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpu_mem=16
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sync
+</span></span><span style="display:flex;"><span>reboot</span></span></code></pre></div>
 <p>Now we install the required packages for our needs, and delete the default HTTP
 server that comes with busybox.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apk add vim sudo openssl bash lighttpd-mod_auth rsync
-apk del mini_httpd</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>apk add vim sudo openssl bash lighttpd-mod_auth rsync
+</span></span><span style="display:flex;"><span>apk del mini_httpd</span></span></code></pre></div>
 <p>I will use a script to decrypt the USB hard disk partition.  I will be running
 this script manually every time I reboot the RPI.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /root/startup.sh
-</span><span style="color:#e6db74">#! /bin/sh
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">cryptsetup luksOpen /dev/sda1 disk
-</span><span style="color:#e6db74">mkdir -p /mnt/disk
-</span><span style="color:#e6db74">mount /dev/mapper/disk /mnt/disk/
-</span><span style="color:#e6db74">
-</span><span style="color:#e6db74">rc-service lighttpd start
-</span><span style="color:#e6db74">EOF</span>
-
-lbu add /root/startup.sh</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /root/startup.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#! /bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">cryptsetup luksOpen /dev/sda1 disk
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mkdir -p /mnt/disk
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">mount /dev/mapper/disk /mnt/disk/
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">rc-service lighttpd start
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lbu add /root/startup.sh</span></span></code></pre></div>
 <h1 id="lighttpd">Lighttpd</h1>
 <p>We run the previous script to mount the encrypted partition in <code>/mnt/disk</code> and
 we&rsquo;ll move some private folders there:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">/root/startup.sh
-mkdir /mnt/disk/alpine-root
-cd /mnt/disk/alpine-root
-mkdir -p etc/dehydrated var/log/lighttpd var/www
-ln -sf /mnt/disk/alpine-root/etc/dehydrated/ /etc/dehydrated
-ln -sf /mnt/disk/alpine-root/var/www/ /var/www
-ln -sf /mnt/disk/alpine-root/var/log/lighttpd /var/log/
-chown -R lighttpd:lighttpd /var/log/lighttpd</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>/root/startup.sh
+</span></span><span style="display:flex;"><span>mkdir /mnt/disk/alpine-root
+</span></span><span style="display:flex;"><span>cd /mnt/disk/alpine-root
+</span></span><span style="display:flex;"><span>mkdir -p etc/dehydrated var/log/lighttpd var/www
+</span></span><span style="display:flex;"><span>ln -sf /mnt/disk/alpine-root/etc/dehydrated/ /etc/dehydrated
+</span></span><span style="display:flex;"><span>ln -sf /mnt/disk/alpine-root/var/www/ /var/www
+</span></span><span style="display:flex;"><span>ln -sf /mnt/disk/alpine-root/var/log/lighttpd /var/log/
+</span></span><span style="display:flex;"><span>chown -R lighttpd:lighttpd /var/log/lighttpd</span></span></code></pre></div>
 <p>I want to enable HTTP auth for some paths in the HTTP server, so I&rsquo;ll use a
 script to add new triplets of user, realm and password.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir /etc/lighttpd/.htpasswd
-cd /etc/lighttpd/.htpasswd/
-
-cat <span style="color:#e6db74">&lt;&lt; EOF &gt; hash.sh
-</span><span style="color:#e6db74">#!/bin/sh
-</span><span style="color:#e6db74">user=$1
-</span><span style="color:#e6db74">realm=$2
-</span><span style="color:#e6db74">pass=$3
-</span><span style="color:#e6db74">hash=`echo -n &#34;$user:$realm:$pass&#34; | md5sum | cut -b -32`
-</span><span style="color:#e6db74">echo &#34;$user:$realm:$hash&#34;
-</span><span style="color:#e6db74">EOF</span>
-
-chmod <span style="color:#ae81ff">755</span> hash.sh</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /etc/lighttpd/.htpasswd
+</span></span><span style="display:flex;"><span>cd /etc/lighttpd/.htpasswd/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF &gt; hash.sh
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">#!/bin/sh
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">user=$1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">realm=$2
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">pass=$3
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">hash=`echo -n &#34;$user:$realm:$pass&#34; | md5sum | cut -b -32`
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">echo &#34;$user:$realm:$hash&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chmod <span style="color:#ae81ff">755</span> hash.sh</span></span></code></pre></div>
 <p>After this I can add a username and password for the &lsquo;private&rsquo; realm.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">./hash.sh <span style="color:#e6db74">&#39;username&#39;</span> <span style="color:#e6db74">&#39;private&#39;</span> <span style="color:#e6db74">&#39;password&#39;</span> &gt; /etc/lighttpd/.htpasswd/lighttpd-htdigest.username</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>./hash.sh <span style="color:#e6db74">&#39;username&#39;</span> <span style="color:#e6db74">&#39;private&#39;</span> <span style="color:#e6db74">&#39;password&#39;</span> &gt; /etc/lighttpd/.htpasswd/lighttpd-htdigest.username</span></span></code></pre></div>
 <p>Now it&rsquo;s time to configure lighttpd.  The file is already populated with the
 default configuration, so I&rsquo;m just showing the changes I added, copy them where
 they belong as needed.  In the following configuration I&rsquo;m configuring the
@@ -174,28 +174,28 @@ port 443 for the primary usage with sane security configurations.  I&rsquo;ll be
 the certificate generated by the <em>dehydrated</em> letsencrypt client, which will be
 an elliptic curve key.  Finally I&rsquo;m enabling http auth with the previous user
 and password for all paths that start with <code>/private/</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/lighttpd/lighttpd.conf</code></pre></div>
-<pre><code>server.modules = (
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim /etc/lighttpd/lighttpd.conf</span></span></code></pre></div>
+<pre tabindex="0"><code>server.modules = (
 ...
-    &quot;mod_redirect&quot;,
-    &quot;mod_access&quot;,
-    &quot;mod_auth&quot;,
-    &quot;mod_setenv&quot;,
+    &#34;mod_redirect&#34;,
+    &#34;mod_access&#34;,
+    &#34;mod_auth&#34;,
+    &#34;mod_setenv&#34;,
 ...
 )
 ...
 ...
 # {{{ includes
 ...
-include &quot;cgit.conf&quot;
+include &#34;cgit.conf&#34;
 ...
 # }}}
 ...
 ...
-$SERVER[&quot;socket&quot;] == &quot;:443&quot; {
-  ssl.engine    = &quot;enable&quot;
-  ssl.pemfile   = &quot;/etc/dehydrated/certs/lizard.kyasuka.com/combined.pem&quot;
-  ssl.ca-file   = &quot;/etc/dehydrated/certs/lizard.kyasuka.com/chain.pem&quot;
+$SERVER[&#34;socket&#34;] == &#34;:443&#34; {
+  ssl.engine    = &#34;enable&#34;
+  ssl.pemfile   = &#34;/etc/dehydrated/certs/lizard.kyasuka.com/combined.pem&#34;
+  ssl.ca-file   = &#34;/etc/dehydrated/certs/lizard.kyasuka.com/chain.pem&#34;
 
   #### Mitigate BEAST attack:
 
@@ -204,38 +204,38 @@ $SERVER[&quot;socket&quot;] == &quot;:443&quot; {
   # or
   # http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2011-3389
 
-  ssl.cipher-list = &quot;EECDH+AESGCM:EDH+AESGCM:AES128+EECDH:AES128+EDH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK&quot;
+  ssl.cipher-list = &#34;EECDH+AESGCM:EDH+AESGCM:AES128+EECDH:AES128+EDH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK&#34;
   #
   # Make the server prefer the order of the server side cipher suite instead of the client suite.
   # This is necessary to mitigate the BEAST attack (unless you disable all non RC4 algorithms).
   # This option is enabled by default, but only used if ssl.cipher-list is set.
-  ssl.honor-cipher-order = &quot;enable&quot;
+  ssl.honor-cipher-order = &#34;enable&#34;
 
   # Mitigate CVE-2009-3555 by disabling client triggered renegotiation
   # This option is enabled by default.
   #
-  ssl.disable-client-renegotiation = &quot;enable&quot;
+  ssl.disable-client-renegotiation = &#34;enable&#34;
   #
 
-  ssl.use-compression = &quot;disable&quot;
-  ssl.use-sslv2 = &quot;disable&quot;
-  ssl.use-sslv3 = &quot;disable&quot;
+  ssl.use-compression = &#34;disable&#34;
+  ssl.use-sslv2 = &#34;disable&#34;
+  ssl.use-sslv3 = &#34;disable&#34;
 
-  ssl.dh-file = &quot;/etc/ssl/dhparam.pem&quot;
-  ssl.ec-curve = &quot;prime256v1&quot;
+  ssl.dh-file = &#34;/etc/ssl/dhparam.pem&#34;
+  ssl.ec-curve = &#34;prime256v1&#34;
 
-  setenv.add-response-header = ( &quot;Strict-Transport-Security&quot; =&gt; &quot;max-age=15768000&quot;) # six months
+  setenv.add-response-header = ( &#34;Strict-Transport-Security&#34; =&gt; &#34;max-age=15768000&#34;) # six months
 }
 ...
 ...
-$HTTP[&quot;url&quot;] =~ &quot;^/private/(.*)&quot; {
-  auth.backend = &quot;htdigest&quot;
-  auth.backend.htdigest.userfile = &quot;/etc/lighttpd/.htpasswd/lighttpd-htdigest.green&quot;
-  auth.require = ( &quot;&quot; =&gt;
+$HTTP[&#34;url&#34;] =~ &#34;^/private/(.*)&#34; {
+  auth.backend = &#34;htdigest&#34;
+  auth.backend.htdigest.userfile = &#34;/etc/lighttpd/.htpasswd/lighttpd-htdigest.green&#34;
+  auth.require = ( &#34;&#34; =&gt;
       (
-      &quot;method&quot;  =&gt; &quot;digest&quot;,
-      &quot;realm&quot;   =&gt; &quot;private&quot;,
-      &quot;require&quot; =&gt; &quot;valid-user&quot;
+      &#34;method&#34;  =&gt; &#34;digest&#34;,
+      &#34;realm&#34;   =&gt; &#34;private&#34;,
+      &#34;require&#34; =&gt; &#34;valid-user&#34;
       ),
   )
 }
@@ -245,51 +245,51 @@ $HTTP[&quot;url&quot;] =~ &quot;^/private/(.*)&quot; {
 generate a new Diffie-Hellman group of 4096 bits.  I first tried this on the RPi
 but after 12h it hadn&rsquo;t finished, so I did it on my laptop and transfered the
 file.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">openssl dhparam -out /etc/ssl/dhparam.pem <span style="color:#ae81ff">4096</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>openssl dhparam -out /etc/ssl/dhparam.pem <span style="color:#ae81ff">4096</span></span></span></code></pre></div>
 <h1 id="letsencrypt">Letsencrypt</h1>
 <p>Now we install the <a href="https://github.com/lukas2511/dehydrated/">dehydrated letsencrypt
 client</a>.  I&rsquo;m choosing this one
 instead of the official one to avoid pulling all the python dependencies, and to
 avoid running it as root.  dehydrated is written entirely in bash.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir /mnt/disk/alpine-root/git
-cd /mnt/disk/alpine-root/git/
-git clone https://github.com/lukas2511/dehydrated
-
-mkdir /etc/dehydrated
-cp /mnt/disk/alpine-root/git/dehydrated/docs/examples/config /etc/dehydrated/config
-mkdir -p /var/www/localhost/htdocs/.well-known/acme-challenge
-
-chown lighttpd:lighttpd -R /var/www
-
-lbu inc /var/www</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir /mnt/disk/alpine-root/git
+</span></span><span style="display:flex;"><span>cd /mnt/disk/alpine-root/git/
+</span></span><span style="display:flex;"><span>git clone https://github.com/lukas2511/dehydrated
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mkdir /etc/dehydrated
+</span></span><span style="display:flex;"><span>cp /mnt/disk/alpine-root/git/dehydrated/docs/examples/config /etc/dehydrated/config
+</span></span><span style="display:flex;"><span>mkdir -p /var/www/localhost/htdocs/.well-known/acme-challenge
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>chown lighttpd:lighttpd -R /var/www
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lbu inc /var/www</span></span></code></pre></div>
 <p>Now we edit the default dehydrated config to use a different path to store the
 challenge and to generate elliptic curve keys, using the <a href="https://www.prime256v1.com">NIST P-256
 curve</a>.  I would have preferred using the <a href="https://ed25519.cr.yp.to/">Ed25519
 curve</a>, but it&rsquo;s not yet part of the TLS standard :(</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">vim /etc/dehydrated/config</code></pre></div>
-<pre><code>...
-WELLKNOWN=&quot;/var/www/localhost/htdocs/.well-known/acme-challenge/&quot;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>vim /etc/dehydrated/config</span></span></code></pre></div>
+<pre tabindex="0"><code>...
+WELLKNOWN=&#34;/var/www/localhost/htdocs/.well-known/acme-challenge/&#34;
 ...
 KEY_ALGO=prime256v1
 ...
 </code></pre><p>Then we add the list of domains and subdomains that we want plan to use.  Every
 line should be a space separated list of subdomains belonging to the same
 domain.  I&rsquo;m only using one subdomain for one domain.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /etc/dehydrated/domains.txt
-</span><span style="color:#e6db74">lizard.kyasuka.com
-</span><span style="color:#e6db74">EOF</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt; EOF &gt; /etc/dehydrated/domains.txt
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">lizard.kyasuka.com
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span></span></span></code></pre></div>
 <p>Next we run the letsencrypt client to generate and sign the certificates, and
 generate a file with the private key and certificate that lighttpd will use.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chown lighttpd:lighttpd -R /etc/dehydrated/
-
-sudo -u lighttpd /mnt/disk/alpine-root/git/dehydrated/dehydrated -c
-
-sudo -u lighttpd cat /etc/dehydrated/certs/lizard.kyasuka.com/privkey.pem <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>/etc/dehydrated/certs/lizard.kyasuka.com/cert.pem <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>&gt; /etc/dehydrated/certs/lizard.kyasuka.com/combined.pem</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>chown lighttpd:lighttpd -R /etc/dehydrated/
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo -u lighttpd /mnt/disk/alpine-root/git/dehydrated/dehydrated -c
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sudo -u lighttpd cat /etc/dehydrated/certs/lizard.kyasuka.com/privkey.pem <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>/etc/dehydrated/certs/lizard.kyasuka.com/cert.pem <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>&gt; /etc/dehydrated/certs/lizard.kyasuka.com/combined.pem</span></span></code></pre></div>
 <p>To automate the renewal process we&rsquo;ll add an entry to the lighttpd user crontab.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo -u lighttpd crontab -e</code></pre></div>
-<pre><code>42      5       *       *       *       /mnt/disk/alpine-root/git/dehydrated/dehydrated -c &amp;&amp; \
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -u lighttpd crontab -e</span></span></code></pre></div>
+<pre tabindex="0"><code>42      5       *       *       *       /mnt/disk/alpine-root/git/dehydrated/dehydrated -c &amp;&amp; \
                                         cat /etc/dehydrated/certs/lizard.kyasuka.com/privkey.pem \
                                         /etc/dehydrated/certs/lizard.kyasuka.com/cert.pem \
                                         &gt; /etc/dehydrated/certs/lizard.kyasuka.com/combined.pem &amp;&amp; \
@@ -300,13 +300,13 @@ powers off, we&rsquo;ll lose al logs (except for lighttpd&rsquo;s logs, which we
 directly to our encrypted partition).  It&rsquo;s useful to read the logs after our
 server goes down, so we add a crontab that will rsync the logs to the encrypted
 parititon.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">crontab -e</code></pre></div>
-<pre><code>...
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>crontab -e</span></span></code></pre></div>
+<pre tabindex="0"><code>...
 ...
 */15    *       *       *       *       ls /mnt/disk/alpine-root &amp;&amp; \
                                         rsync -a /var/log/dmesg /var/log/messages /mnt/disk/alpine-root/var/log/
 </code></pre><p>Finally, commit all the changes to store them permanently:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">lbu commit</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>lbu commit</span></span></code></pre></div>
 <p>In the next post I will explain how to use the RPi as a git server, with cgit a
 the web interface.</p>
 
@@ -346,7 +346,7 @@ the web interface.</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/raspberry_pi_benchmarks/"> Raspberry Pi 2 I/O benchmarks</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_benchmarks/"> Raspberry Pi 2 I/O benchmarks</a>
                     
                 </div>
             </div>
@@ -354,7 +354,7 @@ the web interface.</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/raspberry_pi_git/"> Raspberry Pi: git server (cgit with lighttpd)</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_git/"> Raspberry Pi: git server (cgit with lighttpd)</a>
                     
                 </div>
             </div>
@@ -366,7 +366,7 @@ the web interface.</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

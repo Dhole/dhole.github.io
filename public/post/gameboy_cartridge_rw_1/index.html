@@ -8,7 +8,7 @@
         <title>Programming Game Boy Chinese cartridges with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
 
 </div>
 
@@ -84,7 +84,7 @@ Categories:
 <p>What I will be explaining is how to reflash a Game Boy Chinese cartridge, which I haven&rsquo;t found explained anywhere.  I&rsquo;ll give details on how I figure out the process.</p>
 <h1 id="information-gathering">Information gathering</h1>
 <p>I started by ordering two Game Boy Chinese cartridges from AliExpress.  I choose two games that have big ROMs, to make sure the corresponding flash chip in the cartridges would be big enough to fit most of the Game Boy ROMs.  The games were:</p>
-<pre><code>        Game name           |          Cart type         | ROM (Kb) | RAM (Kb)
+<pre tabindex="0"><code>        Game name           |          Cart type         | ROM (Kb) | RAM (Kb)
 ----------------------------|----------------------------|----------|---------
 Grandia - Parallel Trippers | ROM + MBC5 + RAM + Battery |   4096   |   32
 Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
@@ -156,84 +156,84 @@ Dragon Warrior III          | ROM + MBC5 + RAM + Battery |   4096   |   32
 <p>I&rsquo;m inclined to believe that the third hypothesis is what&rsquo;s actually happening, as I have found many references of the flash commands found in the MXIC datasheet for several other manufacturer&rsquo;s chips.</p>
 <p>Let&rsquo;s build an experiment based on the hypothesis that data values (<code>0xAA</code> and <code>0x55</code>) used in the commands are considered two magic numbers, and the manufacturer has decided to use different ones.  Luckily the space of these magic numbers is 16 bit, so we can brute force them to verify the hypothesis.</p>
 <p>I wrote a code to try all the combinations of the magic numbers for the NUCLEO-F411RE, which has a Game Boy cartridge slot connected via GPIOs.  The C code is pretty straight forward: It will read the value at <code>0x000</code>, send it over USART, and then run the command to get the Manufacturer ID in a loop trying all possible values for the magic numbers.  Once the right magic numbers are found (that&rsquo;s when the value returned by the command is different than the value found at <code>0x000</code>), the values are sent over USART.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">uint8_t magic0, magic1, cmd, v0, v;
-uint16_t a0, a1, a2, a3;
-uint8_t buf[<span style="color:#ae81ff">12</span>];
-
-a0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0AAA</span>;
-a1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0555</span>;
-a2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0AAA</span>;
-a3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0000</span>;
-
-cmd <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x90</span>;
-
-<span style="color:#75715e">// Reset
-</span><span style="color:#75715e"></span>bus_write_byte(<span style="color:#ae81ff">0x0000</span>, <span style="color:#ae81ff">0xF0</span>);
-
-v0 <span style="color:#f92672">=</span> bus_read_byte(a3);
-buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
-buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> v0;
-usart_send_bytes_blocking(buf, <span style="color:#ae81ff">3</span>);
-
-buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> a0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> a0 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
-buf[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> a1 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> a1 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
-buf[<span style="color:#ae81ff">6</span>] <span style="color:#f92672">=</span> a2 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">7</span>] <span style="color:#f92672">=</span> a2 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
-buf[<span style="color:#ae81ff">9</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">10</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
-
-magic0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
-magic1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
-<span style="color:#66d9ef">do</span> {
-        <span style="color:#66d9ef">do</span> {
-                bus_write_byte(a0, magic0);
-                buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> magic0;
-                bus_write_byte(a1, magic1);
-                buf[<span style="color:#ae81ff">5</span>] <span style="color:#f92672">=</span> magic1;
-                bus_write_byte(a2, cmd);
-                buf[<span style="color:#ae81ff">8</span>] <span style="color:#f92672">=</span> cmd;
-                v <span style="color:#f92672">=</span> bus_read_byte(a3); <span style="color:#75715e">// Manufacturer ID
-</span><span style="color:#75715e"></span>                buf[<span style="color:#ae81ff">11</span>] <span style="color:#f92672">=</span> v;
-                <span style="color:#66d9ef">if</span> (v <span style="color:#f92672">!=</span> v0) {
-                        usart_send_bytes_blocking(buf, <span style="color:#ae81ff">12</span>);
-                        <span style="color:#66d9ef">goto</span> end;
-                }
-                gpio_toggle(GPIOP_LED, GPION_LED);
-        } <span style="color:#66d9ef">while</span> (magic1<span style="color:#f92672">++</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xFF</span>);
-} <span style="color:#66d9ef">while</span> (magic0<span style="color:#f92672">++</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xFF</span>);
-end:</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">uint8_t</span> magic0, magic1, cmd, v0, v;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint16_t</span> a0, a1, a2, a3;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">uint8_t</span> buf[<span style="color:#ae81ff">12</span>];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0AAA</span>;
+</span></span><span style="display:flex;"><span>a1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0555</span>;
+</span></span><span style="display:flex;"><span>a2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0AAA</span>;
+</span></span><span style="display:flex;"><span>a3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x0000</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cmd <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x90</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Reset
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#a6e22e">bus_write_byte</span>(<span style="color:#ae81ff">0x0000</span>, <span style="color:#ae81ff">0xF0</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>v0 <span style="color:#f92672">=</span> <span style="color:#a6e22e">bus_read_byte</span>(a3);
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> v0;
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">usart_send_bytes_blocking</span>(buf, <span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> a0 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> a0 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> a1 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">4</span>] <span style="color:#f92672">=</span> a1 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">6</span>] <span style="color:#f92672">=</span> a2 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">7</span>] <span style="color:#f92672">=</span> a2 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+</span></span><span style="display:flex;"><span>buf[<span style="color:#ae81ff">9</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">0xFF</span>; buf[<span style="color:#ae81ff">10</span>] <span style="color:#f92672">=</span> a3 <span style="color:#f92672">&gt;&gt;</span> <span style="color:#ae81ff">8</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>magic0 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
+</span></span><span style="display:flex;"><span>magic1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">0x00</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">do</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">bus_write_byte</span>(a0, magic0);
+</span></span><span style="display:flex;"><span>                buf[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> magic0;
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">bus_write_byte</span>(a1, magic1);
+</span></span><span style="display:flex;"><span>                buf[<span style="color:#ae81ff">5</span>] <span style="color:#f92672">=</span> magic1;
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">bus_write_byte</span>(a2, cmd);
+</span></span><span style="display:flex;"><span>                buf[<span style="color:#ae81ff">8</span>] <span style="color:#f92672">=</span> cmd;
+</span></span><span style="display:flex;"><span>                v <span style="color:#f92672">=</span> <span style="color:#a6e22e">bus_read_byte</span>(a3); <span style="color:#75715e">// Manufacturer ID
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                buf[<span style="color:#ae81ff">11</span>] <span style="color:#f92672">=</span> v;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (v <span style="color:#f92672">!=</span> v0) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">usart_send_bytes_blocking</span>(buf, <span style="color:#ae81ff">12</span>);
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">goto</span> end;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">gpio_toggle</span>(GPIOP_LED, GPION_LED);
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">while</span> (magic1<span style="color:#f92672">++</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xFF</span>);
+</span></span><span style="display:flex;"><span>} <span style="color:#66d9ef">while</span> (magic0<span style="color:#f92672">++</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xFF</span>);
+</span></span><span style="display:flex;"><span>end:</span></span></code></pre></div>
 <p>I wrote a simple python script to receive the data the NUCLEO-F411RE is sending and format it nicely before printing it:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python3" data-lang="python3"><span style="color:#f92672">import</span> serial<span style="color:#f92672">,</span> sys
-
-<span style="color:#66d9ef">with</span> serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74">&#39;/dev/ttyACM0&#39;</span>, <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">as</span> ser:
-
-    data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
-    a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
-    v0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-    print(<span style="color:#e6db74">&#39;                         R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a3, v0))
-
-    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
-        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
-        a0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
-        magic0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-
-        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
-        a1 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
-        magic1 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-
-        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
-        a2 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
-        cmd <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-
-        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
-        a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
-        v <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
-
-        print(<span style="color:#e6db74">&#39;W: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a0, magic0, a1, magic1, a2, cmd, a3, v))
-        <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> v0:
-            print(<span style="color:#e6db74">&#39;MAGIC0: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, MAGIC1: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(magic0, magic1))
-            sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">0</span>)</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python3" data-lang="python3"><span style="display:flex;"><span><span style="color:#f92672">import</span> serial<span style="color:#f92672">,</span> sys
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">with</span> serial<span style="color:#f92672">.</span>Serial(<span style="color:#e6db74">&#39;/dev/ttyACM0&#39;</span>, <span style="color:#ae81ff">1000000</span>) <span style="color:#66d9ef">as</span> ser:
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>    a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>    v0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#39;                         R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a3, v0))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>        a0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>        magic0 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>        a1 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>        magic1 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>        a2 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>        cmd <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        data <span style="color:#f92672">=</span> ser<span style="color:#f92672">.</span>read(<span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>        a3 <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> (data[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>)
+</span></span><span style="display:flex;"><span>        v <span style="color:#f92672">=</span> data[<span style="color:#ae81ff">2</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#39;W: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74"> </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, R: </span><span style="color:#e6db74">{:03X}</span><span style="color:#e6db74">:</span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(a0, magic0, a1, magic1, a2, cmd, a3, v))
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> v <span style="color:#f92672">!=</span> v0:
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">&#39;MAGIC0: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">, MAGIC1: </span><span style="color:#e6db74">{:02X}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(magic0, magic1))
+</span></span><span style="display:flex;"><span>            sys<span style="color:#f92672">.</span>exit(<span style="color:#ae81ff">0</span>)</span></span></code></pre></div>
 <h2 id="the-verdict">The verdict</h2>
 <p>If the hypothesis is wrong, no combination of magic numbers will work and the value read at the end of the command will never return the Manufacturer ID.  Thankfully the hypothesis seems to be right :)  After a few short seconds of running the experiment, a pair of magic numbers is found that works:</p>
-<pre><code>                         R: 000:C3
+<pre tabindex="0"><code>                         R: 000:C3
 W: AAA:A9 555:56 AAA:90, R: 000:EC
 MAGIC0: A9, MAGIC1: 56
 </code></pre><p>So we just need to replace the <code>0xAA</code> and <code>0x55</code> from the commands in the datasheet by <code>0xA9</code> and <code>0x56</code> respectively.</p>
@@ -311,7 +311,7 @@ MAGIC0: A9, MAGIC1: 56
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
+                        <a href="https://dhole.github.io/post/gameboy_serial_3/"> Printing on the Game Boy Printer using an STM32F4</a>
                     
                 </div>
             </div>
@@ -319,7 +319,7 @@ MAGIC0: A9, MAGIC1: 56
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
+                        <a href="https://dhole.github.io/post/pulseaudio_multiple_users/"> Pulseaudio for multi-user Linux</a>
                     
                 </div>
             </div>
@@ -331,7 +331,7 @@ MAGIC0: A9, MAGIC1: 56
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
