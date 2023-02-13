@@ -6,6 +6,7 @@
     <description>Recent content on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+<<<<<<< HEAD
     <lastBuildDate>Mon, 13 Feb 2023 12:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Collapse Ready Operating Systems - Intro</title>
@@ -15,6 +16,17 @@
       <guid>https://dhole.github.io/post/collapse_ready_os/</guid>
       <description>Introduction Nowadays we live in a hyperconnected World that relies heavily on Internet connection for day to day tasks in all levels. I&amp;rsquo;m not very happy with this relience of assuming Internet access 24h for everything, as I think it disempowers the user.
 For example, whereas people before used to buy and own media, now they buy a license to stream such media from the cloud. This means that the user only has access to the media as long as the platform exists, and we know that this is no guarantee for the future.</description>
+=======
+    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CHIP-8 emulator in Rust: Embedded port.  Part 2</title>
+      <link>https://dhole.github.io/post/chip8_emu_2/</link>
+      <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/post/chip8_emu_2/</guid>
+      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!
+In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
+>>>>>>> 1a42ea2c8776e3e67f269287b33a232cc949ef63
     </item>
     
     <item>
