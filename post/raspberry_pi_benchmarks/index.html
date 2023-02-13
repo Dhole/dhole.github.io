@@ -8,7 +8,7 @@
         <title>Raspberry Pi 2 I/O benchmarks &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://lizard.niobe.cc/blog//css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,16 +22,16 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://lizard.niobe.cc/blog/">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
                         
-                            <li><a href="/blog/post"> articles </a></li>
+                            <li><a href="/post"> articles </a></li>
                         
-                            <li><a href="/blog/categories"> categories </a></li>
+                            <li><a href="/categories"> categories </a></li>
                         
-                            <li><a href="/blog/about"> about </a></li>
+                            <li><a href="/about"> about </a></li>
                         
                     </ul>
                 </div>
@@ -41,11 +41,11 @@
             <div class="sixteen columns">
                 <ul id="menu" class="li-menu-items li-menu-mobile">
                     
-                        <li><a href="/blog/post"> articles </a></li>
+                        <li><a href="/post"> articles </a></li>
                     
-                        <li><a href="/blog/categories"> categories </a></li>
+                        <li><a href="/categories"> categories </a></li>
                     
-                        <li><a href="/blog/about"> about </a></li>
+                        <li><a href="/about"> about </a></li>
                     
                 </ul>
             </div>
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://lizard.niobe.cc/blog//categories/alpine">alpine</a> </span>
+<span><a href="https://dhole.github.io/categories/alpine">alpine</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/raspberry-pi">raspberry pi</a> </span>
+<span><a href="https://dhole.github.io/categories/raspberry-pi">raspberry pi</a> </span>
 
-<span><a href="https://lizard.niobe.cc/blog//categories/linux">linux</a> </span>
+<span><a href="https://dhole.github.io/categories/linux">linux</a> </span>
 
 </div>
 
@@ -114,7 +114,7 @@ that the Ethernet interface of all the RPis are 10/100 Mbps).</p>
 <h2 id="cryptsetup">cryptsetup</h2>
 <p>This test will give us the encryption/decryption speeds running from memory, so
 they represent an upper bound on the write speed that we can achieve in disk.</p>
-<pre><code>lizard:~/git/public/test.git$ cryptsetup benchmark
+<pre tabindex="0"><code>lizard:~/git/public/test.git$ cryptsetup benchmark
 # Tests are approximate using memory only (no storage IO).
 PBKDF2-sha1        42555 iterations per second for 256-bit key
 PBKDF2-sha256      73635 iterations per second for 256-bit key
@@ -140,7 +140,7 @@ MiB/s</strong> for encryption (write) and decryption (read).</p>
 <h2 id="fat32-write-speed-dd">FAT32 write speed (dd)</h2>
 <p>For a baseline comparison, I test the write speed of an unencrypted FAT32 file
 system.</p>
-<pre><code>lizard:/mnt/slowpoke# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+<pre tabindex="0"><code>lizard:/mnt/slowpoke# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
 4096+0 records in
 4095+1 records out
 real    11m 28.47s
@@ -151,7 +151,7 @@ was expecting.  I achieve write speeds of 40 MB/s from my laptop on the same
 external disk.</p>
 <h2 id="luks--ext4-write-speed-dd">LUKS + ext4 write speed (dd)</h2>
 <p>This test should theoretically give upper bound results for my setup.</p>
-<pre><code>lizard:/mnt/wd_ext# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
+<pre tabindex="0"><code>lizard:/mnt/wd_ext# time dd bs=1M count=4096 if=/dev/zero of=test conv=fsync
 4096+0 records in
 4096+0 records out
 real    21m 23.27s
@@ -161,7 +161,7 @@ sys     0m 36.35s
 <h2 id="luks--ext4-rsync">LUKS + ext4 (rsync)</h2>
 <p>This test measures exactly one of my use cases, as I plan to use rsync for my
 backups.</p>
-<pre><code> % rsync -v --progress movie.mp4 green-local:/mnt/disk/
+<pre tabindex="0"><code> % rsync -v --progress movie.mp4 green-local:/mnt/disk/
 movie.mp4
   1,991,346,871 100%    9.17MB/s    0:03:27 (xfr#1, to-chk=0/1)
 
@@ -172,7 +172,7 @@ MB/s</strong>.</p>
 <h1 id="conclusions">Conclusions</h1>
 <p>First of all, I don&rsquo;t understand why the <code>dd</code> tests performed so badly.  The
 <code>fsync</code> option should make sure that data is written to disk and not cached:</p>
-<pre><code>        conv=fsync      Physically write data out before finishing
+<pre tabindex="0"><code>        conv=fsync      Physically write data out before finishing
 </code></pre><p>Maybe there&rsquo;s a bug in busybox&rsquo;s dd?  Or am I missing something?  I was
 expecting to find the same speeds as LUKS encryption speeds here.</p>
 <p>The rsync test gives us the best performance we could expect, considering that
@@ -221,7 +221,7 @@ Stay tunned!</p>
                 <div class="li-pagination-previous">
                     
                         Later article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/check_mail_gpg/"> No more unencrypted emails to gpg contacts</a>
+                        <a href="https://dhole.github.io/post/check_mail_gpg/"> No more unencrypted emails to gpg contacts</a>
                     
                 </div>
             </div>
@@ -229,7 +229,7 @@ Stay tunned!</p>
                 <div class="li-pagination-next">
                     
                         Older article<br />
-                        <a href="https://lizard.niobe.cc/blog/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
+                        <a href="https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/"> Raspberry Pi: setting up alpine, lighttpd and letsencrypt</a>
                     
                 </div>
             </div>
@@ -241,7 +241,7 @@ Stay tunned!</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2021. All rights reserved. 
+                    &copy; 2023. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
