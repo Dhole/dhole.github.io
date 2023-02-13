@@ -6,7 +6,17 @@
     <description>Recent content in emulator on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 09 May 2021 17:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CHIP-8 emulator in Rust: Embedded port.  Part 2</title>
+      <link>https://dhole.github.io/post/chip8_emu_2/</link>
+      <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/post/chip8_emu_2/</guid>
+      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!
+In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
+    </item>
+    
     <item>
       <title>CHIP-8 emulator in Rust.  Part 1</title>
       <link>https://dhole.github.io/post/chip8_emu_1/</link>
