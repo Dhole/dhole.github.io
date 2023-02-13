@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>fedora on Dhole&#39;s blog</title>
-    <link>https://lizard.niobe.cc/blog/categories/fedora/</link>
+    <link>https://dhole.github.io/categories/fedora/</link>
     <description>Recent content in fedora on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 03 Sep 2019 20:54:53 +0200</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/fedora/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Sep 2019 20:54:53 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/fedora/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Thinkpad Helix 2 with Linux</title>
-      <link>https://lizard.niobe.cc/blog/post/thinkpad_helix2_linux/</link>
+      <link>https://dhole.github.io/post/thinkpad_helix2_linux/</link>
       <pubDate>Tue, 03 Sep 2019 20:54:53 +0200</pubDate>
       
-      <guid>https://lizard.niobe.cc/blog/post/thinkpad_helix2_linux/</guid>
+      <guid>https://dhole.github.io/post/thinkpad_helix2_linux/</guid>
       <description>Preface Recently I&amp;rsquo;ve bought a second hand Thinkpad Helix 2nd Gen with the intention of using it mainly as a tablet to read PDF documents and comics (although I may use it for Internet browsing and occasional development). I like running free software on my computers and so I decided to use GNU/Linux with this tablet/laptop. Here I will explain all the issues I encountered and how I solved them.</description>
     </item>
     
