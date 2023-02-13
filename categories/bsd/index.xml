@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>bsd on Dhole&#39;s blog</title>
-    <link>https://dhole.github.io/categories/bsd/</link>
+    <link>https://lizard.niobe.cc/blog/categories/bsd/</link>
     <description>Recent content in bsd on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Feb 2023 12:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/bsd/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 13 Feb 2023 12:23:20 +0200</lastBuildDate><atom:link href="https://lizard.niobe.cc/blog/categories/bsd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Collapse Ready Operating Systems - Intro</title>
-      <link>https://dhole.github.io/post/collapse_ready_os/</link>
+      <link>https://lizard.niobe.cc/blog/post/collapse_ready_os/</link>
       <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
       
-      <guid>https://dhole.github.io/post/collapse_ready_os/</guid>
+      <guid>https://lizard.niobe.cc/blog/post/collapse_ready_os/</guid>
       <description>Introduction Nowadays we live in a hyperconnected World that relies heavily on Internet connection for day to day tasks in all levels. I&amp;rsquo;m not very happy with this relience of assuming Internet access 24h for everything, as I think it disempowers the user.
 For example, whereas people before used to buy and own media, now they buy a license to stream such media from the cloud. This means that the user only has access to the media as long as the platform exists, and we know that this is no guarantee for the future.</description>
     </item>
