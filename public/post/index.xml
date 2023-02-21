@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 13 Feb 2023 12:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Feb 2023 00:03:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Collapse Ready Operating Systems - OpenBSD</title>
+      <link>https://dhole.github.io/post/collapse_ready_os_openbsd/</link>
+      <pubDate>Wed, 15 Feb 2023 00:03:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/post/collapse_ready_os_openbsd/</guid>
+      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.
+OpenBSD The OS analyzed in this post is OpenBSD. I&amp;rsquo;ve tried OpenBSD a few times in the past: once as a personal web server on an old PC, and then as a desktop in a laptop as a secondary system. That was a few years ago. My memories from it are that the system was very clean, everything worked as expected, the performance was significantly slower than linux and that I really appreciated all the care the developers put on the security side.</description>
+    </item>
+    
     <item>
       <title>Collapse Ready Operating Systems - Intro</title>
       <link>https://dhole.github.io/post/collapse_ready_os/</link>

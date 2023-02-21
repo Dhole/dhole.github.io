@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Collapse Ready Operating Systems - OpenBSD &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Collapse Ready Operating Systems - OpenBSD</h1>  
+			
+			<time class="li-article-date">Wednesday, February 15, 2023</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/bsd">bsd</a> </span>
+
+<span><a href="https://dhole.github.io/categories/openbsd">openbsd</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>This is a blog post in the Collapse Ready Operating System series.  Read <a href="post/collapse_ready_os">this
+post</a> for an introduction.</p>
+<h1 id="openbsd">OpenBSD</h1>
+<p>The OS analyzed in this post is <a href="https://www.openbsd.org/">OpenBSD</a>.  I&rsquo;ve
+tried OpenBSD a few times in the past: once as a personal web server on an old
+PC, and then as a desktop in a laptop as a secondary system.  That was a few
+years ago.  My memories from it are that the system was very clean, everything
+worked as expected, the performance was significantly slower than linux and
+that I really appreciated all the care the developers put on the security side.</p>
+<h1 id="steps">Steps</h1>
+<p>In the following sections I describe all the steps I followed to setup up the
+system and evaluate it.</p>
+<h2 id="install">Install</h2>
+<p>Download install image from the website:
+<a href="https://cdn.openbsd.org/pub/OpenBSD/7.2/amd64/install72.img">https://cdn.openbsd.org/pub/OpenBSD/7.2/amd64/install72.img</a> (This is OpenBSD
+7.2, the latest release at the time, for amd64). Then write it to a flash drive
+and boot from the main laptop.</p>
+<p>Follow the install instructions (pretty simple).</p>
+<p>I followed mostly the defaults, setting up the em0 (ethernet) net interface as
+&lsquo;autoconf&rsquo;, then using the whole disk in the auto layout paritioning.  I created a
+user named <code>user</code>.  Install all sets.  Enable xenodm on startup.</p>
+<p>To pick the install sets from the disk answer the following questions like
+this:</p>
+<ul>
+<li><code>Location of sets? 'disk'</code></li>
+<li><code>Is the disk partition already mounted? 'no'</code></li>
+<li><code>Which disk contains the install media? 'sd1'</code> (this may change in your setup,
+you should choose the drive with the install image)</li>
+<li><code>Which sd1 partition has the install sets? 'a'</code></li>
+<li><code>Pathname to the sets? '7.2/amd64'</code></li>
+<li><code>Directory does not contain SHA256.sig. Continue without verification? 'yes'</code></li>
+</ul>
+<p>Afterwards reboot and login as <code>user</code>.</p>
+<h2 id="basic-setup">Basic setup</h2>
+<p>Enable <code>doas</code> for my user (without password) for convenience:</p>
+<pre tabindex="0"><code>su -l
+echo &#34;permit nopass :wheel&#34; &gt; /etc/doas.conf
+</code></pre><p>Install some basic packages as root:</p>
+<pre tabindex="0"><code>doas pkg_add vim--no_x11 wget
+</code></pre><p>I decided to use an external 2TB drive for the ports.  Upon connecting the
+drive i checked dmesg to see its name:</p>
+<pre tabindex="0"><code>sd2 at scsibus5 targ 1 lun 0: &lt;TOSHIBA, External USB 3.0, 5438&gt; serial.0480021070803005453F
+sd2: 1907729MB, 512 bytes/sector, 3907029164 sectors
+</code></pre><p>Then I formated it following the docs at <a href="https://www.openbsd.org/faq/faq14.html">https://www.openbsd.org/faq/faq14.html</a></p>
+<pre tabindex="0"><code>doas newfs sd2i
+</code></pre><p>And then I mount it at <code>/mnt/disk</code>:</p>
+<pre tabindex="0"><code>doas mkdir -p /mnt/disk
+doas mount -o wxallowed /dev/sd2i /mnt/disk/
+doas chown user /mnt/disk
+</code></pre><p>Add my user to the <code>wsrc</code> group (this will allow building the ports as a regular user):</p>
+<pre tabindex="0"><code>doas user mod -G wsrc user
+</code></pre><p>For the group change to take effect you must logout and login again.</p>
+<h2 id="fetching-the-system-sources-and-ports">Fetching the system sources and ports</h2>
+<p>OpenBSD has its source code split into two parts: <code>src</code> and <code>xenocara</code>.  <code>src</code>
+contains the kernel as well as all system userland.  <code>xenocara</code> contains the
+X11 fork used by OpenBSD.  These will give you a base OpenBSD, which is already
+useful as it contains many utilities and programs.</p>
+<p>Third party software is offered via <code>ports</code>.  These are recipes to build a big
+library of open source packages.  The recommended way to install packages by
+OpenBSD is to use <code>pkg_add</code> which fetches the already built package from an
+OpenBSD mirror.  For my usecase I would like to keep all the package sources
+locally to build port offline later.</p>
+<p>Download the OpenBSD source as well as ports recipes for the &lsquo;release&rsquo; flavor.
+I followed the instructions in <a href="https://www.openbsd.org/faq/ports/ports.html">https://www.openbsd.org/faq/ports/ports.html</a></p>
+<pre tabindex="0"><code>cd /mnt/disk
+ftp https://cdn.openbsd.org/pub/OpenBSD/$(uname -r)/{ports.tar.gz,src.tar.gz,sys.tar.gz,xenocara.tar.gz,SHA256.sig}
+signify -Cp /etc/signify/openbsd-$(uname -r | cut -c 1,3)-base.pub -x SHA256.sig ports.tar.gz src.tar.gz sys.tar.gz xenocara.tar.gz
+
+cd /usr
+doas mkdir -p xenocara ports src
+doas chown user xenocara ports src
+doas chgrp wsrc xenocara ports src
+doas chmod 775  xenocara ports src
+
+cd /usr &amp;&amp; tar xzf /mnt/disk/ports.tar.gz
+cd /usr/src &amp;&amp; tar xzf /mnt/disk/src.tar.gz
+cd /usr/src &amp;&amp; tar xzf /mnt/disk/sys.tar.gz
+cd /usr/xenocara &amp;&amp; tar xzf /mnt/disk/xenocara.tar.gz
+</code></pre><p>Summary</p>
+<ul>
+<li><code>/usr/src</code> 1.4 GiB 132505 items</li>
+<li><code>/usr/xenocara</code> 726.5 MiB 37101 items</li>
+<li><code>/usr/ports</code> 726 MiB 229896 items</li>
+</ul>
+<h3 id="firmware">Firmware</h3>
+<p>OpenBSD uses firmware packages to support some hardware components.  These
+firmwares contain blobs that can&rsquo;t be distributed with the OpenBSD license, so
+they are instead offered via http, and installed during the first boot (with
+Internet connection).</p>
+<p>Download all the firmwares files for offline usage.</p>
+<pre tabindex="0"><code>cd /mnt/disk/
+wget --execute=&#34;robots = off&#34; --mirror --convert-links --no-parent http://firmware.openbsd.org/firmware/$(uname -r)/
+cd firmware.openbsd.org/firmware/$(uname -r)/
+signify -Cp /etc/signify/openbsd-$(uname -r | cut -c 1,3)-fw.pub -x SHA256.sig *.tgz
+</code></pre><h3 id="documentation">Documentation</h3>
+<p>OpenBSD has excelent man pages for its internal programs and configuration
+files (which are installed in the system so they can be accessed offline).  But
+I also found the FAQ extremely well written and very useful.  I used it
+extensively during this project.  The FAQ is not found in the installation or
+in any package, but the entire website is available via CVS, so fetching a copy
+for offline reading is very easy:</p>
+<pre tabindex="0"><code>cd /usr
+doas mkdir -p www
+doas chgrp wsrc www
+doas chmod 775 www
+SERVER=&#34;anoncvs.fr.openbsd.org&#34;
+cvs -qd anoncvs@$SERVER:/cvs checkout -rHEAD -P www
+</code></pre><p>These are some browsers that I installed to read the FAQ: <code>www/w3m</code>,
+<code>www/dillo</code>, <code>www/links+</code>.</p>
+<p>Note that <code>dillo</code> requires <code>env FORCE_UNSAFE_CONFIGURE=1 make install</code> to be built as root.</p>
+<p>The three browsers work perfectly for reading the OpenBSD FAQ:</p>
+<pre tabindex="0"><code># w3m (console)
+w3m /usr/www/index.html
+# links+ (console)
+links /usr/www/index.html
+# links+ (gui)
+links -g /usr/www/index.html
+# dillo (graphical)
+dillo /usr/www/index.html
+</code></pre><h2 id="ports">Ports</h2>
+<p>I want to use my external disk for port related files (except for the port recipes themselves):</p>
+<pre tabindex="0"><code>mkdir -p /mnt/disk/ports
+</code></pre><p>Write these contents into <code>/etc/mk.conf</code>:</p>
+<pre tabindex="0"><code>WRKOBJDIR=/mnt/disk/ports/pobj
+DISTDIR=/mnt/disk/ports/distfiles
+PACKAGE_REPOSITORY=/mnt/disk/ports/packages
+</code></pre><p>At this point we have all the sources to build the OS and the recipes to build
+all ports.  Nevertheless on the ports side this doesn&rsquo;t include the packages&rsquo;
+sources, which I would like to have.  Right now we could build a port, and
+the required package sources would be fetched from the Internet; but I would
+like to have them available on disk to build any port offline.</p>
+<p>Luckily, while reading the documentation page about Ports at
+<a href="https://www.openbsd.org/faq/ports/ports.html">https://www.openbsd.org/faq/ports/ports.html</a> I found that OpenBSD has the <code>dpb</code>
+tool.  This tool was made to automate building ports to later on distribute the
+packages.  In my case I&rsquo;m interested in the feature to fetch all the distfiles.
+Here&rsquo;s the man: <a href="https://man.openbsd.org/dpb">https://man.openbsd.org/dpb</a></p>
+<p>Download all ports distfiles (source code required for building the ports):</p>
+<pre tabindex="0"><code>doas /usr/ports/infrastructure/bin/dpb -F 12
+</code></pre><p>I left this program running all night and came back and saw it got stuck with this output:</p>
+<pre tabindex="0"><code>5 Feb 11:37:50 [64941] control-laptop-64941 elapsed: 10:36:32
+&lt;freeipmi-1.6.10.tar.gz(#1) [84727] 11% frozen for 9 HOURS!
+Hosts: localhost
+I=0 B=0 Q=2888 T=8230 F=0 !=8
+E=security/libdigidocpp:libdigidocpp/iconv-470.patch
+</code></pre><p>I stopped it and started it again, and this second time it ended cleanly (and
+quickly).  The man page mentions a bug, which may be this one:</p>
+<blockquote>
+<p>When fetching distfiles, dpb may freeze and spin in a tight loop while the
+last distfiles are being fetched. This is definitely a bug, which has been
+around for quite some time, which is a bit difficult to reproduce, and hasn&rsquo;t
+been fixed yet. So if dpb stops updating its display right around the end of
+fetch, you&rsquo;ve hit the bug. Just kill dpb and restart it.</p>
+</blockquote>
+<p>Summary:</p>
+<ul>
+<li><code>/mnt/disk/ports/distfiles</code> 75.7 GiB 98533 items</li>
+</ul>
+<p>Now we have all the files necessary to build any package.</p>
+<p>Let&rsquo;s try it!  Without Internet connection of course.</p>
+<p>The first port we install will give us a database of ports so that we can
+search them for convenience.  The package is <code>portslist</code>.  This port contains 2
+subpackages, so we use <code>install-all</code> to install all of them, otherwise only the
+main package <code>sqlports</code> is installed.</p>
+<pre tabindex="0"><code>cd /usr/ports/databases/sqlports
+doas make install-all
+</code></pre><p>Now we search for some packages and build &amp; install them</p>
+<pre tabindex="0"><code>cd /usr/ports
+make search key=fd # From this we know where to find the package
+
+cd sysutils/fd
+doas make install
+
+cd /usr/ports/editors/neovim
+doas make install
+</code></pre><h2 id="building-the-system">Building the system</h2>
+<p>Following <a href="https://www.openbsd.org/faq/faq5.html">https://www.openbsd.org/faq/faq5.html</a> which points me to the man for <code>release(8)</code>:</p>
+<pre tabindex="0"><code>su -l
+
+# 2. Build kernel
+cd /sys/arch/$(machine)/compile/GENERIC.MP
+make obj &amp;&amp; make config &amp;&amp; make
+
+# 3. BUild base system
+cd /usr/src
+make obj &amp;&amp; make build
+
+# 4. Make and validate the base system release
+mkdir /var/releasedir
+chown build /var/releasedir
+mkdir /var/mfs
+mount_mfs -o rw,noperm -s 2G swap /var/mfs
+chown build /var/mfs
+chmod 700 /var/mfs
+mkdir /var/mfs/destdir
+export DESTDIR=/var/mfs/destdir RELEASEDIR=/var/releasedir
+cd /usr/src/etc &amp;&amp; make release
+cd /usr/src/distrib/sets &amp;&amp; sh checkflist
+unset RELEASEDIR DESTDIR
+
+# 5. Build Xenocara
+cd /usr/xenocara
+make bootstrap &amp;&amp; make obj &amp;&amp; make build
+
+# 6. make and validate the Xenocara release
+mkdir /var/mfs/xenocara-destdir
+export DESTDIR=/var/mfs/xenocara-destdir RELEASEDIR=/var/releasedir
+make release &amp;&amp; make checkdist
+unset RELEASEDIR DESTDIR
+
+# 8. Create boot and installation disk images
+export RELDIR=/var/releasedir RELXDIR=/var/releasedir
+cd /usr/src/distrib/$(machine)/iso &amp;&amp; make
+make install
+</code></pre><p>Summary:</p>
+<ul>
+<li><code>/usr/obj</code> 5.3 GiB 59435 items</li>
+<li><code>/usr/xobj</code> 1.5 GiB 19536 items</li>
+<li><code>/var/releasedir</code> 1.7 GiB 24 items</li>
+</ul>
+<p>Now the install images are ready in <code>/var/releasedir</code></p>
+<p>Let&rsquo;s flash the installer to a usb drive and test it on another laptop</p>
+<pre tabindex="0"><code>cd /var/releasedir/
+# My usb drive device is sd3, as seen from dmesg
+dd if=install72.img of=/dev/rsd3c bs=1M
+</code></pre><p>Let&rsquo;s copy the firmware files into the drive as well</p>
+<pre tabindex="0"><code>mkdir /mnt/install
+mount sd3a /mnt/install/
+cp -r /mnt/disk/firmware.openbsd.org/firmware /mnt/install/
+umount /mnt/install
+</code></pre><p>After this we have recreated an install image and flashed it into a usb drive
+that we can use to install the system in another laptop.  The installation can
+be done as usual.  To install the firmware files we can use the same install
+usb drive in the new system:</p>
+<pre tabindex="0"><code>su -l
+mkdir /mnt/install
+# My usb drive device is sd2 here, as seen from dmesg
+mount /dev/sd2a /mnt/install
+fw_update -p /mnt/install/firmware/7.2
+</code></pre><p>And with this the cycle is complete :D</p>
+<h1 id="summary">Summary</h1>
+<p>OpenBSD passed the test!  I was able to achieve the 4 evaluation objectives
+described in the Introduction.  I also found the documentation (both in man
+pages and FAQ) to be excelent.  I was able to follow all the procedures
+described in this post using just that (instead of relying on forums or other
+Internet content).  This is fantastic because in an offline scenario these
+resources would be in the laptop, giving OpenBSD more points for
+collapse-readiness.</p>
+<h1 id="addendum">Addendum</h1>
+<h2 id="failed-attempts">Failed attempts</h2>
+<h3 id="failure-number-1">Failure number 1</h3>
+<p>In <code>/usr/ports/sysutils/fd</code> I originally did <code>doas make install -j4</code> thinking
+that it would run 4 make jobs in parallel.  After a while I got an error
+complaining that a dependency port couldn&rsquo;t be compiled.  I found out that
+support for parallel makes in the ports is not well supported (from the man
+page), so I continued without the <code>-j4</code>.</p>
+<p>Seen in man for <code>bsd.port.mk</code>:</p>
+<pre tabindex="0"><code>MAKE_JOBS
+    Number of jobs to use when building the port, normally passed to MAKE_PROGRAM through PARALLEL_MAKE_FLAGS. Mostly set automatically when DPB_PROPERTIES contains ‘parallel’.
+
+    Note that make(1) still has bugs that may prevent parallel build from working correctly!
+</code></pre><p>I continued the process without using <code>-j4</code> on <code>make</code> again.  Some build times
+have been a bit slow (partily due to using a single core).</p>
+<h3 id="failure-number-2">Failure number 2</h3>
+<p>In <code>/usr/ports/sysutils/fd</code> some time after I ran <code>doas make install</code> I got the following error:</p>
+<pre tabindex="0"><code>Fatal: /usr/ports/pobj must be on a wxallowed filesystem (in lang/ruby/3.1)
+*** Error 1 in /usr/ports/lang/ruby/3.1 (/usr/ports/infrastructure/mk/bsd.port.mk:2865 &#39;_post-patch-finalize&#39;: @wrktmp=`df -P /usr/ports/pob...)
+</code></pre><p>I didn&rsquo;t find any mention of this in the documentation, I guess this is a
+specific detail of a particular port.  In OpenBSD&rsquo;s defense, they claim that
+the supported way to install packages is with <code>pkg_add</code>, so it&rsquo;s fair that
+making ports requires some small troubleshooting.</p>
+<p>The solution for this is very easy: mount <code>/mnt/disk</code> (where I have the ports
+object directory) as <code>wxallowed</code>.</p>
+<h3 id="failure-number-3">Failure number 3</h3>
+<p>Third attemp to build <code>fd</code>.  At some point <code>fd</code> requires building <code>ruby</code> as a dependency (I guess build dependency), and it fails with:</p>
+<pre tabindex="0"><code>===&gt;  Building package for ruby-3.1.3
+Create /usr/ports/packages/amd64/all/ruby-3.1.3.tgz
+Creating package ruby-3.1.3
+checksumming|*                                                                                     | 1%
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/bundle31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/bundler31 does not exis
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/erb31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/irb31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/racc31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/rdoc31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/bin/ri31 does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/lib/ruby/gems/3.1/gems/bundler-2.3.26/libexec/bundle does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/lib/ruby/gems/3.1/gems/bundler-2.3.26/libexec/bundler does not exist
+Error: /usr/ports/pobj/ruby-3.1.3/fake-amd64/usr/local/lib/ruby/gems/3.1/gems/erb-2.2.3/libexec/erb does not exist
+</code></pre><p>This took me the longest to debug, and it was a bug in ruby.</p>
+<p>I reproduced all the steps in a vm (without fetching all the distfiles, and not
+using any external disk) up to building <code>ruby/3.1</code>.  And in that scenario it built
+successfully.  There must be some detail in my setup that breaks the <code>ruby</code>
+build.</p>
+<p>Originally I was using the external drive for the ports related files mounted
+at <code>/mnt/ext</code>.  For that I had set <code>WRKOBJDIR=/mnt/ext/ports/pobj</code> in
+<code>/etc/mk.conf</code>.
+After retrying several times (removing a difference between my setup and the vm
+setup each time) I tried removing the line with <code>WRKOBJDIR</code> from <code>/etc/mk.conf</code>
+and then the building worked correctly.  Then I explored different <code>WRKOBJDIR</code> (same
+filesystem, changing filesystem, etc.), and from this I found out that I only got the
+error when the <code>WRKOBJDIR</code> contains a <code>/ext/</code> in it (remember I had my external
+drive mounted at <code>/mnt/ext</code>).  By analyzing the logs between success and error
+scenario I found that these two output lines in the error case showed that no
+gems had been found:</p>
+<pre tabindex="0"><code>installing default gems from lib:   /usr/local/lib/ruby/gems/3.1
+installing default gems from ext:   /usr/local/lib/ruby/gems/3.1
+</code></pre><p>Whereas in the successful case a list of gems had been found, which were the
+ones that later were not found when trying to build the package in the failing
+case.</p>
+<p>So I started looking at the code in ruby (by searching for strings that
+contained &ldquo;installing default gems from lib:&rdquo;)&hellip; and I finally found the
+issue.  In <code>tool/rbinstall.rb</code> at some point gems are listed and a check is run
+to determine if they should be skipped.  This is the relevant snippet:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ruby" data-lang="ruby"><span style="display:flex;"><span>      <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">skip_install?</span>(files)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">case</span> type
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">when</span> <span style="color:#e6db74">&#34;ext&#34;</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e"># install ext only when it&#39;s configured</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">!</span><span style="color:#66d9ef">File</span><span style="color:#f92672">.</span>exist?(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">#{</span>$ext_build_dir<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">#{</span>relative_base<span style="color:#e6db74">}</span><span style="color:#e6db74">/Makefile&#34;</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">when</span> <span style="color:#e6db74">&#34;lib&#34;</span>
+</span></span><span style="display:flex;"><span>          files<span style="color:#f92672">.</span>empty?
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">private</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">type</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">/\/(ext|lib)?\/.*?\z/</span> <span style="color:#f92672">=~</span> @base_dir
+</span></span><span style="display:flex;"><span>        $1
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">end</span>
+</span></span></code></pre></div><p>The problem appears in the <code>type</code> function which applies a regex to the gemspec
+dir.  For example, in my setup it would be
+<code>/mnt/ext/ports_pobj2/ruby-3.1.2/ruby-3.1.2/lib/bundler/</code>, and instead of
+returning <code>lib</code> (which is the expected result) it would return <code>ext</code> by
+matching at <code>/mnt/ext/...</code>.  That causes the script to check for the existence
+of a file that isn&rsquo;t there, so the gem is skipped.</p>
+<p>So the conclusion is that the build path for Ruby must not contain directories
+named <code>ext</code> or <code>lib</code>.</p>
+<p>I checked Ruby 3.2.0 and the logic to handle &ldquo;ext&rdquo;/&ldquo;lib&rdquo; has been reworked to
+avoid this problem :)  So I guess there&rsquo;s nothing to report!</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/collapse_ready_os/"> Collapse Ready Operating Systems - Intro</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2023. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+
