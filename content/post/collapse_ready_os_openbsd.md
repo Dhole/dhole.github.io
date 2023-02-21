@@ -5,7 +5,7 @@ Categories = ["bsd", "openbsd"]
 +++
 
 This is a blog post in the Collapse Ready Operating System series.  Read [this
-post](post/collapse_ready_os) for an introduction.
+post](/post/collapse_ready_os) for an introduction.
 
 # OpenBSD
 
