@@ -1,6 +1,6 @@
 +++
 title = "Collapse Ready Operating Systems - OpenBSD"
-date = 2023-02-15T00:03:20+02:00
+date = 2023-02-21T00:15:20+02:00
 Categories = ["bsd", "openbsd"]
 +++
 
