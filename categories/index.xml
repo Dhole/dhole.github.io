@@ -6,13 +6,22 @@
     <description>Recent content in Categories on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 21 Feb 2023 00:15:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>bsd</title>
       <link>https://dhole.github.io/categories/bsd/</link>
-      <pubDate>Tue, 21 Feb 2023 00:15:20 +0200</pubDate>
+      <pubDate>Mon, 01 May 2023 12:00:20 +0200</pubDate>
       
       <guid>https://dhole.github.io/categories/bsd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>netbsd</title>
+      <link>https://dhole.github.io/categories/netbsd/</link>
+      <pubDate>Mon, 01 May 2023 12:00:20 +0200</pubDate>
+      
+      <guid>https://dhole.github.io/categories/netbsd/</guid>
       <description></description>
     </item>
     

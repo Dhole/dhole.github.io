@@ -265,7 +265,7 @@ Categories:
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Tell stm32f411 the data length
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>u16_to_low_high(<span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> payload.len() <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>))<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// write magic
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>PRINT_MAGIC)<span style="color:#f92672">?</span>;
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">PRINT_MAGIC</span>)<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// write cmd
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>[cmd <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u8</span>])<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// write arg
@@ -282,7 +282,7 @@ Categories:
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ack_status[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> PRINT_ACK {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ack_status[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#66d9ef">PRINT_ACK</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(Some(PrinterStatus::from(ack_status[<span style="color:#ae81ff">1</span>])));
 </span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">else</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(None);
@@ -296,33 +296,33 @@ Categories:
 </span></span><span style="display:flex;"><span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Init printer
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Initializing printer...&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Init, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack!(send_print_cmd(port, PrintCommand::Init, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> status.any_info() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;{:?}&#34;</span>, status)));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Send data
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Sending data to printer...&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> tile_row <span style="color:#66d9ef">in</span> tile_rows {
-</span></span><span style="display:flex;"><span>        check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>tile_row)<span style="color:#f92672">?</span>));
-</span></span><span style="display:flex;"><span>        check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+</span></span><span style="display:flex;"><span>        check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>tile_row)<span style="color:#f92672">?</span>));
+</span></span><span style="display:flex;"><span>        check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Send 0 length data to notify the Printer that we&#39;ve sent all data
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Print
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Printing...&#34;</span>);
-</span></span><span style="display:flex;"><span>    check_status_error<span style="color:#f92672">!</span>(check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Print,
+</span></span><span style="display:flex;"><span>    check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Print,
 </span></span><span style="display:flex;"><span>                                                  <span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0x01</span>, margins.<span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span> margins.<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0xE4</span>, <span style="color:#ae81ff">0x40</span>])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Query Printing status
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> sleep_time <span style="color:#f92672">=</span> Duration::from_millis(<span style="color:#ae81ff">500</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">loop</span> {
 </span></span><span style="display:flex;"><span>        thread::sleep(sleep_time);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack<span style="color:#f92672">!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
-</span></span><span style="display:flex;"><span>        check_status_error<span style="color:#f92672">!</span>(status);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack!(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+</span></span><span style="display:flex;"><span>        check_status_error!(status);
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.any_info() {
 </span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Printing successfull!&#34;</span>);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
 </span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.printer_busy {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;{:?}&#34;</span>, status)));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Ok(());
@@ -361,7 +361,7 @@ Categories:
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span> image::open(<span style="color:#f92672">&amp;</span>Path::new(filename)) {
 </span></span><span style="display:flex;"><span>        Ok(img) <span style="color:#f92672">=&gt;</span> img,
 </span></span><span style="display:flex;"><span>        Err(err) <span style="color:#f92672">=&gt;</span> {
-</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Error opening image at file {:?}: {:?}&#34;</span>, filename, err);
+</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Error opening image at file </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, filename, err);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    };
@@ -387,7 +387,7 @@ Categories:
 </span></span><span style="display:flex;"><span>        };
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> (a, b) <span style="color:#f92672">=</span> (i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span>, cmp::min(i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">9</span>, tile_rows.len()));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> k <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
-</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;\tPrinting part [{:?}/{:?}]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
+</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Printing part [</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        print(port, <span style="color:#f92672">&amp;</span>tile_rows[a<span style="color:#f92672">..</span>b], margin)<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> (k<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
