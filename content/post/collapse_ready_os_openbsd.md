@@ -258,7 +258,7 @@ su -l
 cd /sys/arch/$(machine)/compile/GENERIC.MP
 make obj && make config && make
 
-# 3. BUild base system
+# 3. Build base system
 cd /usr/src
 make obj && make build
 

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Collapse Ready Operating Systems - NetBSD &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Collapse Ready Operating Systems - NetBSD</h1>  
+			
+			<time class="li-article-date">Monday, May 1, 2023</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/bsd">bsd</a> </span>
+
+<span><a href="https://dhole.github.io/categories/netbsd">netbsd</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>This is a blog post in the Collapse Ready Operating System series.  Read <a href="/post/collapse_ready_os">this
+post</a> for an introduction.</p>
+<h1 id="netbsd">NetBSD</h1>
+<p>This time I have chosen <a href="https://netbsd.org">NetBSD</a>.  I have used NetBSD previously in my Raspberry Pi (the first version).  I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well).  I remember fondly the regular <a href="https://mail-index.netbsd.org/port-arm/2022/10/26/msg007897.html">status reports</a> made by Jun Ebihara along with raspberry pi images with many packages already installed.  I also remember building a raspberry pi image myself from a Linux host on amd64 using cross-compilation: I was quite impressed with how easy the process was.</p>
+<h1 id="steps">Steps</h1>
+<p>In the following sections I describe all the steps I followed to setup up the
+system and evaluate it.</p>
+<h2 id="install">Install</h2>
+<p>Download the install image from <a href="https://cdn.netbsd.org/pub/NetBSD/NetBSD-9.3/images/NetBSD-9.3-amd64-install.img.gz">https://cdn.netbsd.org/pub/NetBSD/NetBSD-9.3/images/NetBSD-9.3-amd64-install.img.gz</a> which is the installer of NetBSD 9.3 for amd64.  Write it to a flash drive and boot from it in the main laptop.</p>
+<p>After boot, follow the steps to perform a NetBSD installation.  Use the whole disk with default partition sizes.
+Choose &ldquo;Full installation&rdquo; in the &ldquo;Select your distribution&rdquo; step.
+At the &ldquo;Install from&rdquo; step, choose first option: &ldquo;&hellip; install image media&rdquo;, so
+that the resources are retrieved from the install usb disk.</p>
+<p>In the configuration steps, make these choices:</p>
+<ul>
+<li>Configure network -&gt; <code>wm0</code> with autoselect</li>
+<li>Timezone -&gt; <code>Europe/Madrid</code></li>
+<li>Change root password -&gt; <code>toor</code></li>
+<li>Enable sshd -&gt; YES</li>
+<li>Enable xdm -&gt; YES</li>
+<li>Add a user -&gt; <code>user:password</code> and choose to add it to the wheel group.  Set default shell to <code>/bin/ksh</code> to get autocompletion</li>
+</ul>
+<p>Reboot into the system and login as <code>user</code>.</p>
+<h2 id="basic-setup">Basic setup</h2>
+<p>I found out that the recommended way to install packages is to use <code>pkgin</code> which is not installed by default, so let&rsquo;s install it.  Following the pkgsrc website quickstart section at <a href="https://pkgsrc.org/">https://pkgsrc.org/</a>:</p>
+<pre tabindex="0"><code>PKG_PATH=&#34;http://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r|cut -f &#39;1 2&#39; -d.)/All/&#34;
+export PKG_PATH
+pkg_add pkgin
+</code></pre><p>This succeeds with the following warnings:</p>
+<pre tabindex="0"><code>pkg_add: Warning: package `pkgin-21.12.0nb2&#39; was built for a platform:
+pkg_add: NetBSD/x86_64 9.0 (pkg) vs. NetBSD/x86_64 9.3 (this host)
+pkg_add: Warning: package `pkg_install-20211115&#39; was built for a platform:
+pkg_add: NetBSD/x86_64 9.0 (pkg) vs. NetBSD/x86_64 9.3 (this host)
+</code></pre><p>Nevertheless the NetBSD wiki says this is normal <a href="https://wiki.netbsd.org/pkgsrc/faq/">https://wiki.netbsd.org/pkgsrc/faq/</a></p>
+<p>Install some basic software as root:</p>
+<pre tabindex="0"><code>pkgin install vim doas wget
+</code></pre><p>Configure <code>doas</code> to run commands as root from our user (which belongs to the <code>wheel</code> group):</p>
+<pre tabindex="0"><code>echo &#34;permit nopass :wheel&#34; &gt; /usr/pkg/etc/doas.conf
+</code></pre><p>I will use an external 2TB drive to download the distribution files to build packages.
+Note: NetBSD uses the term <code>package</code> to refer to the same thing that FreeBSD and OpenBSD call <code>port</code>.</p>
+<p>Following the documentation from <a href="https://www.netbsd.org/docs/guide/en/chap-misc.html#chap-misc-adding-new-disk">https://www.netbsd.org/docs/guide/en/chap-misc.html#chap-misc-adding-new-disk</a>
+First plug the disk and see via <code>dmesg</code> the device name:</p>
+<pre tabindex="0"><code>[Sun Feb 19 14:27:02 CET 2023] sd1 at scsibus1 target 0 lun 0: &lt;TOSHIBA, External USB 3.0, 5438&gt; disk fixed
+</code></pre><p>Then format it and mount it</p>
+<pre tabindex="0"><code>doas newfs /dev/rsd1i
+doas mkdir /mnt/disk
+doas mount /dev/sd1i /mnt/disk
+doas chown user /mnt/disk
+</code></pre><h3 id="pkgsrc">pkgsrc</h3>
+<p>pkgsrc is the framework that NetBSD uses to build packages from source.  pkgsrc
+extends beyond NetBSD: it supports multiple Unix-like operating systems such as
+Linux.</p>
+<p>Follow instructions from <a href="https://netbsd.org/docs/pkgsrc/getting.html">https://netbsd.org/docs/pkgsrc/getting.html</a> and the
+sections that follow.</p>
+<p>pkgsrc publishes quarterly releases: download and extract the latest one:</p>
+<pre tabindex="0"><code>cd /mnt/disk
+ftp https://cdn.netbsd.org/pub/pkgsrc/pkgsrc-2022Q4/pkgsrc.tar.gz
+doas tar -xzf pkgsrc.tar.gz -C /usr
+</code></pre><p>Summary:</p>
+<ul>
+<li><code>/usr/pkgsrc/</code> 1.3G</li>
+</ul>
+<p>Then run the bootstrap script to build and install all the dependencies
+required to build packages:</p>
+<pre tabindex="0"><code>cd /usr/pkgsrc/bootstrap/
+doas ./bootstrap
+</code></pre><p>We set the path for the <code>distfiles</code> (the files with the source code and assets
+require to build the packages) to point to the external disk.
+For that, edit our <code>mk.conf</code>:</p>
+<pre tabindex="0"><code>mkdir -p /mnt/disk/pkgsrc/distfiles
+doas vim /usr/pkg/etc/mk.conf
+# Add this line before the `.endif`
+DISTDIR=/mnt/disk/pkgsrc/distfiles
+</code></pre><p>Now let&rsquo;s fetch all the <code>distfiles</code>:</p>
+<pre tabindex="0"><code># This took ~2h
+MASTER_SORT_RANDOM=NO MASTER_SORT_REGEX=&#39;http://cdn.NetBSD.org/.*&#39; bmake fetch-list &gt; /mnt/disk/fetch-all.sh
+cd /mnt/disk/pkgsrc/distfiles
+time sh /mnt/disk/fetch-all.sh
+</code></pre><p>This fetches the distfiles for each package by choosing the <a href="http://cdn.NetBSD.org/">http://cdn.NetBSD.org/</a> mirror whenever it&rsquo;s available.</p>
+<p>Summary:</p>
+<ul>
+<li>/mnt/disk/pkgsrc/distfiles 67G</li>
+</ul>
+<p>Now let&rsquo;s try to build something without Internet connection:</p>
+<pre tabindex="0"><code>su -l
+cd /usr/pkgsrc/sysutils/htop/
+MAKE_JOBS=4 bmake install
+cd /usr/pkgsrc/sysutils/ncdu/
+MAKE_JOBS=4 bmake install
+cd /usr/pkgsrc/sysutils/fd-find/
+MAKE_JOBS=4 bmake install
+</code></pre><p>With <code>MAKE_JOBS=4</code> the builds are quite fast.  Reading <code>mk/defaults/mk.conf</code> I
+see that some packages don&rsquo;t work with parallel jobs; I expect that if I
+encounter such a package the building will fail and I can retry without this
+env var set.</p>
+<h2 id="building-the-system">Building the system</h2>
+<p>Following the documentation at <a href="https://www.netbsd.org/docs/guide/en/part-compile.html">https://www.netbsd.org/docs/guide/en/part-compile.html</a></p>
+<pre tabindex="0"><code>doas mkdir /usr/src
+doas chown user /usr/src
+doas mkdir /usr/xsrc
+doas chown user /usr/xsrc
+
+cd /mnt/disk
+for file in gnusrc.tgz sharesrc.tgz src.tgz syssrc.tgz xsrc.tgz; do wget https://ftp.NetBSD.org/pub/NetBSD/NetBSD-9.3/source/sets/$file; done
+for file in gnusrc.tgz sharesrc.tgz src.tgz syssrc.tgz xsrc.tgz; do tar -xzf $file -C /; done
+</code></pre><p>Summary:</p>
+<ul>
+<li>/usr/src 2.8 GiB 307923 items</li>
+<li>/usr/xsrc 905 GiB 50223 items</li>
+</ul>
+<p>The install image can be built with a single command, which is really
+convenient.  It also supports parallel jobs, leading to shorter build times.</p>
+<pre tabindex="0"><code>mkdir /mnt/disk/obj
+cd /usr/src
+./build.sh -U -u -x -j6 -O /mnt/disk/obj tools release install-image
+</code></pre><p>That took 2h 30m</p>
+<p>Now we can flash the install image to a usb drive and test it on another
+laptop.  The installation can be done as usual.</p>
+<pre tabindex="0"><code>cd /mnt/disk/obj/releasedir/images/
+gunzip NetBSD-9.3-amd64-install.img.gz
+# My usb drive device is sd2, as seen from dmesg
+dd if=NetBSD-9.3-amd64-install.img ibs=1m | doas progress dd of=/dev/rsd2 obs=1m
+</code></pre><p>With that, the cycle is complete!</p>
+<h1 id="documentation">Documentation</h1>
+<p>NetBSD has an extensive documentation on its website.  I mostly followed such
+documentation to write this post.  Luckily the web documentation is stored in
+cvs and so it&rsquo;s easy to download.  The documentation even contains a section on
+how to mirror the NetBSD website which I followed at <a href="https://www.netbsd.org/docs/mirror.html#www-retrieve">https://www.netbsd.org/docs/mirror.html#www-retrieve</a>:</p>
+<pre tabindex="0"><code>cd /usr
+doas mkdir -p htdocs
+doas chgrp wheel htdocs
+doas chmod 775 htdocs
+cvs -qd anoncvs@anoncvs.NetBSD.org:/cvsroot checkout -rHEAD -P htdocs
+cd htdocs
+wget -nv -xnH -NFi mirrors/fetch.html
+</code></pre><p>Summary:</p>
+<ul>
+<li>/usr/htdocs 326 MiB 7900 items</li>
+</ul>
+<p>These are some browsers to install: <code>www/w3m</code>, <code>www/dillo</code>, <code>www/links-gui</code>.
+They are suitable to browse the local html documentation.</p>
+<p>The three browsers work perfectly:</p>
+<pre tabindex="0"><code># w3m (console)
+w3m /usr/htdocs/docs/index.html
+# links+ (console)
+links /usr/htdocs/docs/index.html
+# links+ (gui)
+links -g /usr/htdocs/docs/index.html
+# dillo (graphical)
+dillo /usr/htdocs/docs/index.html
+</code></pre><h1 id="summary">Summary</h1>
+<p>NetBSD passes the test!  I successfully achieved the 4 goals described in the
+introduction post.  There were some hiccups during the process that I found
+were not addressed by the documentation, but I managed to make progress until
+reaching the goal.  I found the task to build the install image very smooth
+and straight forward, with basically a single command to build the whole system
+and prepare the install image!  The website documentation has been very
+helpful.  Since that documentation is easy to copy for offline usage, NetBSD
+would be a very good candidate for a collapse-ready operating system.</p>
+<h1 id="addendum">Addendum</h1>
+<h2 id="failed-attempts">Failed attempts</h2>
+<h3 id="failure-number-1">Failure number 1</h3>
+<p>When installing <code>pkgin</code>, which is the recommended way to install packages, I
+originally followed the documentation at
+<a href="https://netbsd.org/docs/pkgsrc/using.html#installing-binary-packages">https://netbsd.org/docs/pkgsrc/using.html#installing-binary-packages</a> which
+tells us to do the following:</p>
+<pre tabindex="0"><code>su -l
+PATH=&#34;/usr/pkg/sbin:/usr/pkg/bin:$PATH&#34;
+PKG_PATH=&#34;https://cdn.NetBSD.org/pub/pkgsrc/packages&#34;
+PKG_PATH=&#34;$PKG_PATH/NetBSD/amd64/9.3/All/&#34;
+export PATH PKG_PATH
+pkg_add pkgin
+</code></pre><p>This gives me the following error:</p>
+<pre tabindex="0"><code>pkg_add: Can&#39;t process https://cdn.netbsd.org:443/pub/pkgsrc/packages/NetBSD/x86_64/9.3/All/pkgin*: Unknown HTTP error
+pkg_add: no pkg found for &#39;pkgin&#39;, sorry.
+pkg_add: 1 package addition failed
+</code></pre><p>The <code>afterboot</code> man page gives similar commands:</p>
+<pre tabindex="0"><code>export PKG_PATH=https://cdn.netbsd.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r | cut -d_ -f1)/All
+pkg_add pkgin
+</code></pre><p>which return the same error.</p>
+<p>It seems that the previous error was coming because the <code>PKG_PATH</code> is an https
+url.  Maybe the TLS CA certificates are not installed and thus a verified https
+connection cannot be established?  I tried installing the TLS CA certificates
+tu rule out this case!  Maybe <code>pkg_add</code> doesn&rsquo;t support https at all?  It feels
+strange that the process to install the recommended package manager by NetBSD
+involves downloading a binary over http that we will use later, as root.</p>
+<p>Changing the url to use <code>http</code> works.  So I observe that on a fresh install,
+<code>pkg_add</code> doesn&rsquo;t support https.  I had to install <code>pkgin</code> via <code>http</code>.  This
+makes me feel a bit uncomfortable because I don&rsquo;t know if there&rsquo;s any signature
+check before installing the downloaded package which is downloaded via an
+unencrypted and unauthenticated channel.</p>
+<h3 id="failure-number-2">Failure number 2</h3>
+<p>Now let&rsquo;s fetch all the <code>distfiles</code>:</p>
+<pre tabindex="0"><code># This took ~2h
+bmake fetch-list &gt; /mnt/disk/fetch-all.sh
+cd /mnt/disk/pkgsrc/distfiles
+time sh /mnt/disk/fetch-all.sh
+</code></pre><p>This <code>fetch-list</code> function of pkgsrc generates scripts to fetch the distfiles
+for each package by choosing one of the available mirrors (per package) at
+random.  Some of the mirrors were quite slow, giving download speeds of ~20
+KiB/s.</p>
+<p>After more than 8h running the script it hadn&rsquo;t finished, probably due to slow
+mirrors.  So I decide to cancel this and try a different approach.</p>
+<pre tabindex="0"><code>MASTER_SORT_RANDOM=NO MASTER_SORT_REGEX=&#39;http://cdn.NetBSD.org/.*&#39; bmake fetch-list &gt; /mnt/disk/fetch-all.sh
+</code></pre><p>Running the script now was a bit faster, it took nearly 13h.  It still took a
+long time.  Fetching from <code>cdn.NetBSD.org</code> gave a speed of ~2 MiB/s.  For
+some distfiles the NetBSD cdn gave 404 so the fallback was some ftp server,
+which gave speeds of ~20 KiB/s.  I tried downloading from both resources on a
+Linux PC and the speed was much higher (both cdn and ftp servers).  My laptop
+is connected via Ethernet.  I don&rsquo;t know the reason for the slow download
+speeds.</p>
+<p>I tested downloading with <code>wget</code> and the speeds are much faster.  So using
+<code>wget</code> with the <code>fetch-list</code> can help getting lower download times. I checked
+the man page for <code>ftp</code> to see if there was some configuration that may make it
+run slow, and I&rsquo;ve discovered that changing the socket buffer sizes makes a big
+difference.  For example, with normal <code>ftp</code> I get 3 MiB/s, but with <code>ftp -x 131072</code> I get 11.5 MiB/s.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/collapse_ready_os_openbsd/"> Collapse Ready Operating Systems - OpenBSD</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2023. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    <!--
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

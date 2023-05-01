@@ -154,7 +154,7 @@ core implementation of the CHIP-8 Virtual Machine.</p>
 <h2 id="structure-of-the-emulator">Structure of the emulator</h2>
 <p>The CHIP-8 emulator is implemented via a struct:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Chip8</span><span style="color:#f92672">&lt;</span>R: <span style="color:#a6e22e">RngCore</span><span style="color:#f92672">&gt;</span> {
-</span></span><span style="display:flex;"><span>    mem: [<span style="color:#66d9ef">u8</span>; MEM_SIZE],
+</span></span><span style="display:flex;"><span>    mem: [<span style="color:#66d9ef">u8</span>; <span style="color:#66d9ef">MEM_SIZE</span>],
 </span></span><span style="display:flex;"><span>    v: <span style="color:#a6e22e">Regs</span>, <span style="color:#75715e">// Register Set
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    i: <span style="color:#66d9ef">u16</span>,  <span style="color:#75715e">// Index Register
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    pc: <span style="color:#66d9ef">u16</span>, <span style="color:#75715e">// Program Counter
@@ -163,7 +163,7 @@ core implementation of the CHIP-8 Virtual Machine.</p>
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    dt: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Delay Timer
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    st: <span style="color:#66d9ef">u8</span>,                                     <span style="color:#75715e">// Sound Timer
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    keypad: <span style="color:#66d9ef">u16</span>,                                <span style="color:#75715e">// Keypad
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fb: [<span style="color:#66d9ef">u8</span>; SCREEN_WIDTH <span style="color:#f92672">*</span> SCREEN_HEIGTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>], <span style="color:#75715e">// Framebuffer
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    fb: [<span style="color:#66d9ef">u8</span>; <span style="color:#66d9ef">SCREEN_WIDTH</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">SCREEN_HEIGTH</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span>], <span style="color:#75715e">// Framebuffer
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    tone: <span style="color:#66d9ef">bool</span>,                                 <span style="color:#75715e">// Tone output enable
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    time: <span style="color:#66d9ef">isize</span>,                                <span style="color:#75715e">// Overtime in microseconds
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    rng: <span style="color:#a6e22e">R</span>,                                     <span style="color:#75715e">// Instance of a random number generator
@@ -220,10 +220,10 @@ the instruction is decoded, the corresponding instruction function is called.</p
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x00</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> w1 {
 </span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xe0</span> <span style="color:#f92672">=&gt;</span> self.op_cls(),
 </span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xee</span> <span style="color:#f92672">=&gt;</span> self.op_ret(),
-</span></span><span style="display:flex;"><span>                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn<span style="color:#f92672">!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn!(w0, w1)),
 </span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn<span style="color:#f92672">!</span>(w0, w1)),
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn<span style="color:#f92672">!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn!(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn!(w0, w1)),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x30</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], w1),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">=&gt;</span> self.op_sne(self.v[Reg(lo_nib(w0))], w1),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x50</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], self.v[Reg(hi_nib(w1))]),
@@ -253,10 +253,10 @@ time, until we&rsquo;ve used all the frame time.</p>
 </span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">false</span>
 </span></span><span style="display:flex;"><span>        };
-</span></span><span style="display:flex;"><span>        self.time <span style="color:#f92672">+=</span> FRAME_TIME;
+</span></span><span style="display:flex;"><span>        self.time <span style="color:#f92672">+=</span> <span style="color:#66d9ef">FRAME_TIME</span>;
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> self.time <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">&gt;</span> MEM_SIZE <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span> <span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">MEM_SIZE</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> Err(Error::PcOutOfBounds(self.pc));
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">let</span> w0 <span style="color:#f92672">=</span> self.mem[self.pc <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
@@ -294,7 +294,7 @@ desktop display):</p>
 </span></span><span style="display:flex;"><span>                .default_value(<span style="color:#e6db74">&#34;8&#34;</span>)
 </span></span><span style="display:flex;"><span>                .validator(<span style="color:#f92672">|</span>scale<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> scale.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>() {
 </span></span><span style="display:flex;"><span>                    Ok(_) <span style="color:#f92672">=&gt;</span> Ok(()),
-</span></span><span style="display:flex;"><span>                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format!(<span style="color:#e6db74">&#34;{}&#34;</span>, e)),
+</span></span><span style="display:flex;"><span>                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, e)),
 </span></span><span style="display:flex;"><span>                }),
 </span></span><span style="display:flex;"><span>        )
 </span></span><span style="display:flex;"><span>        .arg(
@@ -364,9 +364,9 @@ bit-vector state.</li>
 <li>Update the display texture</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span>        tex_display.with_lock(None, <span style="color:#f92672">|</span>buffer: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">mut</span> [<span style="color:#66d9ef">u8</span>], pitch: <span style="color:#66d9ef">usize</span><span style="color:#f92672">|</span> {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::SCREEN_HEIGTH {
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::SCREEN_WIDTH <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::<span style="color:#66d9ef">SCREEN_HEIGTH</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">for</span> x <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>chip8::<span style="color:#66d9ef">SCREEN_WIDTH</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">let</span> byte <span style="color:#f92672">=</span> chip8.fb()[y <span style="color:#f92672">*</span> chip8::<span style="color:#66d9ef">SCREEN_WIDTH</span> <span style="color:#f92672">/</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> x];
 </span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span> {
 </span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">let</span> offset <span style="color:#f92672">=</span> y <span style="color:#f92672">*</span> pitch <span style="color:#f92672">+</span> (x <span style="color:#f92672">*</span> <span style="color:#ae81ff">8</span> <span style="color:#f92672">+</span> i) <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>;
 </span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> <span style="color:#66d9ef">if</span> byte <span style="color:#f92672">&amp;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;&lt;</span> (<span style="color:#ae81ff">7</span> <span style="color:#f92672">-</span> i) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> { <span style="color:#ae81ff">255</span> } <span style="color:#66d9ef">else</span> { <span style="color:#ae81ff">0</span> };

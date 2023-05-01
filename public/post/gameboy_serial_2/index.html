@@ -314,7 +314,7 @@ Bit 7: Battery Too Low
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows <span style="color:#f92672">=</span> Vec::<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span>::new();
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">loop</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Wait for the magic bytes.
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(read_until_magic(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> port, <span style="color:#f92672">&amp;</span>PRINT_MAGIC));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(read_until_magic(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> port, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">PRINT_MAGIC</span>));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">4</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Read cmd, arg1, len_low, len_high
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf));
@@ -333,10 +333,10 @@ Bit 7: Battery Too Low
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Print) <span style="color:#f92672">=&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> palette <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>payload[<span style="color:#ae81ff">2</span>];
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> format!(
-</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;gb_printer_{}.png&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;gb_printer_</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">.png&#34;</span>,
 </span></span><span style="display:flex;"><span>                    time::now().strftime(<span style="color:#e6db74">&#34;%FT%H%M%S&#34;</span>).unwrap()
 </span></span><span style="display:flex;"><span>                );
-</span></span><span style="display:flex;"><span>                println!(<span style="color:#e6db74">&#34;Saving image at {}&#34;</span>, filename);
+</span></span><span style="display:flex;"><span>                println!(<span style="color:#e6db74">&#34;Saving image at </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, filename);
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(printer_save_image(<span style="color:#f92672">&amp;</span>tile_rows, palette, filename));
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Data) <span style="color:#f92672">=&gt;</span> {
