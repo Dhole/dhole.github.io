@@ -6,26 +6,21 @@
     <description>Recent content in emulator on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CHIP-8 emulator in Rust: Embedded port.  Part 2</title>
       <link>https://dhole.github.io/post/chip8_emu_2/</link>
       <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/chip8_emu_2/</guid>
-      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!
-In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
+      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!&#xA;In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
     </item>
-    
     <item>
       <title>CHIP-8 emulator in Rust.  Part 1</title>
       <link>https://dhole.github.io/post/chip8_emu_1/</link>
       <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/chip8_emu_1/</guid>
-      <description>I have been interested in the topic of emulation for many years; in particular, game console emulation. I started playing games under emulators when I was a teenager and I was fascinated by how a piece of software would let me play a game in a completely different architecture than the original one.
-I&amp;rsquo;ve you&amp;rsquo;ve ever been interested in learning about emulation, maybe you&amp;rsquo;ve learned about the CHIP-8; a specification of a simple virtual machine designed to play 8bit 2D videogames in the mid 1970s.</description>
+      <description>I have been interested in the topic of emulation for many years; in particular, game console emulation. I started playing games under emulators when I was a teenager and I was fascinated by how a piece of software would let me play a game in a completely different architecture than the original one.&#xA;I&amp;rsquo;ve you&amp;rsquo;ve ever been interested in learning about emulation, maybe you&amp;rsquo;ve learned about the CHIP-8; a specification of a simple virtual machine designed to play 8bit 2D videogames in the mid 1970s.</description>
     </item>
-    
   </channel>
 </rss>
