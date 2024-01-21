@@ -6,36 +6,28 @@
     <description>Recent content in bsd on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/bsd/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/bsd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Collapse Ready Operating Systems - NetBSD</title>
       <link>https://dhole.github.io/post/collapse_ready_os_netbsd/</link>
       <pubDate>Mon, 01 May 2023 12:00:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/collapse_ready_os_netbsd/</guid>
-      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.
-NetBSD This time I have chosen NetBSD. I have used NetBSD previously in my Raspberry Pi (the first version). I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well). I remember fondly the regular status reports made by Jun Ebihara along with raspberry pi images with many packages already installed.</description>
+      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.&#xA;NetBSD This time I have chosen NetBSD. I have used NetBSD previously in my Raspberry Pi (the first version). I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well). I remember fondly the regular status reports made by Jun Ebihara along with raspberry pi images with many packages already installed.</description>
     </item>
-    
     <item>
       <title>Collapse Ready Operating Systems - OpenBSD</title>
       <link>https://dhole.github.io/post/collapse_ready_os_openbsd/</link>
       <pubDate>Tue, 21 Feb 2023 00:15:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/collapse_ready_os_openbsd/</guid>
-      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.
-OpenBSD The OS analyzed in this post is OpenBSD. I&amp;rsquo;ve tried OpenBSD a few times in the past: once as a personal web server on an old PC, and then as a desktop in a laptop as a secondary system. That was a few years ago. My memories from it are that the system was very clean, everything worked as expected, the performance was significantly slower than linux and that I really appreciated all the care the developers put on the security side.</description>
+      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.&#xA;OpenBSD The OS analyzed in this post is OpenBSD. I&amp;rsquo;ve tried OpenBSD a few times in the past: once as a personal web server on an old PC, and then as a desktop in a laptop as a secondary system. That was a few years ago. My memories from it are that the system was very clean, everything worked as expected, the performance was significantly slower than linux and that I really appreciated all the care the developers put on the security side.</description>
     </item>
-    
     <item>
       <title>Collapse Ready Operating Systems - Intro</title>
       <link>https://dhole.github.io/post/collapse_ready_os/</link>
       <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/collapse_ready_os/</guid>
-      <description>Introduction Nowadays we live in a hyperconnected World that relies heavily on Internet connection for day to day tasks in all levels. I&amp;rsquo;m not very happy with this relience of assuming Internet access 24h for everything, as I think it disempowers the user.
-For example, whereas people before used to buy and own media, now they buy a license to stream such media from the cloud. This means that the user only has access to the media as long as the platform exists, and we know that this is no guarantee for the future.</description>
+      <description>Introduction Nowadays we live in a hyperconnected World that relies heavily on Internet connection for day to day tasks in all levels. I&amp;rsquo;m not very happy with this relience of assuming Internet access 24h for everything, as I think it disempowers the user.&#xA;For example, whereas people before used to buy and own media, now they buy a license to stream such media from the cloud. This means that the user only has access to the media as long as the platform exists, and we know that this is no guarantee for the future.</description>
     </item>
-    
   </channel>
 </rss>

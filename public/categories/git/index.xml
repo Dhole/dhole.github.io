@@ -6,17 +6,14 @@
     <description>Recent content in git on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate><atom:link href="https://dhole.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Raspberry Pi: git server (cgit with lighttpd)</title>
       <link>https://dhole.github.io/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
-      
       <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
-      <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.
-We&amp;rsquo;ll setup two groups of repositories: a public and a private one.
-Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
+      <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.&#xA;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&#xA;Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
     </item>
-    
   </channel>
 </rss>

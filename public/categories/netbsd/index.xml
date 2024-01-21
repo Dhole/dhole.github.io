@@ -6,16 +6,14 @@
     <description>Recent content in netbsd on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate><atom:link href="https://dhole.github.io/categories/netbsd/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/netbsd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Collapse Ready Operating Systems - NetBSD</title>
       <link>https://dhole.github.io/post/collapse_ready_os_netbsd/</link>
       <pubDate>Mon, 01 May 2023 12:00:20 +0200</pubDate>
-      
       <guid>https://dhole.github.io/post/collapse_ready_os_netbsd/</guid>
-      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.
-NetBSD This time I have chosen NetBSD. I have used NetBSD previously in my Raspberry Pi (the first version). I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well). I remember fondly the regular status reports made by Jun Ebihara along with raspberry pi images with many packages already installed.</description>
+      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.&#xA;NetBSD This time I have chosen NetBSD. I have used NetBSD previously in my Raspberry Pi (the first version). I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well). I remember fondly the regular status reports made by Jun Ebihara along with raspberry pi images with many packages already installed.</description>
     </item>
-    
   </channel>
 </rss>
