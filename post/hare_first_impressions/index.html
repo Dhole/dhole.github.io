@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>First impressions on Hare language &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">First impressions on Hare language</h1>  
+			
+			<time class="li-article-date">Saturday, January 20, 2024</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
+
+<span><a href="https://dhole.github.io/categories/hare">hare</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <h1 id="introduction">Introduction</h1>
+<p><a href="https://harelang.org/">Hare is a new programming language</a> that was <a href="https://harelang.org/blog/2022-04-25-announcing-hare/">announced
+in 2022</a> and which was
+started by <a href="https://drewdevault.com/">Drew DeValut</a>.  It&rsquo;s currently being
+developed openly by a community of contributors.  Here&rsquo;s a description of the
+language from the official website:</p>
+<blockquote>
+<p>Hare is a systems programming language designed to be simple, stable, and
+robust. Hare uses a static type system, manual memory management, and a
+minimal runtime. It is well-suited to writing operating systems, system
+tools, compilers, networking software, and other low-level, high performance
+tasks.</p>
+</blockquote>
+<p>I enjoy learning about new programming languages, and I&rsquo;m personally attracted
+to the effort of reducing complexity in software and creating simple designs,
+goals that Hare itself tries to achieve.  With this, I decided to learn Hare
+and try it; and I&rsquo;m going to share my experience through this process in
+this post.</p>
+<h1 id="my-first-hare-project">My first Hare project</h1>
+<p>A long time ago I became interested in learning how emulators work, so I looked
+at the simplest machine I could find to write an emulator for it.  I discovered
+the Chip8, a very simple 8 bit Virtual Machine made for videogames in the 70s.
+I implemented an <a href="https://github.com/Dhole/Chip8-emu">emulator for it in C++</a>.
+That was in fact my first emulator!  Please don&rsquo;t judge the code quality of
+that implementation, I wrote it 11 years ago and I didn&rsquo;t have a lot of
+software engineering experience by then.</p>
+<p>Since the implementation of the Chip8 emulator is very simple, I&rsquo;ve been
+re-implementing it (or porting it) to new languages that I learn as a way of
+practicing the new language.</p>
+<p>Here you can find the <a href="https://github.com/Dhole/chip8-ha/">Hare implementation of my Chip8
+emulator</a>.  The main two files are:</p>
+<ul>
+<li><a href="https://github.com/Dhole/chip8-ha/blob/main/chip8/chip8.ha">chip8/chip8.ha</a>: Contains the platform-agnostic (or backend) Chip8 emulator implementation</li>
+<li><a href="https://github.com/Dhole/chip8-ha/blob/main/src/main.ha">src/main.ha</a>:
+Contains the frontend using the <a href="https://www.libsdl.org/">SDL2 library</a> to
+handle keyboard inputs, window and frame rendering and audio.</li>
+</ul>
+<p>To use the SDL2 library I initially tried the <a href="https://git.sr.ht/~sircmpwn/hare-sdl2/tree"><code>~sircmpwn/hare-sdl2</code> wrapper
+library</a>.  I had to patch it in
+order to correctly setup the <a href="https://lists.sr.ht/~sircmpwn/hare-dev/patches/48378">texture pixel
+format</a>, and got
+everything working except for sound.  At that point I realized that the
+wrappers for the sound API were not done, and I found this other attempt in
+<a href="https://git.sr.ht/~spxtr/hare-sdl2"><code>~spxtr/hare-sdl2</code></a> which was more
+complete: it had the audio API wrappers, and only needed the texture pixel
+format enum for my needs.  Since I needed some changes from it, I <a href="https://github.com/Dhole/hare-sdl2">forked it
+here</a>.</p>
+<p>The implementation is currently complete and works as expected.</p>
+<h1 id="personal-impressions">Personal impressions</h1>
+<p>In this section I will explain some points I liked and some I didn&rsquo;t like about
+Hare. This could be treated as feedback, but bear in mind that some these
+impressions are very subjective.</p>
+<h2 id="positive">Positive</h2>
+<h3 id="nullable-types">Nullable types</h3>
+<p>This small feature can remove memory a common bug in C; where a function
+returns a pointer with a small chance of failing.  On failure a null pointer
+would be returned.  If the caller doesn&rsquo;t check for null pointer, a null
+de-reference may happen.  Having nullable types forces the caller to check for
+the null pointer case before de-referencing.</p>
+<h3 id="sum-types--tagged-unions">Sum types / tagged unions</h3>
+<p>Making a new type out of a collection of types, with ways to check which type
+is instantiated.  This works great for having functions that can return a
+result or an error, or in general for functions that may receive/return
+different kinds of data.</p>
+<h3 id="slices">Slices</h3>
+<p>Having slice semantics adds a lot of flexibility for very common operations.
+Also having a native representation of a consecutive list of elements which
+also stores the length helps greatly on simplifying APIs and removing invalid
+memory accesses when indexing.</p>
+<h3 id="nice-standard-library">Nice standard library</h3>
+<p>I see that a lot of effort has been put into having a very nice standard
+library.  Although this is not part of the language spec, I consider it very
+important as part of the language as a whole (perhaps seeing the language as
+the entire ecosystem).  I find it impressive that a language so young has a
+standard library this extensive.</p>
+<h3 id="-and--operators"><code>!</code> and <code>?</code> operators</h3>
+<p>The <code>!</code> operator allows extracting the non-error value of a function return
+value or abort in the case of error.  This is very convenient for errors that
+we believe won&rsquo;t happen, or for errors that we don&rsquo;t want to recover from.</p>
+<p>The <code>?</code> operator works similarly, but instead of aborting causes the function
+to return the error, to be dealt by the caller.</p>
+<h3 id="small-boring-language">Small boring language</h3>
+<p>Here the usage of &ldquo;boring&rdquo; is used in a positive sense, similar to the term
+<a href="https://cr.yp.to/talks/2015.10.05/slides-djb-20151005-a4.pdf">Boring Crypto coined by Daniel J.
+Bernstein</a>.  Hare
+is a language that is easy to learn and doesn&rsquo;t offer any surprise.  It tries
+to follow simple patterns that are known to work well and are commonly used,
+and avoids others that may be more complex and may be more niche.</p>
+<h2 id="negative">Negative</h2>
+<h3 id="no-dot-method-syntax">No dot method syntax</h3>
+<p>I&rsquo;m very used to modeling many problems in code following the convention of
+Objects with associated methods.  This modeling is seen in Object Oriented
+languages, but also in modern languages like Go, Rust or Zig, which don&rsquo;t
+follow Object Orientation patterns to the full extent.  I find that the syntax
+<code>object.method()</code> leads to cleaner code, and even when the language doesn&rsquo;t
+support this syntax, the pattern is still used.</p>
+<p>As an example, in my Chip8 implementation, once the chip8 object has been
+created as <code>c8</code> I use this to load a rom: <code>chip8::load_rom(&amp;c8, rom[..rom_size])</code>; In dot method syntax it would look like
+<code>c8.load_rom(rom[..rom_size])</code>.</p>
+<p>Another example is the hare API of the SDL2 wrapper.  An idiomatic API for SDL2
+may look like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span>sdl<span style="color:#f92672">::</span>set_render_draw_color(render, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>sdl<span style="color:#f92672">::</span>render_clear(render)<span style="color:#f92672">?</span>;
+</span></span><span style="display:flex;"><span>sdl<span style="color:#f92672">::</span>render_present(render);
+</span></span></code></pre></div><p>Whereas dot method syntax could look like this:</p>
+<pre tabindex="0"><code>render.set_draw_color(0, 0, 0, 255)?;
+render.clear()?;
+render.present();
+</code></pre><p>On the other hand, this is how code that works with objects looks like in C;
+and I believe I could get used to it.</p>
+<h3 id="pointer-arithmetic">Pointer arithmetic</h3>
+<p>I&rsquo;m not sure if I missed a better way to perform pointer arithmetic, but I
+ended up with quite ugly code.  I believe pointer arithmetic has two big use
+cases: working with low level code that accesses memory directly, and
+interfacing with other languages like C.  In my case, I encountered the need
+for pointer arithmetic when interacting with the SDL library: to play audio I
+needed to implement a callback function that receives a pointer to memory that
+I need to fill with samples.  The audio can be configured with different sample
+formats (that use different sizes), so the callback interface needs to be
+generic.  It looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span>(userdata<span style="color:#f92672">:</span> <span style="color:#66d9ef">nullable</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">opaque</span>, stream<span style="color:#f92672">:</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">u8</span>, len_<span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span>)
+</span></span></code></pre></div><p>Where <code>steram</code> is a pointer to the memory where I should write my samples,
+which are <code>f32</code> in my case.  I ended up with the following code to write a
+value at offset <code>i</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span><span style="color:#f92672">*</span>((stream<span style="color:#f92672">:</span> <span style="color:#66d9ef">uintptr</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">:</span> <span style="color:#66d9ef">uintptr</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">size</span>(<span style="color:#66d9ef">f32</span>))<span style="color:#f92672">:</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">f32</span>) <span style="color:#f92672">=</span> v;
+</span></span></code></pre></div><p>If you know of a more ergonomic way to do this, please let me know!</p>
+<p>I can imagine two solutions for this:</p>
+<p>A) Support a simpler way to perform pointer arithmetic, for example by allowing
+arithmetic operations on reference types like this:</p>
+<pre tabindex="0"><code>*(stream: *f32 + i: *f32)
+</code></pre><p>B) Introduce a way to create a slice from raw parts like this:</p>
+<pre tabindex="0"><code>let stream_slice = slice_from_raw(stream: *f32, len_ / size(f32));
+stream_slice[i] = v;
+</code></pre><h3 id="type-casting-inconsistency">Type casting inconsistency</h3>
+<p>I think this is following how C works, which is not ideal.  Type casting can
+sometimes convert the type, and other types just reinterpret the bytes
+underlying the variable as another type, without any conversion.  Here&rsquo;s a
+sample code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span><span style="color:#f92672">use</span> fmt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	x<span style="color:#f92672">:</span> <span style="color:#66d9ef">f32</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> b <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	x<span style="color:#f92672">:</span> <span style="color:#66d9ef">u32</span>
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> c <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> {
+</span></span><span style="display:flex;"><span>	x<span style="color:#f92672">:</span> <span style="color:#66d9ef">u32</span>,
+</span></span><span style="display:flex;"><span>	y<span style="color:#f92672">:</span> <span style="color:#66d9ef">u32</span>,
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">fn</span> main() <span style="color:#66d9ef">void</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">let</span> x<span style="color:#f92672">:</span> <span style="color:#66d9ef">f32</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">let</span> y <span style="color:#f92672">=</span> x<span style="color:#f92672">:</span> <span style="color:#66d9ef">u32</span>;
+</span></span><span style="display:flex;"><span>	fmt<span style="color:#f92672">::</span>printfln(<span style="color:#e6db74">&#34;{}&#34;</span>, y)<span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">let</span> x <span style="color:#f92672">=</span> a { x <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span> };
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">let</span> y <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>x<span style="color:#f92672">:</span> <span style="color:#f92672">*</span>b;
+</span></span><span style="display:flex;"><span>	fmt<span style="color:#f92672">::</span>printfln(<span style="color:#e6db74">&#34;{}&#34;</span>, y.x)<span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">let</span> z <span style="color:#f92672">=</span> y<span style="color:#f92672">:</span> <span style="color:#f92672">*</span>c;
+</span></span><span style="display:flex;"><span>	fmt<span style="color:#f92672">::</span>printfln(<span style="color:#e6db74">&#34;{}&#34;</span>, z.y)<span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>The previous code outputs this on my machine:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1065353216</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">32766</span>
+</span></span></code></pre></div><p>Let&rsquo;s think about what&rsquo;s going on:</p>
+<ul>
+<li>The first output is <code>1</code>.  We crated a <code>1.0f32</code> and converted it into <code>u32</code>.
+The byte layout of <code>1.0f32</code> is different than <code>1.0u32</code>, and here Hare takes
+the integer part and converts it into <code>u32</code>.</li>
+<li>The second output is <code>1065353216</code>.  This is taking the byte representation of
+<code>1.0f32</code> and interpreting it as <code>u32</code>, without doing a conversion, so we get
+an unexpected result.</li>
+<li>The third output is <code>32766</code> (and I actually get different values after
+executing the program multiple times).  We&rsquo;re reading memory that past the
+original struct.</li>
+</ul>
+<p>The first case seems safe (as long as we&rsquo;re aware about the lossy conversion)
+and expected; I also imagine this kind of casting to happen regularly in the
+code, and that should be OK.</p>
+<p>The second case seems safe (we&rsquo;re not violating memory safety) although the
+result is probably unexpected.  I think this use case is quite uncommon and
+needs to be reviewed with special care.</p>
+<p>The third case is unsafe because we&rsquo;re accessing memory outside of the bound of
+the original variable we&rsquo;re referencing.  There can be use cases for this.</p>
+<p>My main point is that both three cases look the same in the code, but two of
+them can be quite dangerous.  I prefer languages that have special semantics
+for dangerous stuff.  For example, in Rust the first case would be <a href="https://doc.rust-lang.org/rust-by-example/types/cast.html">casting
+like this: <code>x as u32</code></a>, whereas the
+other cases would require using <a href="https://doc.rust-lang.org/std/mem/fn.transmute.html"><code>mem::transmute</code> which requires an <code>unsafe</code>
+block</a>.  In Zig, the first
+case would be done with
+<a href="https://ziglang.org/documentation/master/#Type-Coercion">coercion</a>, and the
+other ones with <a href="https://ziglang.org/documentation/master/#Explicit-Casts">explicit builtin cast
+functions</a></p>
+<h3 id="general-feeling-of-unsafety">General feeling of unsafety</h3>
+<p>While Hare improves some of the safety issues of C (for example, by doing bound
+checks on array/slice indexing), it still leaves the door open for many kinds
+of memory safety bugs (and also memory leaks).  All the memory is managed
+manually so we could have situations like:</p>
+<ul>
+<li>Allocating an object and forgetting to free it, leading to a memory leak.
+This is not a memory safety issue, but memory leaks are very annoying.</li>
+<li>Freeing an object that is still referenced somewhere, and then de-referencing
+it, leading to undefined behavior.</li>
+<li><del>Double frees.  Freeing an object that has already been freed, possibly
+corrupting metadata from the allocator</del>.  This is currently being detected
+by the allocator.</li>
+<li>Reference to an element of an object that becomes invalidated by another
+reference to that object.  This is the case of having a pointer to a slice,
+which becomes invalid after we grow the slice causing a reallocation.</li>
+</ul>
+<p>This point applies equally to Zig.  After having used memory safe languages
+I&rsquo;ve really appreciated not having to deal with these kind of issues.  On the
+other hand, I understand that one of the goals of Hare is to be a simple and
+small system language; I wonder if such a goal can be achieved while adding
+memory safety to the language.</p>
+<h1 id="implementation-status">Implementation status</h1>
+<p>The current implementation of the compiler is incomplete.  For example, there&rsquo;s
+no check to make sure that the branches of a match clause are exhaustive.  The
+following code demonstrates this: function <code>foo</code> can return <code>x</code>, <code>y</code> or <code>z</code>, but
+the <code>match</code> only handles cases <code>x</code> and <code>y</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hare" data-lang="hare"><span style="display:flex;"><span><span style="color:#f92672">use</span> fmt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> x <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> { x<span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span> };
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> y <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> { y<span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span> };
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">type</span> z <span style="color:#f92672">=</span> <span style="color:#66d9ef">struct</span> { z<span style="color:#f92672">:</span> <span style="color:#66d9ef">int</span> };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">fn</span> main() <span style="color:#66d9ef">void</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">match</span>(foo()) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> v<span style="color:#f92672">:</span> x <span style="color:#f92672">=&gt;</span> fmt<span style="color:#f92672">::</span>printfln(<span style="color:#e6db74">&#34;{}&#34;</span>, v.x)<span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">let</span> v<span style="color:#f92672">:</span> y <span style="color:#f92672">=&gt;</span> fmt<span style="color:#f92672">::</span>printfln(<span style="color:#e6db74">&#34;{}&#34;</span>, v.y)<span style="color:#f92672">!</span>;
+</span></span><span style="display:flex;"><span>	};
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> foo() (x <span style="color:#f92672">|</span> y <span style="color:#f92672">|</span> z) <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> z{ z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> };
+</span></span><span style="display:flex;"><span>};
+</span></span></code></pre></div><p>This snippet compiles but aborts with the following message:</p>
+<pre tabindex="0"><code>Abort: main.ha:8:14: execution reached unreachable code (compiler bug)
+</code></pre><p>I remember reading somewhere (maybe on a public message from a Hare developer)
+that this feature was missing.  Nevertheless the execution doesn&rsquo;t lead to
+undefined behavior, as the compiler emits a guard to abort the execution in a
+controlled manner when the case is not covered.</p>
+<p>I&rsquo;m not sure how many cases like this exist, but this is expected from a
+language at this phase; you just need to be aware of this.</p>
+<h1 id="closing-thoughts">Closing thoughts</h1>
+<p>Overall I find Hare an interesting language.  I think it successfully fulfills
+the goals of being simple and minimal, and improves C in many ways without
+growing in complexity.  Having an alternative language to C that improves it,
+is still good in the same domains that C is (system&rsquo;s programming language),
+and doesn&rsquo;t growing in complexity (both language and implementation) is a very
+appealing to me.  I think many would agree with this; but perhaps the hardest
+part to agree is how we define &ldquo;improvement&rdquo;, as different people may have
+different priorities.  I can&rsquo;t help but desire improvements in memory safety,
+and to me Hare doesn&rsquo;t fully scratch this itch; on the other hand, I&rsquo;m not sure
+how far you can go in memory safety without growing in complexity while staying
+useful in the same domain as C.</p>
+<p>I think I will keep exploring Hare a bit more, in particular I plan to take a
+look at <a href="https://ares-os.org/">AresOS</a>, a  microkernel operating system written
+in Hare.</p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/collapse_ready_os_netbsd/"> Collapse Ready Operating Systems - NetBSD</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2024. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

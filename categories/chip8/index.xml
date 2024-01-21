@@ -6,8 +6,15 @@
     <description>Recent content in chip8 on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jan 2024 14:45:38 +0100</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/chip8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>First impressions on Hare language</title>
+      <link>https://dhole.github.io/post/hare_first_impressions/</link>
+      <pubDate>Sat, 20 Jan 2024 14:45:38 +0100</pubDate>
+      <guid>https://dhole.github.io/post/hare_first_impressions/</guid>
+      <description>Introduction Hare is a new programming language that was announced in 2022 and which was started by Drew DeValut. It&amp;rsquo;s currently being developed openly by a community of contributors. Here&amp;rsquo;s a description of the language from the official website:&#xA;Hare is a systems programming language designed to be simple, stable, and robust. Hare uses a static type system, manual memory management, and a minimal runtime. It is well-suited to writing operating systems, system tools, compilers, networking software, and other low-level, high performance tasks.</description>
+    </item>
     <item>
       <title>CHIP-8 emulator in Rust: Embedded port.  Part 2</title>
       <link>https://dhole.github.io/post/chip8_emu_2/</link>
