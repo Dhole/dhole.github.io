@@ -1,7 +1,6 @@
 ---
 title: "First impressions on Hare language"
 date: 2024-01-20T14:45:38+01:00
-draft: true
 Categories: ["chip8", "hare"]
 ---
 

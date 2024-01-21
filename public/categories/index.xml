@@ -6,8 +6,22 @@
     <description>Recent content in Categories on Dhole&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jan 2024 14:45:38 +0100</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>chip8</title>
+      <link>https://dhole.github.io/categories/chip8/</link>
+      <pubDate>Sat, 20 Jan 2024 14:45:38 +0100</pubDate>
+      <guid>https://dhole.github.io/categories/chip8/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>hare</title>
+      <link>https://dhole.github.io/categories/hare/</link>
+      <pubDate>Sat, 20 Jan 2024 14:45:38 +0100</pubDate>
+      <guid>https://dhole.github.io/categories/hare/</guid>
+      <description></description>
+    </item>
     <item>
       <title>bsd</title>
       <link>https://dhole.github.io/categories/bsd/</link>
@@ -34,13 +48,6 @@
       <link>https://dhole.github.io/categories/linux/</link>
       <pubDate>Mon, 13 Feb 2023 12:23:20 +0200</pubDate>
       <guid>https://dhole.github.io/categories/linux/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>chip8</title>
-      <link>https://dhole.github.io/categories/chip8/</link>
-      <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
-      <guid>https://dhole.github.io/categories/chip8/</guid>
       <description></description>
     </item>
     <item>
