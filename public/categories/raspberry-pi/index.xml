@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>raspberry pi on Dhole&#39;s blog</title>
+    <title>Raspberry Pi on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/raspberry-pi/</link>
-    <description>Recent content in raspberry pi on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Raspberry Pi on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 26 Jun 2017 23:18:39 -0700</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/raspberry-pi/index.xml" rel="self" type="application/rss+xml" />
@@ -13,28 +13,28 @@
       <link>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</link>
       <pubDate>Mon, 26 Jun 2017 23:18:39 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_alpine_upgrade/</guid>
-      <description>This post describes the upgrade procedure I follow to upgrade my Raspberry Pi Alpine Linux installation. Alpine Linux on the Raspberry Pi runs from ramfs and thus the upgrading is not straightforward. Most of the details are taken from the Alpine Linux Wiki. I&amp;rsquo;m not sure if Alpine Linux does any verification on the new downloaded release, so I&amp;rsquo;m doing that manually on another computer.&#xA;Upgrading First of all, replace the repository confiration to point to the new version:</description>
+      <description>&lt;p&gt;This post describes the upgrade procedure I follow to upgrade my Raspberry Pi&#xA;Alpine Linux installation.  Alpine Linux on the Raspberry Pi runs from ramfs&#xA;and thus the upgrading is not straightforward.  Most of the details are taken&#xA;from the &lt;a href=&#34;https://wiki.alpinelinux.org/wiki/Upgrading_Alpine#Upgrading_to_latest_release&#34;&gt;Alpine Linux&#xA;Wiki&lt;/a&gt;.&#xA;I&amp;rsquo;m not sure if Alpine Linux does any verification on the new downloaded&#xA;release, so I&amp;rsquo;m doing that manually on another computer.&lt;/p&gt;&#xA;&lt;h1 id=&#34;upgrading&#34;&gt;Upgrading&lt;/h1&gt;&#xA;&lt;p&gt;First of all, replace the repository confiration to point to the new version:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Raspberry Pi: git server (cgit with lighttpd)</title>
       <link>https://dhole.github.io/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
-      <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.&#xA;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&#xA;Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;In this post I will explain what&amp;rsquo;s required to set up a git server.  We&amp;rsquo;ll use&#xA;&lt;a href=&#34;https://git.zx2c4.com/cgit/&#34;&gt;cgit&lt;/a&gt; to provide a web interface and also allow&#xA;cloning/pulling through HTTP.  ssh will also be available for cloning/pulling&#xA;and pushing.&lt;/p&gt;&#xA;&lt;p&gt;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&lt;/p&gt;&#xA;&lt;h1 id=&#34;cgit&#34;&gt;Cgit&lt;/h1&gt;&#xA;&lt;p&gt;First of all, we&amp;rsquo;ll create a &lt;em&gt;git&lt;/em&gt; user and move it&amp;rsquo;s home to the encrypted&#xA;partition.  For convenience we&amp;rsquo;ll also link that home directory to &lt;code&gt;/git&lt;/code&gt;.  This&#xA;will be useful to have nice paths for our repositories.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Raspberry Pi: setting up alpine, lighttpd and letsencrypt</title>
       <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
-      <description>Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt.&#xA;Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide.&#xA;After instalation, we add a new user which we will use for logging in:</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;In this post I will explain how to set up &lt;a href=&#34;https://alpinelinux.org/&#34;&gt;Alpine&#xA;Linux&lt;/a&gt; for the RPi, with the necessary configuration&#xA;for the RPi to power a USB hard drive, how to install lighttpd and configure&#xA;automatic renewal of TLS certificates with lestencrypt.&lt;/p&gt;&#xA;&lt;h1 id=&#34;alpine-linux&#34;&gt;Alpine Linux&lt;/h1&gt;&#xA;&lt;p&gt;Alpine Linux can be installed on te RPi following the &lt;a href=&#34;https://wiki.alpinelinux.org/wiki/Raspberry_Pi&#34;&gt;wiki&#xA;guide&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;After instalation, we add a new user which we will use for logging in:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;adduser green&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&#xA;&lt;p&gt;After logging in with our new user (using password) we&amp;rsquo;ll add some ssh public&#xA;keys for future logins:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Raspberry Pi 2 I/O benchmarks</title>
       <link>https://dhole.github.io/post/raspberry_pi_benchmarks/</link>
       <pubDate>Thu, 20 Oct 2016 15:03:12 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_benchmarks/</guid>
-      <description>Introduction I&amp;rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services. I&amp;rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to achieve my goals, which will be mainly setting up a git server and a backup server.&#xA;Choice of distribution I discovered Alpine Linux while searching lightweight distributions for the Raspberry Pi. This is a lovely small Linux distribution: one of the first things I noticed is how fast it runs on the RPi due to using a ram filesystem by default; this is specially noticeable in the RPi because usualy the operating system resides in the micro-SD card, which usually offers really slow read and write operations.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;I&amp;rsquo;m currently setting up a Raspberry Pi 2 as a home server for various services.&#xA;I&amp;rsquo;m gonna write a series of blog posts about how I configured my Raspberry Pi to&#xA;achieve my goals, which will be mainly setting up a git server and a backup&#xA;server.&lt;/p&gt;&#xA;&lt;h1 id=&#34;choice-of-distribution&#34;&gt;Choice of distribution&lt;/h1&gt;&#xA;&lt;p&gt;I discovered &lt;a href=&#34;https://alpinelinux.org/&#34;&gt;Alpine Linux&lt;/a&gt; while searching&#xA;lightweight distributions for the Raspberry Pi.  This is a lovely small Linux&#xA;distribution: one of the first things I noticed is how fast it runs on the RPi&#xA;due to using a ram filesystem by default; this is specially noticeable in the&#xA;RPi because usualy the operating system resides in the micro-SD card, which&#xA;usually offers really slow read and write operations.  Another really nice&#xA;feature is that it&amp;rsquo;s security-oriented, and as such the kernel is patched with&#xA;&lt;a href=&#34;https://www.grsecurity.net/&#34;&gt;grsecurity/PaX&lt;/a&gt; and the userland binaries (I&#xA;understand that means all packages- too) are compiled with hardening features:&#xA;&lt;a href=&#34;https://en.wikipedia.org/wiki/Position-independent_code&#34;&gt;Position Independent Executables&#xA;(PIE)&lt;/a&gt; and &lt;a href=&#34;http://wiki.osdev.org/Stack_Smashing_Protector&#34;&gt;stack&#xA;smashing protection&lt;/a&gt;.  This&#xA;distribution uses &lt;a href=&#34;https://www.musl-libc.org/&#34;&gt;musl libc&lt;/a&gt; instead of glib and&#xA;&lt;a href=&#34;https://busybox.net/&#34;&gt;busybox&lt;/a&gt; to provide all the basic utilities, decisions&#xA;that help making it small and lightweight.  I should also mention that OpenRC is&#xA;used for the init system (instead of following the current trend of switching to&#xA;systemd).&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

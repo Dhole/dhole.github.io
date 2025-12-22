@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>stm32f4 on Dhole&#39;s blog</title>
+    <title>Stm32f4 on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/stm32f4/</link>
-    <description>Recent content in stm32f4 on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Stm32f4 on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 12 Mar 2018 00:33:57 +0100</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/stm32f4/index.xml" rel="self" type="application/rss+xml" />
@@ -13,49 +13,49 @@
       <link>https://dhole.github.io/post/gameboy_cartridge_rw_1/</link>
       <pubDate>Mon, 12 Mar 2018 00:33:57 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_cartridge_rw_1/</guid>
-      <description>Introduction For the past few years I have been interested in the Game Boy: I&amp;rsquo;ve written an emulator in C (without sound), I developed a physical cartridge &amp;ldquo;emulator&amp;rdquo; using a microcontroller, and most recently I&amp;rsquo;ve built a project to interface my PC with the Game Link. I&amp;rsquo;ve also played a bit with Game Boy programming.&#xA;In the past I considered buying a Game Boy flashcart so that I could run demos and other scene ROMs on real hardware comfortably, but the price of such carts is a bit high.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;For the past few years I have been interested in the Game Boy: I&amp;rsquo;ve written an &lt;a href=&#34;https://github.com/Dhole/miniBoy&#34;&gt;emulator in C (without sound)&lt;/a&gt;, I developed a &lt;a href=&#34;../../post/gameboy_cartridge_emu_1/&#34;&gt;physical cartridge &amp;ldquo;emulator&amp;rdquo; using a microcontroller&lt;/a&gt;, and most recently I&amp;rsquo;ve built a project to &lt;a href=&#34;../../post/gameboy_serial_1/&#34;&gt;interface my PC with the Game Link&lt;/a&gt;.  I&amp;rsquo;ve also played a bit with Game Boy programming.&lt;/p&gt;&#xA;&lt;p&gt;In the past I considered buying a Game Boy flashcart so that I could run demos and other scene ROMs on real hardware comfortably, but the price of such carts is a bit high.  After some reading on reddit, I learned that Chinese manufacturers are selling unlicensed Game Boy cartridges at very cheap prices ($5).  Not only that, but these cartridges use flash memory to store the ROM, and so have the potential to be reflashed!  I confirmed this fact after learning about a commercial device called the &lt;a href=&#34;https://bennvenn.myshopify.com/collections/frontpage/products/reader-writer-gen2&#34;&gt;jeoy-joebag, developed by BennVenn&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Printing on the Game Boy Printer using an STM32F4</title>
       <link>https://dhole.github.io/post/gameboy_serial_3/</link>
       <pubDate>Sun, 25 Feb 2018 16:33:57 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_serial_3/</guid>
-      <description>In this third and final part of the project about the Game Boy serial communication I will explain how I managed to print on the Game Boy Printer from my PC using an STM32F4 as the bridge between the two. The encoding of the image into Game Boy tiles will happen on the PC, which will send it to the STM32F4 following the packet format of the Game Boy Printer. The STM32F4 will only forward the data to the Game Boy Printer.</description>
+      <description>&lt;p&gt;In this third and final part of the project about the Game Boy serial communication I will explain how I managed to print on the Game Boy Printer from my PC using an STM32F4 as the bridge between the two.  The encoding of the image into Game Boy tiles will happen on the PC, which will send it to the STM32F4 following the packet format of the Game Boy Printer.  The STM32F4 will only forward the data to the Game Boy Printer.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Virtual Game Boy Printer with an STM32F4</title>
       <link>https://dhole.github.io/post/gameboy_serial_2/</link>
       <pubDate>Fri, 23 Feb 2018 16:33:57 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_serial_2/</guid>
-      <description>In this second part of the project about interfacing the Game Boy serial communication with an embedded development board I will explain how I built a Virtual Game Boy Printer. The embedded board will be simulating a real Game Boy Printer, replying to the Game Boy following the protocol used by the Game Boy Printer so that the Game Boy sends the entire data meant to be print. This data will then be forwarded to my computer which will construct a PNG image out of it.</description>
+      <description>&lt;p&gt;In this second part of the project about interfacing the Game Boy serial communication with an embedded development board I will explain how I built a Virtual Game Boy Printer.  The embedded board will be simulating a real Game Boy Printer, replying to the Game Boy following the protocol used by the Game Boy Printer so that the Game Boy sends the entire data meant to be print.  This data will then be forwarded to my computer which will construct a PNG image out of it.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Sniffing Game Boy serial traffic with an STM32F4</title>
       <link>https://dhole.github.io/post/gameboy_serial_1/</link>
       <pubDate>Wed, 14 Feb 2018 02:33:57 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_serial_1/</guid>
-      <description>In these series of blog posts I will write about the Game Boy serial communication protocol and how to interact with it by using an embedded development board. The code for the development board will be written in C, and the code running on the computer will be written in Rust.&#xA;The first part will consist on understanding the Game Boy serial communication protocol, becoming familiar with embedded development using the libopencm3 free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.</description>
+      <description>&lt;p&gt;In these series of blog posts I will write about the Game Boy serial communication protocol and how to interact with it by using an embedded development board.  The code for the development board will be written in C, and the code running on the computer will be written in &lt;a href=&#34;https://www.rust-lang.org&#34;&gt;Rust&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;The first part will consist on understanding the Game Boy serial communication protocol, becoming familiar with embedded development using the &lt;a href=&#34;https://github.com/libopencm3/libopencm3&#34;&gt;libopencm3&lt;/a&gt; free/libre library and finally building a serial communication sniffer to capture the transmission of data on the Game Link Cable.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Booting the GameBoy with a custom logo</title>
       <link>https://dhole.github.io/post/gameboy_custom_logo/</link>
       <pubDate>Thu, 25 Dec 2014 01:35:42 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_custom_logo/</guid>
-      <description>With the cartridge emulator implemented on an STM32F4 we can do some cool stuff. For example, we can make the GameBoy boot with our own custom logo!&#xA;Bootstrap ROM When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the memory and execution begins. This bios is in charge of initializing the hardware as well as scrolling the Nintendo logo and checking that the cartridge i valid.</description>
+      <description>&lt;p&gt;With the cartridge emulator implemented on an STM32F4 we can do some cool stuff.&#xA;For example, we can make the GameBoy boot with our own custom logo!&lt;/p&gt;&#xA;&lt;h1 id=&#34;bootstrap-rom&#34;&gt;Bootstrap ROM&lt;/h1&gt;&#xA;&lt;p&gt;When the GameBoy boots, an intenral Bootstrap ROM is mapped to the beginning of the&#xA;memory and execution begins. This bios is in charge of initializing the hardware&#xA;as well as scrolling the Nintendo logo and checking that the cartridge i valid.&#xA;The logo shown on screen is actually read from the cartridge; that&amp;rsquo;s the reason&#xA;why a black rectangle appears when no cartridge is inserted, or garbage appears&#xA;when the cartridge pins fail. If the Nintendo logo doesn&amp;rsquo;t match the copy stored&#xA;in the bios, the GameBoy locks itself. But there is a trick we can do! The&#xA;GameBoy reads the logo from the cartridge two times, the first one to draw it&#xA;on screen and the second one to check if it&amp;rsquo;s valid. We can thus send first a&#xA;custom logo and later the original one in order to let the GameBoy boot properly.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 2</title>
       <link>https://dhole.github.io/post/gameboy_cartridge_emu_2/</link>
       <pubDate>Wed, 24 Dec 2014 19:46:07 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_cartridge_emu_2/</guid>
-      <description>This post is a continuation of Emulating a GameBoy Cartridge with an STM32F4. Part 1&#xA;We have analyzed the memory bus of the GameBoy in order to obtain the timing information of the different signals involved in the read and write operations happening on the cartridge. We will now proceed to develop a system to emulate the behaviour of the cartridge with the STM32F4.&#xA;About voltage levels As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4 works at 3.</description>
+      <description>&lt;p&gt;This post is a continuation of &lt;a href=&#34;https://dhole.github.io/post/gameboy_cartridge_emu_1&#34;&gt;Emulating a GameBoy Cartridge with an STM32F4. Part 1&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;We have analyzed the memory bus of the GameBoy in order to obtain the timing&#xA;information of the different signals involved in the read and write operations&#xA;happening on the cartridge. We will now proceed to develop a system to emulate&#xA;the behaviour of the cartridge with the STM32F4.&lt;/p&gt;&#xA;&lt;h2 id=&#34;about-voltage-levels&#34;&gt;About voltage levels&lt;/h2&gt;&#xA;&lt;p&gt;As we noticed in the previous post, the GameBoy works at 5V whereas the STM32F4&#xA;works at 3.3V. We saw that most of the GPIOs of the STM32F4 are 5V tolerant, but&#xA;they still output 3.3V, so we need to make sure that the GameBoy will detect the&#xA;high levels properly. Luckily for us, the GameBoy works at TTL level:&#xA;&lt;a href=&#34;http://friedtj.free.fr/gb_eng.pdf&#34;&gt;source&lt;/a&gt;. This means that a 3.3V signal will&#xA;be read as a logic 1 by the GameBoy.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Emulating a GameBoy Cartridge with an STM32F4. Part 1</title>
       <link>https://dhole.github.io/post/gameboy_cartridge_emu_1/</link>
       <pubDate>Wed, 24 Dec 2014 03:33:57 +0100</pubDate>
       <guid>https://dhole.github.io/post/gameboy_cartridge_emu_1/</guid>
-      <description>Introduction The following project consists on emulating the functionality of a GameBoy cartridge with the development board STM32F4. The system is fully functional and is able to emulate real cartridges (as well as homebrew games) of the type ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain how I managed to achieve this.&#xA;Motivation Current flashcart systems commonly use a design consisting on a FPGA or CPLD controlling the logic of the emulated cartridge (memory banking, RAM access, etc.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;The following project consists on emulating the functionality of a GameBoy&#xA;cartridge with the development board STM32F4. The system is fully functional&#xA;and is able to emulate real cartridges (as well as homebrew games) of the type&#xA;ROM Only and MBC1 (Memory Block Controller 1). In this post I will explain&#xA;how I managed to achieve this.&lt;/p&gt;&#xA;&lt;h1 id=&#34;motivation&#34;&gt;Motivation&lt;/h1&gt;&#xA;&lt;p&gt;Current flashcart systems commonly use a design consisting on a FPGA or CPLD&#xA;controlling the logic of the emulated cartridge (memory banking, RAM access,&#xA;etc.), a media storage (flash chip or SD card) and an SDRAM chip.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

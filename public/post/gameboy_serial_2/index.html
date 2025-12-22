@@ -8,7 +8,7 @@
         <title>Virtual Game Boy Printer with an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io//categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io//categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io//categories/rust">rust</a> </span>
 
 </div>
 
@@ -315,28 +315,28 @@ Bit 7: Battery Too Low
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">loop</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Wait for the magic bytes.
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(read_until_magic(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> port, <span style="color:#f92672">&amp;</span><span style="color:#66d9ef">PRINT_MAGIC</span>));
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buf <span style="color:#f92672">=</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">4</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Read cmd, arg1, len_low, len_high
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> cmd <span style="color:#f92672">=</span> buf[<span style="color:#ae81ff">0</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> args <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>buf[<span style="color:#ae81ff">1</span><span style="color:#f92672">..</span><span style="color:#ae81ff">4</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> len <span style="color:#f92672">=</span> (args[<span style="color:#ae81ff">1</span>] <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>) <span style="color:#f92672">+</span> ((args[<span style="color:#ae81ff">2</span>] <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u16</span>) <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">8</span>);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> payload <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; len <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> checksum <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> payload <span style="color:#f92672">=</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span>; len <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> checksum <span style="color:#f92672">=</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> payload));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> checksum));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">match</span> PrintCommand::from_u8(cmd) {
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Init) <span style="color:#f92672">=&gt;</span> {
-</span></span><span style="display:flex;"><span>                println!(<span style="color:#e6db74">&#34;Receiving data...&#34;</span>);
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Receiving data...&#34;</span>);
 </span></span><span style="display:flex;"><span>                tile_rows.clear();
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Print) <span style="color:#f92672">=&gt;</span> {
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> palette <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>payload[<span style="color:#ae81ff">2</span>];
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> format!(
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">let</span> filename <span style="color:#f92672">=</span> <span style="color:#a6e22e">format!</span>(
 </span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;gb_printer_</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">.png&#34;</span>,
 </span></span><span style="display:flex;"><span>                    time::now().strftime(<span style="color:#e6db74">&#34;%FT%H%M%S&#34;</span>).unwrap()
 </span></span><span style="display:flex;"><span>                );
-</span></span><span style="display:flex;"><span>                println!(<span style="color:#e6db74">&#34;Saving image at </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, filename);
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Saving image at </span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, filename);
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(printer_save_image(<span style="color:#f92672">&amp;</span>tile_rows, palette, filename));
 </span></span><span style="display:flex;"><span>            }
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Data) <span style="color:#f92672">=&gt;</span> {
@@ -347,7 +347,7 @@ Bit 7: Battery Too Low
 </span></span><span style="display:flex;"><span>            Some(PrintCommand::Status) <span style="color:#f92672">=&gt;</span> {}
 </span></span><span style="display:flex;"><span>            None <span style="color:#f92672">=&gt;</span> {}
 </span></span><span style="display:flex;"><span>        }
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
@@ -386,7 +386,7 @@ Bit 7: Battery Too Low
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">tile_row_to_pixel_rows</span>(tile_row: <span style="color:#66d9ef">&amp;</span>[<span style="color:#66d9ef">u8</span>]) -&gt; Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> vec![<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">160</span>]).collect();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> pixel_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">160</span>]).collect();
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>(tile_row.len() <span style="color:#f92672">/</span> <span style="color:#ae81ff">16</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">usize</span>) {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> tile <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>tile_row[i <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span><span style="color:#f92672">..</span>i <span style="color:#f92672">*</span> <span style="color:#ae81ff">16</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">16</span>];
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> j <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span> {
@@ -488,7 +488,7 @@ Bit 7: Battery Too Low
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2024. All rights reserved. 
+                    &copy; 2025. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

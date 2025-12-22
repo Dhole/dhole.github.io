@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>stm32f1 on Dhole&#39;s blog</title>
+    <title>Stm32f1 on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/stm32f1/</link>
-    <description>Recent content in stm32f1 on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Stm32f1 on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/stm32f1/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/chip8_emu_2/</link>
       <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
       <guid>https://dhole.github.io/post/chip8_emu_2/</guid>
-      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!&#xA;In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
+      <description>&lt;p&gt;This post is the continuation of &lt;a href=&#34;../chip8_emu_1/&#34;&gt;CHIP-8 emulator in Rust.  Part&#xA;1&lt;/a&gt;, please check it if you haven&amp;rsquo;t already!&lt;/p&gt;&#xA;&lt;p&gt;In this second part I will explain how I ported the CHIP-8 emulator I built in&#xA;Rust to an embedded ARM microcontroller.  I will explain the hardware I chose&#xA;to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give&#xA;an overview of how the code is laid out.  I excluded details about hardware&#xA;diagrams and explicit mention of how the hardware is connected to each pin&#xA;because I&amp;rsquo;m sure the astute reader will be able to figure this out from the&#xA;code itself.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

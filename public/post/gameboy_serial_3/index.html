@@ -8,7 +8,7 @@
         <title>Printing on the Game Boy Printer using an STM32F4 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io/categories/stm32f4">stm32f4</a> </span>
+<span><a href="https://dhole.github.io//categories/stm32f4">stm32f4</a> </span>
 
-<span><a href="https://dhole.github.io/categories/gameboy">gameboy</a> </span>
+<span><a href="https://dhole.github.io//categories/gameboy">gameboy</a> </span>
 
-<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io//categories/rust">rust</a> </span>
 
 </div>
 
@@ -280,7 +280,7 @@ Categories:
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    port.write_all(<span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>])<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>    port.flush()<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> vec![<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> ack_status <span style="color:#f92672">=</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span>; <span style="color:#ae81ff">2</span>];
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span><span style="color:#f92672">!</span>(port.read_exact(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> ack_status));
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ack_status[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">==</span> <span style="color:#66d9ef">PRINT_ACK</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Ok(Some(PrinterStatus::from(ack_status[<span style="color:#ae81ff">1</span>])));
@@ -295,41 +295,41 @@ Categories:
 </span></span><span style="display:flex;"><span>    margins: (<span style="color:#66d9ef">u8</span>, <span style="color:#66d9ef">u8</span>),
 </span></span><span style="display:flex;"><span>) -&gt; Result<span style="color:#f92672">&lt;</span>(), io::Error<span style="color:#f92672">&gt;</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Init printer
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Initializing printer...&#34;</span>);
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack!(send_print_cmd(port, PrintCommand::Init, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Initializing printer...&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> <span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Init, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> status.any_info() {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, <span style="color:#a6e22e">format!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Send data
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Sending data to printer...&#34;</span>);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Sending data to printer...&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> tile_row <span style="color:#66d9ef">in</span> tile_rows {
-</span></span><span style="display:flex;"><span>        check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>tile_row)<span style="color:#f92672">?</span>));
-</span></span><span style="display:flex;"><span>        check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">check_status_error!</span>(<span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>tile_row)<span style="color:#f92672">?</span>));
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">check_status_error!</span>(<span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Send 0 length data to notify the Printer that we&#39;ve sent all data
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">check_status_error!</span>(<span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Data, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Print
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    println!(<span style="color:#e6db74">&#34;Printing...&#34;</span>);
-</span></span><span style="display:flex;"><span>    check_status_error!(check_ack!(send_print_cmd(port, PrintCommand::Print,
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Printing...&#34;</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">check_status_error!</span>(<span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Print,
 </span></span><span style="display:flex;"><span>                                                  <span style="color:#f92672">&amp;</span>[<span style="color:#ae81ff">0x01</span>, margins.<span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span> margins.<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">0xE4</span>, <span style="color:#ae81ff">0x40</span>])<span style="color:#f92672">?</span>));
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Query Printing status
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> sleep_time <span style="color:#f92672">=</span> Duration::from_millis(<span style="color:#ae81ff">500</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">loop</span> {
 </span></span><span style="display:flex;"><span>        thread::sleep(sleep_time);
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> check_ack!(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
-</span></span><span style="display:flex;"><span>        check_status_error!(status);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> status <span style="color:#f92672">=</span> <span style="color:#a6e22e">check_ack!</span>(send_print_cmd(port, PrintCommand::Status, <span style="color:#f92672">&amp;</span>[])<span style="color:#f92672">?</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">check_status_error!</span>(status);
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.any_info() {
-</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Printing successfull!&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Printing successfull!&#34;</span>);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
 </span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">!</span>status.printer_busy {
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Err(Error::new(ErrorKind::Other, <span style="color:#a6e22e">format!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, status)));
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Ok(());
 </span></span><span style="display:flex;"><span>}</span></span></code></pre></div>
 <p>To encode the image we want to print into tiles, we use the following function, which takes an image and returns a vector of tile rows (the exact same data representation that the Game Boy Printer uses).  This function will also convert the image color space from 8 to 2 bits by using the thresholds 0-63, 64-127, 128-191, 192-255.  I highly recommend converting the image to 2 bit grayscale color space using an external program that supports <a href="https://en.wikipedia.org/wiki/Dithering">dithering</a>, like <a href="https://www.gimp.org/">GIMP</a> for better results.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-rust" data-lang="rust"><span style="display:flex;"><span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">img_to_tile_rows</span>(img: <span style="color:#a6e22e">image</span>::GrayImage) -&gt; Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">16</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> vec![<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">640</span>]).collect();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> tile_rows: Vec<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">=</span> (<span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">16</span>).map(<span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#a6e22e">vec!</span>[<span style="color:#ae81ff">0</span><span style="color:#66d9ef">u8</span>; <span style="color:#ae81ff">640</span>]).collect();
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> row <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>img.height()<span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> col <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span>img.width()<span style="color:#f92672">/</span><span style="color:#ae81ff">8</span> {
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> y <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">8</span> {
@@ -361,7 +361,7 @@ Categories:
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">let</span> img <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span> image::open(<span style="color:#f92672">&amp;</span>Path::new(filename)) {
 </span></span><span style="display:flex;"><span>        Ok(img) <span style="color:#f92672">=&gt;</span> img,
 </span></span><span style="display:flex;"><span>        Err(err) <span style="color:#f92672">=&gt;</span> {
-</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;Error opening image at file </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, filename, err);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;Error opening image at file </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">&#34;</span>, filename, err);
 </span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> Ok(());
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    };
@@ -387,7 +387,7 @@ Categories:
 </span></span><span style="display:flex;"><span>        };
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">let</span> (a, b) <span style="color:#f92672">=</span> (i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span>, cmp::min(i<span style="color:#f92672">*</span><span style="color:#ae81ff">9</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">9</span>, tile_rows.len()));
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> k <span style="color:#f92672">!=</span> <span style="color:#ae81ff">1</span> {
-</span></span><span style="display:flex;"><span>            println!(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Printing part [</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">println!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\t</span><span style="color:#e6db74">Printing part [</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{:?}</span><span style="color:#e6db74">]&#34;</span>, i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, k);
 </span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>        print(port, <span style="color:#f92672">&amp;</span>tile_rows[a<span style="color:#f92672">..</span>b], margin)<span style="color:#f92672">?</span>;
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> i <span style="color:#f92672">!=</span> (k<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>) {
@@ -503,7 +503,7 @@ Categories:
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2024. All rights reserved. 
+                    &copy; 2025. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

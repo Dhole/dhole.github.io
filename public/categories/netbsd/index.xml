@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>netbsd on Dhole&#39;s blog</title>
+    <title>Netbsd on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/netbsd/</link>
-    <description>Recent content in netbsd on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Netbsd on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 01 May 2023 12:00:20 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/netbsd/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/collapse_ready_os_netbsd/</link>
       <pubDate>Mon, 01 May 2023 12:00:20 +0200</pubDate>
       <guid>https://dhole.github.io/post/collapse_ready_os_netbsd/</guid>
-      <description>This is a blog post in the Collapse Ready Operating System series. Read this post for an introduction.&#xA;NetBSD This time I have chosen NetBSD. I have used NetBSD previously in my Raspberry Pi (the first version). I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well). I remember fondly the regular status reports made by Jun Ebihara along with raspberry pi images with many packages already installed.</description>
+      <description>&lt;p&gt;This is a blog post in the Collapse Ready Operating System series.  Read &lt;a href=&#34;https://dhole.github.io/post/collapse_ready_os&#34;&gt;this&#xA;post&lt;/a&gt; for an introduction.&lt;/p&gt;&#xA;&lt;h1 id=&#34;netbsd&#34;&gt;NetBSD&lt;/h1&gt;&#xA;&lt;p&gt;This time I have chosen &lt;a href=&#34;https://netbsd.org&#34;&gt;NetBSD&lt;/a&gt;.  I have used NetBSD previously in my Raspberry Pi (the first version).  I had a lot of fun building packages for ARM from the raspberry pi and trying them out (and finding bugs as well).  I remember fondly the regular &lt;a href=&#34;https://mail-index.netbsd.org/port-arm/2022/10/26/msg007897.html&#34;&gt;status reports&lt;/a&gt; made by Jun Ebihara along with raspberry pi images with many packages already installed.  I also remember building a raspberry pi image myself from a Linux host on amd64 using cross-compilation: I was quite impressed with how easy the process was.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>arch linux on Dhole&#39;s blog</title>
+    <title>Arch Linux on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/arch-linux/</link>
-    <description>Recent content in arch linux on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Arch Linux on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 01 May 2015 23:58:40 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/arch-linux/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</link>
       <pubDate>Fri, 01 May 2015 23:58:40 +0200</pubDate>
       <guid>https://dhole.github.io/post/full_disk_encryption_samsung_chromebook/</guid>
-      <description>In this post I will explain the procedure I followed to have an Arch Linux install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption using kernel 3.8.&#xA;Kernel compilation and preparing SD card Install dependencies Install the necessary depdendencies (In my case I was running ubuntu). Mainly you need the tools for crosscompiling the kernel, configure u-boot and partition the SD card with a GPT partition table.&#xA;sudo apt-get install u-boot-tools gcc-arm-linux-gnueabihf \ binutils-arm-linux-gnueabihf cgpt device-tree-compiler Set up some directories and download arch and kernel sources TMP_PATH=$(pwd)/chromeos mkdir -p $TMP_PATH cd $TMP_PATH mkdir -p root mkdir -p mnt Download my custom files</description>
+      <description>&lt;p&gt;In this post I will explain the procedure I followed to have an Arch Linux&#xA;install on a Samsung Chromebook 1 (XE303C12-A01US) with full disk encryption&#xA;using kernel 3.8.&lt;/p&gt;&#xA;&lt;h1 id=&#34;kernel-compilation-and-preparing-sd-card&#34;&gt;Kernel compilation and preparing SD card&lt;/h1&gt;&#xA;&lt;h2 id=&#34;install-dependencies&#34;&gt;Install dependencies&lt;/h2&gt;&#xA;&lt;p&gt;Install the necessary depdendencies (In my case I was running ubuntu). Mainly&#xA;you need the tools for crosscompiling the kernel, configure u-boot and partition&#xA;the SD card with a GPT partition table.&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo apt-get install u-boot-tools gcc-arm-linux-gnueabihf &lt;span style=&#34;color:#ae81ff&#34;&gt;\&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;&lt;/span&gt;    binutils-arm-linux-gnueabihf cgpt device-tree-compiler&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&#xA;&lt;h2 id=&#34;set-up-some-directories-and-download-arch-and-kernel-sources&#34;&gt;Set up some directories and download arch and kernel sources&lt;/h2&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;TMP_PATH&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;$(&lt;/span&gt;pwd&lt;span style=&#34;color:#66d9ef&#34;&gt;)&lt;/span&gt;/chromeos&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p $TMP_PATH&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd $TMP_PATH&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p root&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mkdir -p mnt&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&#xA;&lt;p&gt;Download my custom files&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

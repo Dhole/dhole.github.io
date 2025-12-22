@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+    <head>
+        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+        <title>Collapse Ready Operating Systems - FreeBSD &middot; Dhole&#39;s blog</title>
+        
+        
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
+    </head>
+    <body class="li-body">
+
+<header class="li-page-header">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns"></div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-brand li-left">
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
+                <div class="li-menu li-right">
+                    <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
+                    <ul id="menu2" class="li-menu-items">
+                        
+                            <li><a href="/post"> articles </a></li>
+                        
+                            <li><a href="/categories"> categories </a></li>
+                        
+                            <li><a href="/about"> about </a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="sixteen columns">
+                <ul id="menu" class="li-menu-items li-menu-mobile">
+                    
+                        <li><a href="/post"> articles </a></li>
+                    
+                        <li><a href="/categories"> categories </a></li>
+                    
+                        <li><a href="/about"> about </a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <article class="li-article">
+                    <header class="li-article-header">
+                        <h1 class="li-article-title">Collapse Ready Operating Systems - FreeBSD</h1>  
+			
+			<time class="li-article-date">Sunday, December 21, 2025</time>
+			
+<div class="li-article-categories">
+Categories:
+
+<span><a href="https://dhole.github.io//categories/bsd">bsd</a> </span>
+
+<span><a href="https://dhole.github.io//categories/freebsd">freebsd</a> </span>
+
+</div>
+
+                    </header>
+                    <section class="li-article-body">
+                        <p>This post belongs to the Collapse Ready Operating System series.  See <a href="/post/collapse_ready_os">this
+post</a> for an introduction.</p>
+<h1 id="prelude">Prelude</h1>
+<p>My last post in this series was more than two years ago.  When I started the
+series I had an initial plan to test the three most well known BSD operating
+systems, and after publishing articles for NetBSD and OpenBSD I soon
+started doing my homework with FreeBSD; unfortunately I had a lot of hiccups.
+I&rsquo;ve made 4 different attempts at achieving the objectives in this series with
+FreeBSD, the last one being last week, and none of them were fully successful.
+The reason for trying several times instead of publishing the first result was
+to see if some of the issues I encountered were temporary or bugs of a
+particular release; but at the end I decided to publish the results I have.</p>
+<h1 id="freebsd">FreeBSD</h1>
+<p>In this post I take a look at <a href="https://www.freebsd.org/">FreeBSD</a>.  I used
+FreeBSD many years ago in a non-serious server setting.  I think it was the
+first BSD I used.  I remember having fun with the port system, but not much
+else.  Anecdotically I&rsquo;ve also played many hours on the PS4 which runs a
+modified version of FreeBSD, so based on that, FreeBSD may be the BSD I&rsquo;ve
+spent most hours with :P</p>
+<h1 id="steps">Steps</h1>
+<p>Here I will describe the steps I followed to set up the system and perform the
+evaluation.</p>
+<h2 id="install">Install</h2>
+<p>I downloaded the install image from
+<a href="https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/15.0/FreeBSD-15.0-RELEASE-amd64-memstick.img">https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/15.0/FreeBSD-15.0-RELEASE-amd64-memstick.img</a>
+, flashed it to a USB drive and installed it in the main laptop.</p>
+<p>I mostly used the default install values:</p>
+<ul>
+<li>keymap: default</li>
+<li>hostname: freebsd</li>
+<li>Installation type: Packages (Tech Preview) which is the default</li>
+<li>Offline (Limited Packages)</li>
+<li>partition: Auto (ZFS)</li>
+<li>system components: include &ldquo;devel&rdquo;</li>
+<li>services: default</li>
+<li>hardening options: default (none)</li>
+<li>firmware packages (select none)
+<ul>
+<li><input disabled="" type="checkbox"> gpu-firmware-intel-kmod-kabylake</li>
+<li><input disabled="" type="checkbox"> wifi-firmware-iwlwifi-kmod-8000</li>
+</ul>
+</li>
+<li>Add user: <code>user</code></li>
+</ul>
+<p>Then I rebooted into a the fresh FreeBSD system.</p>
+<h2 id="setup">Setup</h2>
+<p>By default the user doesn&rsquo;t belong to any extra groups.  We need to be in the
+<code>wheel</code> group to switch to root via <code>su</code>, so let&rsquo;s add our user to the group:</p>
+<pre tabindex="0"><code>pw user mod user -G wheel
+</code></pre><p>On a previous attempt I ran out of space in my laptop&rsquo;s NVME disk so I set up a
+2TB external hard drive for the ports:</p>
+<pre tabindex="0"><code>zfs umount zroot/usr/ports
+zfs destroy zroot/usr/ports
+
+gpart destroy -F da1
+gpart create -s GPT da1
+zpool create zports /dev/da1
+zfs set mountpoint=/usr/ports zports
+</code></pre><h2 id="ports">Ports</h2>
+<p>I mainly followed the ports documentation at <a href="https://docs.freebsd.org/en/books/handbook/ports/">https://docs.freebsd.org/en/books/handbook/ports/</a></p>
+<p>The official documentation requires installing git to fetch the ports, but git
+is not part of the base system, so I&rsquo;d need to install git from binary packages
+but the handbook recommends not mixing ports with binary packages, so I want to
+try only using ports.  Fortunately the ports repository is in gitlab which
+offers tarballs of tagged snapshots.  I&rsquo;m using the branch 2025Q3.</p>
+<p>As root:</p>
+<pre tabindex="0"><code>fetch &#39;https://gitlab.com/FreeBSD/freebsd-ports/-/archive/2025Q3/freebsd-ports-2025Q3.tar.gz&#39;
+tar xf freebsd-ports-2025Q3.tar.gz --strip-components=1 -C /usr/ports/
+</code></pre><p>Now we have the ports ready to be used.  I&rsquo;ll first install tmux so that I can
+comfortably have a remote persistent session.</p>
+<pre tabindex="0"><code>cd /usr/ports/sysutils/tmux
+make BATCH=yes NO_DIALOG=yes DISABLE_LICENSES=yes install
+</code></pre><p>One of my goals is to be able to build any port offline.  The port collection I
+downloaded only includes the recipes to build the packages but not the source code
+(known as distfiles).  I haven&rsquo;t found a specific tool that helps fetching all
+the distfiles of all ports so I&rsquo;ll have to use the Makefile rules from the
+ports themselves.</p>
+<p>I run this command from the ports tree root with the goal of fetching all the
+ports&rsquo; distfiles.</p>
+<pre tabindex="0"><code>make -k BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
+</code></pre><p>The entire process took about 2 days.  One of the reasons why it took so long
+is that ports have multiple urls to fetch the distfiles and many of these urls
+are not working.  In particular some of them end up with a hanging connection
+so the fetch program needs to wait for a timeout to try the next url.  Even
+then, many distfiles were not fetched due to non-working urls.</p>
+<p>After this we end up with a big collection of distfiles:</p>
+<pre tabindex="0"><code>/usr/ports/distfiles: 520.1 GiB (17860443 items)
+</code></pre><p>This is significantly bigger than what I got from NetBSD and OpenBSD.</p>
+<h3 id="hiccups">Hiccups</h3>
+<p>Unfortunately the distfiles collection is not complete:</p>
+<ul>
+<li>As I mentioned before, for some ports, none of the urls were working</li>
+<li>In FreeBSD a port can have flavors, which can be used to build different
+version of the port.  In such a case each flavor will have different
+distfiles.  The recursive fetch rule only fetches the distfiles of the
+default flavor.</li>
+</ul>
+<p>Moreover, the behavior of the fetch rule is surprising to me: for some ports
+not just the disftiles were fetched but actual building happened.  Examples of
+this where go (bootstrapping).  Another package which I wasn&rsquo;t able to
+determine triggered the build of python39, help2man, meson and other ports.
+Overall this happened more times: sometimes a fetch will trigger a chain of
+builds.  Not only that but some of these builds end with errors.</p>
+<p>Among the errors I found while fetching distfiles was failing to build git,
+I&rsquo;ll give more details of the solution later; but I want to point out that
+after building git and running the recursive fetch again I ended up with more
+distfiles; which again was surprising, I was not expecting a dependency to a
+non-base package to fetch a port distfile.</p>
+<h3 id="testing">Testing</h3>
+<p>After fetching the distfiles I try to build some ports while offline:</p>
+<p>I successfully managed to build and install the following ports:</p>
+<ul>
+<li>sysutils/fd</li>
+<li>sysutils/ncdu</li>
+<li>sysutils/htop</li>
+<li>www/gohugo</li>
+</ul>
+<p>The last port I wanted to build and install was <code>x11/xorg</code> which unfortunately fails:</p>
+<pre tabindex="0"><code>root@freebsd:/usr/ports/x11/xorg # make BATCH=yes NO_DIALOG=yes DISABLE_LICENSES=yes install
+===&gt;  Staging for xorg-7.7_3
+===&gt;   xorg-7.7_3 depends on file: /usr/local/libdata/pkgconfig/dri.pc - not found
+===&gt;   mesa-dri-24.1.7_6 depends on package: py311-ply&gt;0 - found
+===&gt;   mesa-dri-24.1.7_6 depends on package: wayland-protocols&gt;=1.8 - found
+===&gt;   mesa-dri-24.1.7_6 depends on executable: glslangValidator - found
+===&gt;   mesa-dri-24.1.7_6 depends on package: libclc-llvm19&gt;0 - not found
+===&gt;   libclc-llvm19-19.1.3 depends on file: /usr/local/sbin/pkg - found
+=&gt; libclc-19.1.3.src.tar.xz doesn&#39;t seem to exist in /usr/ports/distfiles/.
+</code></pre><p><code>libclc-19.1.3.src.tar.xz</code> was not fetched previously.  After checking this
+port I see that it supports multiple versions via flavors with version 15 being
+the default (and indeed I have the distfile for version 15).</p>
+<h2 id="building-the-os">Building the OS</h2>
+<p>Information on building the OS: <a href="https://wiki.freebsd.org/BuildSystems">https://wiki.freebsd.org/BuildSystems</a></p>
+<p>Clone the source (<a href="https://docs.freebsd.org/en/books/handbook/mirrors/#git">https://docs.freebsd.org/en/books/handbook/mirrors/#git</a>) and checkout the release</p>
+<pre tabindex="0"><code>git clone -o freebsd https://git.FreeBSD.org/src.git /usr/src
+cd /usr/src
+git checkout stable/14
+</code></pre><p><a href="https://man.freebsd.org/cgi/man.cgi?query=release&amp;apropos=0&amp;sektion=7&amp;format=html">https://man.freebsd.org/cgi/man.cgi?query=release&amp;apropos=0&amp;sektion=7&amp;format=html</a></p>
+<p>Now it&rsquo;s time to build without Internet connection:</p>
+<pre tabindex="0"><code>make -j6 buildworld buildkernel
+cd release
+make -j6 obj
+make memstick
+</code></pre><p>The memory stick image can be found at <code>/usr/obj/usr/src/amd64.amd64/release/memstick.img</code></p>
+<p>I plug a usb memory and via <code>dmesg</code> see it&rsquo;s <code>da1</code>.  Now I follow <a href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb">https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb</a></p>
+<pre tabindex="0"><code>dd if=/usr/obj/usr/src/amd64.amd64/release/memstick.img of=/dev/da1 bs=1M conv=sync
+</code></pre><p>Then I successfully managed to install FreeBSD in my thinkpad x220</p>
+<h2 id="documentation">Documentation</h2>
+<p>There&rsquo;s a documentation section about FreeBSD&rsquo;s documentation at
+<a href="https://docs.freebsd.org/en/books/fdp-primer/">https://docs.freebsd.org/en/books/fdp-primer/</a></p>
+<p>The tools required to build the documentation can be installed via a meta-port:</p>
+<pre tabindex="0"><code>cd /usr/ports/textproc/docproj
+make BATCH=yes install
+</code></pre><p>Afterwards we can clone the doc repository using git and build the
+html render by following the instructions at
+<a href="https://docs.freebsd.org/en/books/fdp-primer/doc-build/#doc-build-rendering-html">https://docs.freebsd.org/en/books/fdp-primer/doc-build/#doc-build-rendering-html</a>:</p>
+<pre tabindex="0"><code>cd ~
+git clone https://git.FreeBSD.org/doc.git
+
+cd ~/doc
+make DOC_LANG=&#34;en es&#34; # build the documentation in English and Spanish
+</code></pre><p>That builds all the doc repository, which includes the FreeBSD website among
+other things.  If we just want the documentation (which includes the handbook,
+faq and developers-handbook among others):</p>
+<pre tabindex="0"><code>cd `~/doc/documentation`
+make DOC_LANG=en
+</code></pre><h1 id="summary">Summary</h1>
+<p>I would say that FreeBSD didn&rsquo;t pass the collapse-ready test:</p>
+<ul>
+<li>I didn&rsquo;t manage to fetch all the distfiles of the ports collection in a way
+that would allow me to build any port I need without Internet connection.
+Considering that FreeBSD has a massive collection of ports I wouldn&rsquo;t have
+minded not being able to fetch distfiles for unmaintained ports or those that
+have non-free licenses.  But not being able to automatically fetch a distfile
+that is later needed to build xorg was a big issue for me.</li>
+<li>The FreeBSD handbook is pretty good; but the last two operating systems I
+tested were NetBSD and OpenBSD which have superb documentation; I would rank
+the FreeBSD below.  For example, some of the documentation is not in the
+handbook but in the wiki, which is not ideal.  But this can be circumvented
+by cloning the wiki locally, so the only inconvenience is fragmentation and
+worse indexing of content.</li>
+<li>Building the system while offline and creating install media for another
+computer worked great.</li>
+</ul>
+<h1 id="addendum">Addendum</h1>
+<h2 id="failed-attempts">Failed attempts</h2>
+<h3 id="1">1</h3>
+<p>while ports fetch:</p>
+<pre tabindex="0"><code># make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes fetch
+# [...]
+
+=&gt; rarbsd-x64-711.tar.gz doesn&#39;t seem to exist in /usr/ports/distfiles/.
+=&gt; Attempting to fetch https://www.rarlab.com/rar/rarbsd-x64-711.tar.gz
+rarbsd-x64-711.tar.gz                                  737 kB 2660 kBps    00s
+===&gt; Fetching all distfiles required by rar-7.11,3 for building
+===&gt; archivers/rar-i386
+===&gt;  rar-i386-7.01 is only for i386, while you are running amd64 (reason:
+amd64 users should use archivers/rar).
+*** Error code 1
+
+Stop.
+make[2]: stopped in /usr/ports/archivers/rar-i386
+*** Error code 1
+
+Stop.
+make[1]: stopped in /usr/ports/archivers
+*** Error code 1
+
+Stop.
+make: stopped in /usr/ports
+</code></pre><p>Solution: <code>IGNORE_SILENT=1</code></p>
+<h3 id="2">2</h3>
+<pre tabindex="0"><code>make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
+# [...]
+
+=&gt; phred-dist-020425.c-acd.tar.Z doesn&#39;t seem to exist in /usr/ports/distfiles/.
+===&gt; /!\ Warning /!\
+     The :DEFAULT group used for phred-dist-020425.c-acd.tar.Z is missing
+     from MASTER_SITES. Check for typos, or errors.
+=&gt; Attempting to fetch http://distcache.FreeBSD.org/ports-distfiles/phred-dist-020425.c-acd.tar.Z
+fetch: http://distcache.FreeBSD.org/ports-distfiles/phred-dist-020425.c-acd.tar.Z: Not Found
+=&gt; Couldn&#39;t fetch it - please try to retrieve this
+=&gt; port manually into /usr/ports/distfiles/ and try again.
+*** Error code 1
+
+Stop.
+make[2]: stopped in /usr/ports/biology/phred
+*** Error code 1
+</code></pre><p>Solution: <code>-k</code></p>
+
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div class="row li-author">
+    <div class="sixteen columns">
+        Written by <strong>Dhole</strong>
+    </div>
+</div>
+
+        <div class="container">
+            &nbsp;
+            <div id="disqus_thread">
+    <center><a href="#" onclick="disqus();return false;">Show Comments</a></center>
+</div>
+<script type="text/javascript">
+  var disqus_shortname = 'dhole';
+  var disqus_loaded = false;
+  function disqus() {
+    if (!disqus_loaded) {
+        disqus_loaded = true;
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     }
+  }
+</script>
+
+        </div>
+
+        <div class="row li-pagination">
+            <div class="eight columns">
+                <div class="li-pagination-previous">
+                    
+                        Later article<br />
+                        <a href="https://dhole.github.io/post/hare_first_impressions/"> First impressions on Hare language</a>
+                    
+                </div>
+            </div>
+            <div class="eight columns">
+                <div class="li-pagination-next">
+                    
+                        &nbsp;
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="li-page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="sixteen columns">
+                <div class="li-page-footer-legal">
+                    &copy; 2025. All rights reserved. 
+                </div>
+                <div class="li-page-footer-theme">
+                    <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script type="text/javascript">
+    
+    function toggle(id) {
+        var e = document.getElementById(id);
+        e.style.display == 'block' ? e.style.display = 'none' : e.style.display = 'block';
+    }
+    
+    </script>
+    
+    </body>
+</html>
+

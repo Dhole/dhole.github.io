@@ -8,7 +8,7 @@
         <title>CHIP-8 emulator in Rust.  Part 1 &middot; Dhole&#39;s blog</title>
         
         
-        <link rel="stylesheet" href="https://dhole.github.io/css/liquorice.css" />
+        <link rel="stylesheet" href="https://dhole.github.io//css/liquorice.css" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="alternate" href="" type="application/rss+xml" title="Dhole&#39;s blog" />
     </head>
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-brand li-left">
-                <a href="https://dhole.github.io">Dhole&#39;s blog</a></div>
+                <a href="https://dhole.github.io/">Dhole&#39;s blog</a></div>
                 <div class="li-menu li-right">
                     <span class="li-menu-icon" onclick="javascript:toggle('menu');">&#9776;</span>
                     <ul id="menu2" class="li-menu-items">
@@ -66,11 +66,11 @@
 <div class="li-article-categories">
 Categories:
 
-<span><a href="https://dhole.github.io/categories/emulator">emulator</a> </span>
+<span><a href="https://dhole.github.io//categories/emulator">emulator</a> </span>
 
-<span><a href="https://dhole.github.io/categories/chip8">chip8</a> </span>
+<span><a href="https://dhole.github.io//categories/chip8">chip8</a> </span>
 
-<span><a href="https://dhole.github.io/categories/rust">rust</a> </span>
+<span><a href="https://dhole.github.io//categories/rust">rust</a> </span>
 
 </div>
 
@@ -189,8 +189,7 @@ run the instruction.</p>
 <p>NOTE: Usually an emulator cares about cycles taken by
 instructions, but since the CHIP-8 is a Virtual Machine there&rsquo;s no such
 specification, so I&rsquo;m using the average time taken by one of the original
-implementations for each instruction.</p>
-</blockquote>
+implementations for each instruction.</p></blockquote>
 <p>The instructions take different combinations of inputs made of registers and
 immediate values.</p>
 <p>Here&rsquo;s an example of one instruction: ADD</p>
@@ -220,10 +219,10 @@ the instruction is decoded, the corresponding instruction function is called.</p
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x00</span> <span style="color:#f92672">=&gt;</span> <span style="color:#66d9ef">match</span> w1 {
 </span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xe0</span> <span style="color:#f92672">=&gt;</span> self.op_cls(),
 </span></span><span style="display:flex;"><span>                <span style="color:#ae81ff">0xee</span> <span style="color:#f92672">=&gt;</span> self.op_ret(),
-</span></span><span style="display:flex;"><span>                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(nnn!(w0, w1)),
+</span></span><span style="display:flex;"><span>                _ <span style="color:#f92672">=&gt;</span> self.op_call_rca_1802(<span style="color:#a6e22e">nnn!</span>(w0, w1)),
 </span></span><span style="display:flex;"><span>            },
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(nnn!(w0, w1)),
-</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(nnn!(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x10</span> <span style="color:#f92672">=&gt;</span> self.op_jp(<span style="color:#a6e22e">nnn!</span>(w0, w1)),
+</span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x20</span> <span style="color:#f92672">=&gt;</span> self.op_call(<span style="color:#a6e22e">nnn!</span>(w0, w1)),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x30</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], w1),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x40</span> <span style="color:#f92672">=&gt;</span> self.op_sne(self.v[Reg(lo_nib(w0))], w1),
 </span></span><span style="display:flex;"><span>            <span style="color:#ae81ff">0x50</span> <span style="color:#f92672">=&gt;</span> self.op_se(self.v[Reg(lo_nib(w0))], self.v[Reg(hi_nib(w1))]),
@@ -294,7 +293,7 @@ desktop display):</p>
 </span></span><span style="display:flex;"><span>                .default_value(<span style="color:#e6db74">&#34;8&#34;</span>)
 </span></span><span style="display:flex;"><span>                .validator(<span style="color:#f92672">|</span>scale<span style="color:#f92672">|</span> <span style="color:#66d9ef">match</span> scale.parse::<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u32</span><span style="color:#f92672">&gt;</span>() {
 </span></span><span style="display:flex;"><span>                    Ok(_) <span style="color:#f92672">=&gt;</span> Ok(()),
-</span></span><span style="display:flex;"><span>                    Err(e) <span style="color:#f92672">=&gt;</span> Err(format!(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, e)),
+</span></span><span style="display:flex;"><span>                    Err(e) <span style="color:#f92672">=&gt;</span> Err(<span style="color:#a6e22e">format!</span>(<span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{}</span><span style="color:#e6db74">&#34;</span>, e)),
 </span></span><span style="display:flex;"><span>                }),
 </span></span><span style="display:flex;"><span>        )
 </span></span><span style="display:flex;"><span>        .arg(
@@ -519,7 +518,7 @@ in your favorite language!</p>
         <div class="row">
             <div class="sixteen columns">
                 <div class="li-page-footer-legal">
-                    &copy; 2024. All rights reserved. 
+                    &copy; 2025. All rights reserved. 
                 </div>
                 <div class="li-page-footer-theme">
                     <span class="">Theme based on <a href="http://github.com/eliasson/liquorice/">liquorice</a> for <a href="http://hugo.spf13.com">hugo</a></span>

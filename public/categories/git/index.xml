@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>git on Dhole&#39;s blog</title>
+    <title>Git on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/git/</link>
-    <description>Recent content in git on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Git on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/git/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/raspberry_pi_git/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_git/</guid>
-      <description>Introduction In this post I will explain what&amp;rsquo;s required to set up a git server. We&amp;rsquo;ll use cgit to provide a web interface and also allow cloning/pulling through HTTP. ssh will also be available for cloning/pulling and pushing.&#xA;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&#xA;Cgit First of all, we&amp;rsquo;ll create a git user and move it&amp;rsquo;s home to the encrypted partition. For convenience we&amp;rsquo;ll also link that home directory to /git.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;In this post I will explain what&amp;rsquo;s required to set up a git server.  We&amp;rsquo;ll use&#xA;&lt;a href=&#34;https://git.zx2c4.com/cgit/&#34;&gt;cgit&lt;/a&gt; to provide a web interface and also allow&#xA;cloning/pulling through HTTP.  ssh will also be available for cloning/pulling&#xA;and pushing.&lt;/p&gt;&#xA;&lt;p&gt;We&amp;rsquo;ll setup two groups of repositories: a public and a private one.&lt;/p&gt;&#xA;&lt;h1 id=&#34;cgit&#34;&gt;Cgit&lt;/h1&gt;&#xA;&lt;p&gt;First of all, we&amp;rsquo;ll create a &lt;em&gt;git&lt;/em&gt; user and move it&amp;rsquo;s home to the encrypted&#xA;partition.  For convenience we&amp;rsquo;ll also link that home directory to &lt;code&gt;/git&lt;/code&gt;.  This&#xA;will be useful to have nice paths for our repositories.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

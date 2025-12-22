@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>lighttpd on Dhole&#39;s blog</title>
+    <title>Lighttpd on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/lighttpd/</link>
-    <description>Recent content in lighttpd on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Lighttpd on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 21 Oct 2016 15:14:27 -0700</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/lighttpd/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</link>
       <pubDate>Fri, 21 Oct 2016 15:14:27 -0700</pubDate>
       <guid>https://dhole.github.io/post/raspberry_pi_alpine_lighttpd/</guid>
-      <description>Introduction In this post I will explain how to set up Alpine Linux for the RPi, with the necessary configuration for the RPi to power a USB hard drive, how to install lighttpd and configure automatic renewal of TLS certificates with lestencrypt.&#xA;Alpine Linux Alpine Linux can be installed on te RPi following the wiki guide.&#xA;After instalation, we add a new user which we will use for logging in:</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;In this post I will explain how to set up &lt;a href=&#34;https://alpinelinux.org/&#34;&gt;Alpine&#xA;Linux&lt;/a&gt; for the RPi, with the necessary configuration&#xA;for the RPi to power a USB hard drive, how to install lighttpd and configure&#xA;automatic renewal of TLS certificates with lestencrypt.&lt;/p&gt;&#xA;&lt;h1 id=&#34;alpine-linux&#34;&gt;Alpine Linux&lt;/h1&gt;&#xA;&lt;p&gt;Alpine Linux can be installed on te RPi following the &lt;a href=&#34;https://wiki.alpinelinux.org/wiki/Raspberry_Pi&#34;&gt;wiki&#xA;guide&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;After instalation, we add a new user which we will use for logging in:&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;adduser green&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&#xA;&lt;p&gt;After logging in with our new user (using password) we&amp;rsquo;ll add some ssh public&#xA;keys for future logins:&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

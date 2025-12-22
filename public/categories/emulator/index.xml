@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>emulator on Dhole&#39;s blog</title>
+    <title>Emulator on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/emulator/</link>
-    <description>Recent content in emulator on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Emulator on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 03 Jun 2021 10:23:20 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/emulator/index.xml" rel="self" type="application/rss+xml" />
@@ -13,14 +13,14 @@
       <link>https://dhole.github.io/post/chip8_emu_2/</link>
       <pubDate>Thu, 03 Jun 2021 10:23:20 +0200</pubDate>
       <guid>https://dhole.github.io/post/chip8_emu_2/</guid>
-      <description>This post is the continuation of CHIP-8 emulator in Rust. Part 1, please check it if you haven&amp;rsquo;t already!&#xA;In this second part I will explain how I ported the CHIP-8 emulator I built in Rust to an embedded ARM microcontroller. I will explain the hardware I chose to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give an overview of how the code is laid out.</description>
+      <description>&lt;p&gt;This post is the continuation of &lt;a href=&#34;../chip8_emu_1/&#34;&gt;CHIP-8 emulator in Rust.  Part&#xA;1&lt;/a&gt;, please check it if you haven&amp;rsquo;t already!&lt;/p&gt;&#xA;&lt;p&gt;In this second part I will explain how I ported the CHIP-8 emulator I built in&#xA;Rust to an embedded ARM microcontroller.  I will explain the hardware I chose&#xA;to build this portable CHIP-8 device, the Rust libraries I used and I&amp;rsquo;ll give&#xA;an overview of how the code is laid out.  I excluded details about hardware&#xA;diagrams and explicit mention of how the hardware is connected to each pin&#xA;because I&amp;rsquo;m sure the astute reader will be able to figure this out from the&#xA;code itself.&lt;/p&gt;</description>
     </item>
     <item>
       <title>CHIP-8 emulator in Rust.  Part 1</title>
       <link>https://dhole.github.io/post/chip8_emu_1/</link>
       <pubDate>Sun, 09 May 2021 17:23:20 +0200</pubDate>
       <guid>https://dhole.github.io/post/chip8_emu_1/</guid>
-      <description>I have been interested in the topic of emulation for many years; in particular, game console emulation. I started playing games under emulators when I was a teenager and I was fascinated by how a piece of software would let me play a game in a completely different architecture than the original one.&#xA;I&amp;rsquo;ve you&amp;rsquo;ve ever been interested in learning about emulation, maybe you&amp;rsquo;ve learned about the CHIP-8; a specification of a simple virtual machine designed to play 8bit 2D videogames in the mid 1970s.</description>
+      <description>&lt;p&gt;I have been interested in the topic of emulation for many years; in particular,&#xA;game console emulation.  I started playing games under emulators when I was a&#xA;teenager and I was fascinated by how a piece of software would let me play a&#xA;game in a completely different architecture than the original one.&lt;/p&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve you&amp;rsquo;ve ever been interested in learning about emulation, maybe you&amp;rsquo;ve&#xA;learned about the &lt;a href=&#34;https://en.wikipedia.org/wiki/CHIP-8&#34;&gt;CHIP-8&lt;/a&gt;; a&#xA;specification of a simple virtual machine designed to play 8bit 2D videogames&#xA;in the mid 1970s.  The connection between the CHIP-8 and emulation development&#xA;is that the specification of the CHIP-8 is very simple and makes the perfect&#xA;target for writing your first emulator.  In fact, that&amp;rsquo;s what I did in 2014: I&#xA;wrote &lt;a href=&#34;https://github.com/Dhole/Chip8-emu&#34;&gt;my first emulator&lt;/a&gt;, targeting the&#xA;CHIP-8 in C++.  Please, don&amp;rsquo;t take that C++ code too seriously!  I&amp;rsquo;ve never&#xA;been experienced in C++, and I wasn&amp;rsquo;t very experienced in software development&#xA;by then.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>reproducible builds on Dhole&#39;s blog</title>
+    <title>Reproducible Builds on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/reproducible-builds/</link>
-    <description>Recent content in reproducible builds on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Reproducible Builds on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 06 Aug 2015 20:12:15 +0200</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/reproducible-builds/index.xml" rel="self" type="application/rss+xml" />
@@ -13,14 +13,14 @@
       <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</link>
       <pubDate>Thu, 06 Aug 2015 20:12:15 +0200</pubDate>
       <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015_update_1/</guid>
-      <description>This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my first post)&#xA;Status update First month It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata.</description>
+      <description>&lt;p&gt;This is the second blog post I&amp;rsquo;m writing about my experiences contributing to Debian for Google Summer of Code 2015 (check my &lt;a href=&#34;https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/&#34;&gt;first post&lt;/a&gt;)&lt;/p&gt;&#xA;&lt;h1 id=&#34;status-update&#34;&gt;Status update&lt;/h1&gt;&#xA;&lt;h2 id=&#34;first-month&#34;&gt;First month&lt;/h2&gt;&#xA;&lt;p&gt;It&amp;rsquo;s been two months and a few days since the GSoC started. During the first month I worked on fixing specific packages, mainly concerning issues with timestamps, which is a very common source of unreproducibility. In many cases, during the build process files are compressed into gzip or zip archives, which store the creation time of files in the metadata. This can lead to unreproducible results when there is timezone variation between builds (easily fixed setting the timezone to UTC before the compression happens). In some cases the compressed files are generated during the build, and thus add build times in the metadata of compressed files (in this case the creation date of the files needs to be normalized somehow).&lt;/p&gt;</description>
     </item>
     <item>
       <title>Reproducible builds on Debian for GSoC 2015</title>
       <link>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</link>
       <pubDate>Sun, 10 May 2015 17:14:05 +0200</pubDate>
       <guid>https://dhole.github.io/post/reproducible_builds_debian_gsoc2015/</guid>
-      <description>This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&#xA;A bit about myself I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go.</description>
+      <description>&lt;p&gt;This is the first blog post of a series I will be writing about my experiences contributing to Debian for Google Summer of Code 2015.&lt;/p&gt;&#xA;&lt;h1 id=&#34;a-bit-about-myself&#34;&gt;A bit about myself&lt;/h1&gt;&#xA;&lt;p&gt;I&amp;rsquo;m a Spanish student doing a master&amp;rsquo;s in Computer Science in Barcelona. I graduated on Electrical Engineering (we call it Telecommunications here). I&amp;rsquo;ve always been interested in computing and programming and I have worked on several projects on my own using C, python and go. My main interests in the field are programming languages, security, cryptography, distributed and decentralized systems and embedded systems.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

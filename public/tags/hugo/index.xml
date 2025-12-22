@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>hugo on Dhole&#39;s blog</title>
+    <title>Hugo on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/tags/hugo/</link>
-    <description>Recent content in hugo on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Hugo on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 08 Nov 2014 17:04:11 +0100</lastBuildDate>
     <atom:link href="https://dhole.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/first/</link>
       <pubDate>Sat, 08 Nov 2014 17:04:11 +0100</pubDate>
       <guid>https://dhole.github.io/post/first/</guid>
-      <description>I had been planning on creating a blog to write about the stuff I do on my free time for a while. In this blog I plan to write about the projects I develop as well as talking about interesting things I lean about technology, hardware, security, embedded systems, programming languages and more.&#xA;My first thought was to use a WordPress hosted at wordpress.com, but I didn&amp;rsquo;t want the adds. I searched on the net for alternatives and found out about the static website generators, which allow you to host the content in a static web server such as your github personal page.</description>
+      <description>&lt;p&gt;I had been planning on creating a blog to write about the stuff I do on my free time for a while.&#xA;In this blog I plan to write about the projects I develop as well as talking about interesting things&#xA;I lean about technology, hardware, security, embedded systems, programming languages and more.&lt;/p&gt;&#xA;&lt;p&gt;My first thought was to use a WordPress hosted at wordpress.com, but I didn&amp;rsquo;t want the adds. I searched&#xA;on the net for alternatives and found out about the static website generators, which allow you to host&#xA;the content in a static web server such as your github personal page. Right now this blog is posted in&#xA;my server, but I may move it to github if there is some traffic.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

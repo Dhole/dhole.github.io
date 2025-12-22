@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>kernel on Dhole&#39;s blog</title>
+    <title>Kernel on Dhole&#39;s blog</title>
     <link>https://dhole.github.io/categories/kernel/</link>
-    <description>Recent content in kernel on Dhole&#39;s blog</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <description>Recent content in Kernel on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 23 Nov 2017 14:35:56 -0800</lastBuildDate>
     <atom:link href="https://dhole.github.io/categories/kernel/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,7 @@
       <link>https://dhole.github.io/post/luks_on_chip/</link>
       <pubDate>Thu, 23 Nov 2017 14:35:56 -0800</pubDate>
       <guid>https://dhole.github.io/post/luks_on_chip/</guid>
-      <description>Introduction I&amp;rsquo;ve recently acquired a handheld ARM computer with screen and keyboard called the PocketCHIP. The main board on the device is called the CHIP, which is a tiny ARM computer capable of running Linux that is sold for $9.&#xA;After flashing it with the CHIP 4.4 GUI OS, a flavor of Debian released by Next Thing Co (the company that made the PocketCHIP) I noticed I wasn&amp;rsquo;t able to mount LUKS-encrypted partitions due to missing kernel modules.</description>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;Introduction&lt;/h1&gt;&#xA;&lt;p&gt;I&amp;rsquo;ve recently acquired a handheld ARM computer with screen and keyboard called&#xA;the &lt;a href=&#34;https://getchip.com/pages/pocketchip&#34;&gt;PocketCHIP&lt;/a&gt;.  The main board on the&#xA;device is called the &lt;a href=&#34;https://getchip.com/pages/chip&#34;&gt;CHIP&lt;/a&gt;, which is a tiny&#xA;ARM computer capable of running Linux that is sold for $9.&lt;/p&gt;&#xA;&lt;p&gt;After flashing it with the &lt;em&gt;CHIP 4.4 GUI&lt;/em&gt; OS, a flavor of Debian released by&#xA;Next Thing Co (the company that made the PocketCHIP)  I noticed I wasn&amp;rsquo;t able&#xA;to mount LUKS-encrypted partitions due to missing kernel modules.  In this post&#xA;I will explain what I had to do to build and install the missing modules&#xA;without the need to replace the entire kernel.  If you want to install a new&#xA;and different kernel you will need to follow a more involved process because&#xA;the WiFi and GPU drivers aren&amp;rsquo;t in the kernel sources and require you to build&#xA;them apart (and also fiddle with the device tree).&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

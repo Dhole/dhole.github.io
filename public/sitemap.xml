@@ -2,13 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://dhole.github.io/categories/</loc>
-    <lastmod>2024-01-20T14:45:38+01:00</lastmod>
+    <loc>https://dhole.github.io/categories/bsd/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
   </url><url>
-    <loc>https://dhole.github.io/categories/chip8/</loc>
-    <lastmod>2024-01-20T14:45:38+01:00</lastmod>
+    <loc>https://dhole.github.io/categories/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
+  </url><url>
+    <loc>https://dhole.github.io/post/collapse_ready_os_freebsd/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
   </url><url>
     <loc>https://dhole.github.io/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
+  </url><url>
+    <loc>https://dhole.github.io/categories/freebsd/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
+  </url><url>
+    <loc>https://dhole.github.io/post/</loc>
+    <lastmod>2025-12-21T00:15:20+02:00</lastmod>
+  </url><url>
+    <loc>https://dhole.github.io/categories/chip8/</loc>
     <lastmod>2024-01-20T14:45:38+01:00</lastmod>
   </url><url>
     <loc>https://dhole.github.io/post/hare_first_impressions/</loc>
@@ -16,12 +28,6 @@
   </url><url>
     <loc>https://dhole.github.io/categories/hare/</loc>
     <lastmod>2024-01-20T14:45:38+01:00</lastmod>
-  </url><url>
-    <loc>https://dhole.github.io/post/</loc>
-    <lastmod>2024-01-20T14:45:38+01:00</lastmod>
-  </url><url>
-    <loc>https://dhole.github.io/categories/bsd/</loc>
-    <lastmod>2023-05-01T12:00:20+02:00</lastmod>
   </url><url>
     <loc>https://dhole.github.io/post/collapse_ready_os_netbsd/</loc>
     <lastmod>2023-05-01T12:00:20+02:00</lastmod>

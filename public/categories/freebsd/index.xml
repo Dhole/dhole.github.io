@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Freebsd on Dhole&#39;s blog</title>
+    <link>https://dhole.github.io/categories/freebsd/</link>
+    <description>Recent content in Freebsd on Dhole&#39;s blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 21 Dec 2025 00:15:20 +0200</lastBuildDate>
+    <atom:link href="https://dhole.github.io/categories/freebsd/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Collapse Ready Operating Systems - FreeBSD</title>
+      <link>https://dhole.github.io/post/collapse_ready_os_freebsd/</link>
+      <pubDate>Sun, 21 Dec 2025 00:15:20 +0200</pubDate>
+      <guid>https://dhole.github.io/post/collapse_ready_os_freebsd/</guid>
+      <description>&lt;p&gt;This post belongs to the Collapse Ready Operating System series.  See &lt;a href=&#34;https://dhole.github.io/post/collapse_ready_os&#34;&gt;this&#xA;post&lt;/a&gt; for an introduction.&lt;/p&gt;&#xA;&lt;h1 id=&#34;prelude&#34;&gt;Prelude&lt;/h1&gt;&#xA;&lt;p&gt;My last post in this series was more than two years ago.  When I started the&#xA;series I had an initial plan to test the three most well known BSD operating&#xA;systems, and after publishing articles for NetBSD and OpenBSD I soon&#xA;started doing my homework with FreeBSD; unfortunately I had a lot of hiccups.&#xA;I&amp;rsquo;ve made 4 different attempts at achieving the objectives in this series with&#xA;FreeBSD, the last one being last week, and none of them were fully successful.&#xA;The reason for trying several times instead of publishing the first result was&#xA;to see if some of the issues I encountered were temporary or bugs of a&#xA;particular release; but at the end I decided to publish the results I have.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
