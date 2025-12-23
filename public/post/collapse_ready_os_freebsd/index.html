@@ -90,7 +90,7 @@ particular release; but at the end I decided to publish the results I have.</p>
 <p>In this post I take a look at <a href="https://www.freebsd.org/">FreeBSD</a>.  I used
 FreeBSD many years ago in a non-serious server setting.  I think it was the
 first BSD I used.  I remember having fun with the port system, but not much
-else.  Anecdotically I&rsquo;ve also played many hours on the PS4 which runs a
+else.  Anecdotally I&rsquo;ve also played many hours on the PS4 which runs a
 modified version of FreeBSD, so based on that, FreeBSD may be the BSD I&rsquo;ve
 spent most hours with :P</p>
 <h1 id="steps">Steps</h1>
@@ -137,7 +137,7 @@ zfs set mountpoint=/usr/ports zports
 <p>The official documentation requires installing git to fetch the ports, but git
 is not part of the base system, so I&rsquo;d need to install git from binary packages
 but the handbook recommends not mixing ports with binary packages, so I want to
-try only using ports.  Fortunately the ports repository is in gitlab which
+try only using ports.  Fortunately the ports repository is in GitLab which
 offers tarballs of tagged snapshots.  I&rsquo;m using the branch 2025Q3.</p>
 <p>As root:</p>
 <pre tabindex="0"><code>fetch &#39;https://gitlab.com/FreeBSD/freebsd-ports/-/archive/2025Q3/freebsd-ports-2025Q3.tar.gz&#39;
@@ -155,17 +155,17 @@ ports themselves.</p>
 ports&rsquo; distfiles.</p>
 <pre tabindex="0"><code>make -k BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
 </code></pre><p>The entire process took about 2 days.  One of the reasons why it took so long
-is that ports have multiple urls to fetch the distfiles and many of these urls
+is that ports have multiple URLs to fetch the distfiles and many of these URLs
 are not working.  In particular some of them end up with a hanging connection
-so the fetch program needs to wait for a timeout to try the next url.  Even
-then, many distfiles were not fetched due to non-working urls.</p>
+so the fetch program needs to wait for a timeout to try the next URL.  Even
+then, many distfiles were not fetched due to nonworking URLs.</p>
 <p>After this we end up with a big collection of distfiles:</p>
 <pre tabindex="0"><code>/usr/ports/distfiles: 520.1 GiB (17860443 items)
 </code></pre><p>This is significantly bigger than what I got from NetBSD and OpenBSD.</p>
 <h3 id="hiccups">Hiccups</h3>
 <p>Unfortunately the distfiles collection is not complete:</p>
 <ul>
-<li>As I mentioned before, for some ports, none of the urls were working</li>
+<li>As I mentioned before, for some ports, none of the URLs were working</li>
 <li>In FreeBSD a port can have flavors, which can be used to build different
 version of the port.  In such a case each flavor will have different
 distfiles.  The recursive fetch rule only fetches the distfiles of the
@@ -217,7 +217,8 @@ cd release
 make -j6 obj
 make memstick
 </code></pre><p>The memory stick image can be found at <code>/usr/obj/usr/src/amd64.amd64/release/memstick.img</code></p>
-<p>I plug a usb memory and via <code>dmesg</code> see it&rsquo;s <code>da1</code>.  Now I follow <a href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb">https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb</a></p>
+<p>I plug a usb memory and via <code>dmesg</code> see it&rsquo;s <code>da1</code>.  Now I follow
+<a href="https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb">https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb</a></p>
 <pre tabindex="0"><code>dd if=/usr/obj/usr/src/amd64.amd64/release/memstick.img of=/dev/da1 bs=1M conv=sync
 </code></pre><p>Then I successfully managed to install FreeBSD in my thinkpad x220</p>
 <h2 id="documentation">Documentation</h2>
@@ -226,7 +227,7 @@ make memstick
 <p>The tools required to build the documentation can be installed via a meta-port:</p>
 <pre tabindex="0"><code>cd /usr/ports/textproc/docproj
 make BATCH=yes install
-</code></pre><p>Afterwards we can clone the doc repository using git and build the
+</code></pre><p>Afterward we can clone the doc repository using git and build the
 html render by following the instructions at
 <a href="https://docs.freebsd.org/en/books/fdp-primer/doc-build/#doc-build-rendering-html">https://docs.freebsd.org/en/books/fdp-primer/doc-build/#doc-build-rendering-html</a>:</p>
 <pre tabindex="0"><code>cd ~
@@ -247,7 +248,7 @@ that would allow me to build any port I need without Internet connection.
 Considering that FreeBSD has a massive collection of ports I wouldn&rsquo;t have
 minded not being able to fetch distfiles for unmaintained ports or those that
 have non-free licenses.  But not being able to automatically fetch a distfile
-that is later needed to build xorg was a big issue for me.</li>
+that is later needed for build Xorg was a big issue for me.</li>
 <li>The FreeBSD handbook is pretty good; but the last two operating systems I
 tested were NetBSD and OpenBSD which have superb documentation; I would rank
 the FreeBSD below.  For example, some of the documentation is not in the
@@ -258,9 +259,12 @@ worse indexing of content.</li>
 computer worked great.</li>
 </ul>
 <h1 id="addendum">Addendum</h1>
-<h2 id="failed-attempts">Failed attempts</h2>
-<h3 id="invalid-arch">Invalid arch</h3>
-<p>Running <code>make fetch</code> in the ports tree gives you a very interactive experience.  I had found a few variables that would make the process more non-interactive by reading the source code of the makefiles and searching online, but then I encountered errors that would stop the process entirely:</p>
+<h2 id="failed-attempts">Failed Attempts</h2>
+<h3 id="invalid-arch">Invalid Arch</h3>
+<p>Running <code>make fetch</code> in the ports tree gives you a very interactive experience.
+I had found a few variables that would make the process more noninteractive by
+reading the source code of the Makefiles and searching online, but then I
+encountered errors that would stop the process entirely:</p>
 <pre tabindex="0"><code># make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes fetch
 # [...]
 
@@ -286,8 +290,10 @@ make: stopped in /usr/ports
 </code></pre><p>In this case the solution was to add <code>IGNORE_SILENT=1</code> so that this build error
 is ignored (it&rsquo;s unfortunate that it pops up because I&rsquo;m not building, just
 fetching).</p>
-<h3 id="broken-ports">Broken ports</h3>
-<p>Even after setting all the variables I could find in the source code that would make the process smooth there are errors.  This one is just an example of a port that has distfiles that are unavailable via the provided urls.</p>
+<h3 id="broken-ports">Broken Ports</h3>
+<p>Even after setting all the variables I could find in the source code that would
+make the process smooth there are errors.  This one is just an example of a
+port that has distfiles that are unavailable via the provided URLs.</p>
 <pre tabindex="0"><code>make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
 # [...]
 

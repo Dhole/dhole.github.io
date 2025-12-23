@@ -24,7 +24,7 @@ particular release; but at the end I decided to publish the results I have.
 In this post I take a look at [FreeBSD](https://www.freebsd.org/).  I used
 FreeBSD many years ago in a non-serious server setting.  I think it was the
 first BSD I used.  I remember having fun with the port system, but not much
-else.  Anecdotically I've also played many hours on the PS4 which runs a
+else.  Anecdotally I've also played many hours on the PS4 which runs a
 modified version of FreeBSD, so based on that, FreeBSD may be the BSD I've
 spent most hours with :P
 
@@ -82,7 +82,7 @@ I mainly followed the ports documentation at https://docs.freebsd.org/en/books/h
 The official documentation requires installing git to fetch the ports, but git
 is not part of the base system, so I'd need to install git from binary packages
 but the handbook recommends not mixing ports with binary packages, so I want to
-try only using ports.  Fortunately the ports repository is in gitlab which
+try only using ports.  Fortunately the ports repository is in GitLab which
 offers tarballs of tagged snapshots.  I'm using the branch 2025Q3.
 
 As root:
@@ -111,10 +111,10 @@ make -k BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes
 ```
 
 The entire process took about 2 days.  One of the reasons why it took so long
-is that ports have multiple urls to fetch the distfiles and many of these urls
+is that ports have multiple URLs to fetch the distfiles and many of these URLs
 are not working.  In particular some of them end up with a hanging connection
-so the fetch program needs to wait for a timeout to try the next url.  Even
-then, many distfiles were not fetched due to non-working urls.
+so the fetch program needs to wait for a timeout to try the next URL.  Even
+then, many distfiles were not fetched due to nonworking URLs.
 
 After this we end up with a big collection of distfiles:
 ```
@@ -126,7 +126,7 @@ This is significantly bigger than what I got from NetBSD and OpenBSD.
 ### Hiccups
 
 Unfortunately the distfiles collection is not complete:
-- As I mentioned before, for some ports, none of the urls were working
+- As I mentioned before, for some ports, none of the URLs were working
 - In FreeBSD a port can have flavors, which can be used to build different
   version of the port.  In such a case each flavor will have different
   distfiles.  The recursive fetch rule only fetches the distfiles of the
@@ -196,7 +196,8 @@ make memstick
 
 The memory stick image can be found at `/usr/obj/usr/src/amd64.amd64/release/memstick.img`
 
-I plug a usb memory and via `dmesg` see it's `da1`.  Now I follow https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb
+I plug a usb memory and via `dmesg` see it's `da1`.  Now I follow
+https://docs.freebsd.org/en/books/handbook/bsdinstall/#bsdinstall-usb
 ```
 dd if=/usr/obj/usr/src/amd64.amd64/release/memstick.img of=/dev/da1 bs=1M conv=sync
 ```
@@ -215,7 +216,7 @@ cd /usr/ports/textproc/docproj
 make BATCH=yes install
 ```
 
-Afterwards we can clone the doc repository using git and build the
+Afterward we can clone the doc repository using git and build the
 html render by following the instructions at
 https://docs.freebsd.org/en/books/fdp-primer/doc-build/#doc-build-rendering-html:
 ```
@@ -242,7 +243,7 @@ I would say that FreeBSD didn't pass the collapse-ready test:
   Considering that FreeBSD has a massive collection of ports I wouldn't have
   minded not being able to fetch distfiles for unmaintained ports or those that
   have non-free licenses.  But not being able to automatically fetch a distfile
-  that is later needed to build xorg was a big issue for me.
+  that is later needed for build Xorg was a big issue for me.
 - The FreeBSD handbook is pretty good; but the last two operating systems I
   tested were NetBSD and OpenBSD which have superb documentation; I would rank
   the FreeBSD below.  For example, some of the documentation is not in the
@@ -254,11 +255,14 @@ I would say that FreeBSD didn't pass the collapse-ready test:
 
 # Addendum 
 
-## Failed attempts
+## Failed Attempts
 
-### Invalid arch
+### Invalid Arch
 
-Running `make fetch` in the ports tree gives you a very interactive experience.  I had found a few variables that would make the process more non-interactive by reading the source code of the makefiles and searching online, but then I encountered errors that would stop the process entirely:
+Running `make fetch` in the ports tree gives you a very interactive experience.
+I had found a few variables that would make the process more noninteractive by
+reading the source code of the Makefiles and searching online, but then I
+encountered errors that would stop the process entirely:
 ```
 # make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes fetch
 # [...]
@@ -288,9 +292,11 @@ In this case the solution was to add `IGNORE_SILENT=1` so that this build error
 is ignored (it's unfortunate that it pops up because I'm not building, just
 fetching).
 
-### Broken ports
+### Broken Ports
 
-Even after setting all the variables I could find in the source code that would make the process smooth there are errors.  This one is just an example of a port that has distfiles that are unavailable via the provided urls.
+Even after setting all the variables I could find in the source code that would
+make the process smooth there are errors.  This one is just an example of a
+port that has distfiles that are unavailable via the provided URLs.
 ```
 make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
 # [...]
