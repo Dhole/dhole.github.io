@@ -258,7 +258,7 @@ I would say that FreeBSD didn't pass the collapse-ready test:
 
 ### 1
 
-while ports fetch:
+Running `make fetch` in the ports tree gives you a very interactive experience.  I had found a few variables that would make the process more non-interactive by reading the source code of the makefiles and searching online, but then I encountered errors that would stop the process entirely:
 ```
 # make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes fetch
 # [...]
@@ -284,10 +284,13 @@ Stop.
 make: stopped in /usr/ports
 ```
 
-Solution: `IGNORE_SILENT=1`
+In this case the solution was to add `IGNORE_SILENT=1` so that this build error
+is ignored (it's unfortunate that it pops up because I'm not building, just
+fetching).
 
 ### 2
 
+Even after setting all the variables I could find in the source code that would make the process smooth there are errors.  This one is just an example of a port that has distfiles that are unavailable via the provided urls.
 ```
 make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
 # [...]
@@ -307,4 +310,5 @@ make[2]: stopped in /usr/ports/biology/phred
 *** Error code 1
 ```
 
-Solution: `-k`
+The solution is to pass `-k` to `make`, which makes it continue even if errors
+are found on some rule.

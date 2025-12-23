@@ -18,8 +18,8 @@ fi
 git commit -m "$msg"
 
 # Push source and build repos.
-git push origin hugo
-git subtree push --prefix=public git@github.com:Dhole/dhole.github.io.git master
+git push origin main
+# git subtree push --prefix=public git@github.com:Dhole/dhole.github.io.git master
 
 # Rebuild for my domain and push to my git repo
 # # hugo -t liquorice_mod -b https://lizard.kyasuka.com/blog/
