@@ -1,6 +1,8 @@
 <article>
     <header>
-        <h2><a href="{{ .Permalink }}">{{ .Title }} {{ if .Draft }} (draft) {{end}}</a></h2>
+        <h1 class="li-article-title">
+            <a href="{{ .Permalink }}">{{ .Title }} {{ if .Draft }} (draft) {{end}}</a>
+        </h1>
         <time class="li-article-date">{{ .Date.Format "Monday, January 2, 2006" }}</time>
     </header>
     <section class="li-article-section">
