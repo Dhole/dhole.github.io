@@ -256,7 +256,7 @@ I would say that FreeBSD didn't pass the collapse-ready test:
 
 ## Failed attempts
 
-### 1
+### Invalid arch
 
 Running `make fetch` in the ports tree gives you a very interactive experience.  I had found a few variables that would make the process more non-interactive by reading the source code of the makefiles and searching online, but then I encountered errors that would stop the process entirely:
 ```
@@ -288,7 +288,7 @@ In this case the solution was to add `IGNORE_SILENT=1` so that this build error
 is ignored (it's unfortunate that it pops up because I'm not building, just
 fetching).
 
-### 2
+### Broken ports
 
 Even after setting all the variables I could find in the source code that would make the process smooth there are errors.  This one is just an example of a port that has distfiles that are unavailable via the provided urls.
 ```

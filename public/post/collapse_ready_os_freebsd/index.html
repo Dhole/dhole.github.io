@@ -259,7 +259,7 @@ computer worked great.</li>
 </ul>
 <h1 id="addendum">Addendum</h1>
 <h2 id="failed-attempts">Failed attempts</h2>
-<h3 id="1">1</h3>
+<h3 id="invalid-arch">Invalid arch</h3>
 <p>Running <code>make fetch</code> in the ports tree gives you a very interactive experience.  I had found a few variables that would make the process more non-interactive by reading the source code of the makefiles and searching online, but then I encountered errors that would stop the process entirely:</p>
 <pre tabindex="0"><code># make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes fetch
 # [...]
@@ -286,7 +286,7 @@ make: stopped in /usr/ports
 </code></pre><p>In this case the solution was to add <code>IGNORE_SILENT=1</code> so that this build error
 is ignored (it&rsquo;s unfortunate that it pops up because I&rsquo;m not building, just
 fetching).</p>
-<h3 id="2">2</h3>
+<h3 id="broken-ports">Broken ports</h3>
 <p>Even after setting all the variables I could find in the source code that would make the process smooth there are errors.  This one is just an example of a port that has distfiles that are unavailable via the provided urls.</p>
 <pre tabindex="0"><code>make BATCH=yes DISABLE_VULNERABILITIES=yes NO_DIALOG=yes DISABLE_LICENSES=yes IGNORE_SILENT=1 fetch
 # [...]
